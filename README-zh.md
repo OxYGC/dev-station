@@ -41,7 +41,7 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/yourname/dev-station.git
+git clone https://github.com/OxYGC/dev-station.git
 
 # 2. 进入目录
 cd dev-station
@@ -50,3 +50,4 @@ cd dev-station
 ./install.sh  # macOS/Linux
 # 或
 install.bat   # Windows
+```
