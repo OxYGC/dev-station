@@ -5,6 +5,13 @@
 
 ---
 
+<!-- Language switch -->
+<p align="right">
+  <a href="README.md">English</a> ·
+  <a href="README-zh.md">中文</a>
+</p>
+
+
 ## 🚀 为什么你需要 dev-station？
 
 - 刚换新电脑，又要花 2 小时配环境？ → **一键搞定**
@@ -26,7 +33,7 @@
 ✅ **macOS / Windows 小工具**  
 - 自动备份配置、快速清理缓存、一键同步脚本
 
-🖼️ ![demo.gif](demo.gif) ← 这里放个 10 秒演示动图
+
 
 ---
 
