@@ -7,32 +7,47 @@
 
 <!-- Language switch -->
 <p align="right">
-  <a href="README.md">English</a> ·
-  <a href="README-zh.md">中文</a>
+  <a href="README-en.md">English</a> ·
+  <a href="README.md">中文</a>
 </p>
 
-## 🚀 Why you need dev-station?
 
-- New machine and need 2 hours to set up the environment? → **One command to set it up**
-- New team members always ask “Where is .gitignore from?” → **Consistent standard**
-- Want the same development experience on macOS and Windows? → **Cross-platform script support**
+## 🚀 为什么你需要 dev-station？
 
-> 💡 “Stop reinventing the wheel — spend your time writing code, not configuring environments.”
+- 刚换新电脑，又要花 2 小时配环境？ → **一键搞定**
+- 团队新人总问“.gitignore 去哪找？” → **统一标准**
+- 想在 Mac 和 Windows 保持相同开发体验？ → **跨平台脚本支持**
 
----
-
-## 🧰 What’s included?
-
-✅ **IDEA configuration templates**
-- Code style, Live Templates, inspection rules — ready to use out of the box
-
-✅ **Smart .gitignore**
-- Multi-language tuned versions (Java/Go/Python), deduplicated and conflict-free
-
-✅ **macOS / Windows utilities**
-- Auto-backup configs, quick cache cleanup, one-click sync scripts
-
+> 💡 “别再重复造轮子 —— 你的时间应该花在写代码，不是配环境。”
 
 ---
 
+## 🧰 包含什么？
 
+✅ **IDEA 配置模板**  
+- 代码风格、Live Templates、检查规则 —— 开箱即用
+
+✅ **智能 .gitignore**  
+- 多语言优化版（Java/Go/Python），去重、无冲突
+
+✅ **macOS / Windows 小工具**  
+- 自动备份配置、快速清理缓存、一键同步脚本
+
+
+
+---
+
+## ⚡ 30 秒快速开始
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/OxYGC/dev-station.git
+
+# 2. 进入目录
+cd dev-station
+
+# 3. 运行安装脚本（自动识别系统）
+./install.sh  # macOS/Linux
+# 或
+install.bat   # Windows
+```
