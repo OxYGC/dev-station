@@ -1,5 +1,5 @@
 # dev-station
-[![GitHub Stars](https://img.shields.io/github/stars/yourname/dev-station?style=social)](https://github.com/yourname/dev-station)
+[![GitHub Stars](https://img.shields.io/github/stars/OxYGC/dev-station?style=social)](https://github.com/yourname/dev-station)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/yourname/dev-station.svg)](https://github.com/yourname/dev-station/commits)
 
