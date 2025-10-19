@@ -107,8 +107,11 @@
 - **[GitHub 中文排行榜](https://github.com/GitHub-Chinese-Top-Charts)**  
   国内热门 GitHub 项目榜单，发现优质中文开源项目。
 
-- **[腾讯 AlloyTeam](http://www.alloyteam.com)**  
-  腾讯前端团队技术博客，分享工程化、性能优化等实践经验。
+
+- **[中文社区博客第一站](https://www.csdn.net/)**  
+  CSDN 号称是中国最大的技术社区，提供技术文章、问答、项目分享等服务。
+
+
 
 ---
 
