@@ -111,6 +111,15 @@
 - **[中文社区博客第一站](https://www.csdn.net/)**  
   CSDN 号称是中国最大的技术社区，提供技术文章、问答、项目分享等服务。
 
+## 🇨🇳 VPN节点
+- **[ShadowSocks](https://secure.shadowsocks.au/aff.php?aff=47119) (推荐码：47119)**:
+19.9$/年，每月100G,已经用了好多年了
+- **[AllBlueCloud](https://allbluecloud.xyz/) (邀请码: qAL0CoCJ)** :
+注册免费送5GB流量，节点数量较多.个人使用大概100G花费58.8人民币/年
+
+
+
+
 
 
 ---
