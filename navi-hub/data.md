@@ -114,8 +114,27 @@
 ## 🇨🇳 VPN节点
 - **[ShadowSocks](https://secure.shadowsocks.au/aff.php?aff=47119) (推荐码：47119)**:
 19.9$/年，每月100G,已经用了好多年了
+
+
+- **[狗狗加速器](https://go.dginv.click/#/register?code=HdG1bIeo) (邀请码: HdG1bIeo)** :
+  - 使用我上面链接注册连续三天每天送1G,个人使用大概 15.8¥/160G/月，一年 ¥169.8
+  -  ⭐️ 该站点有ShadowRocket小飞机公益共享账号提供：https://x.dg6.im/#/knowledge
+  
 - **[AllBlueCloud](https://allbluecloud.xyz/) (邀请码: qAL0CoCJ)** :
-注册免费送5GB流量，节点数量较多.个人使用大概100G花费58.8人民币/年
+注册免费送5GB流量,账单日重置，节点数量较多.个人使用大概100G花费58.8人民币/年
+
+
+
+- **[orymi](https://orymi.net/#/register?code=X1ZtdLw4) (推荐码：X1ZtdLw4)**:
+    主要特点包含 ¥36不限时间100G的流量
+    - 免费套餐 (抵扣码：X1ZtdLw4)
+    - 套餐流量：20 GB
+    - 带宽限制：5 Mbps
+    - 优质隧道专线
+    - 全平台客户端支持
+    - 同时在线设备：2 台
+    - 订单日重置流量
+    - Mitm节点免登录观看netflix、disney
 
 
 
