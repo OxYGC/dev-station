@@ -117,7 +117,7 @@
 
 
 - **[狗狗加速器](https://go.dginv.click/#/register?code=HdG1bIeo) (邀请码: HdG1bIeo)** :
-  - 使用我上面链接注册连续三天每天送1G,个人使用大概 15.8¥/160G/月，一年 ¥169.8
+  - 号称技术流机场：使用我上面链接注册连续三天每天送1G,个人使用大概 15.8¥/160G/月，一年 ¥169.8
   -  ⭐️ 该站点有ShadowRocket小飞机公益共享账号提供：https://x.dg6.im/#/knowledge
   
 - **[AllBlueCloud](https://allbluecloud.xyz/) (邀请码: qAL0CoCJ)** :
