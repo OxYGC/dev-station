@@ -111,7 +111,11 @@
 - **[中文社区博客第一站](https://www.csdn.net/)**  
   CSDN 号称是中国最大的技术社区，提供技术文章、问答、项目分享等服务。
 
-## 🇨🇳 VPN节点
+## 🚀 VPN节点
+
+
+- **[WgetCloud](https://invite.wgetcloud.ltd/auth/register?code=Fyr3A6) (推荐码：Fyr3A6)**:
+  69¥/月，每月140G，一年 ¥662 较为稳定
 - **[ShadowSocks](https://secure.shadowsocks.au/aff.php?aff=47119) (推荐码：47119)**:
 19.9$/年，每月100G,已经用了好多年了
 
@@ -119,6 +123,12 @@
 - **[狗狗加速器](https://go.dginv.click/#/register?code=HdG1bIeo) (邀请码: HdG1bIeo)** :
   - 号称技术流机场：使用我上面链接注册连续三天每天送1G,个人使用大概 15.8¥/160G/月，一年 ¥169.8
   -  ⭐️ 该站点有ShadowRocket小飞机公益共享账号提供：https://x.dg6.im/#/knowledge
+
+- **[红杏云](https://hongxingyun.xyz/web/#/login?code=GcUxLZ4l) (邀请码: GcUxLZ4l)** :
+    - 优点：性价比比较高多客户端支持,个人使用大概 14.9¥/200G/月，一年 ¥149.9
+    -  ⭐️ 该站点有ShadowRocket小飞机公益共享账号提供：https://x.dg6.im/#/knowledge
+
+
 
 
 - **[AllBlueCloud](https://allbluecloud.xyz/) (邀请码: qAL0CoCJ)** :
@@ -130,7 +140,6 @@
 
 - **[orymi](https://orymi.net/#/register?code=X1ZtdLw4) (推荐码：X1ZtdLw4)**:
     主要特点包含 ¥36不限时间100G的流量
-    - 免费套餐 (抵扣码：X1ZtdLw4)
     - 套餐流量：20 GB
     - 带宽限制：5 Mbps
     - 优质隧道专线
@@ -140,11 +149,12 @@
     - Mitm节点免登录观看netflix、disney
 
 
-
-
-
-
 ---
+
+
+## 参考资料 & 致谢
+[1] [VV科技-免费节点分享站点](https://github.com/free18/v2ray)
+
 
 > 💡 **建议**：将此列表作为个人知识库持续维护，定期更新失效链接，补充新发现的优质站点。  
 > ✨ 欢迎 fork、star 或提 PR 优化！
