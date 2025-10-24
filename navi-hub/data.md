@@ -122,7 +122,8 @@
 
 
 - **[AllBlueCloud](https://allbluecloud.xyz/) (邀请码: qAL0CoCJ)** :
-注册免费送5GB流量,账单日重置，节点数量较多.个人使用大概100G花费58.8人民币/年
+  - 注册免费送5GB流量,可以试用2个小时，节点数量较多.个人使用大概100G花费58.8人民币/年
+  -  ⭐️ 注册成功后该站点有ShadowRocket小飞机公益共享账号提供：https://allbluecloud.xyz/apple-accounts
 
 
 
