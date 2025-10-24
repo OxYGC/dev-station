@@ -115,7 +115,7 @@
 
 
 - **[WgetCloud](https://invite.wgetcloud.ltd/auth/register?code=Fyr3A6) (推荐码：Fyr3A6)**:
-  69¥/月，每月140G，一年 ¥662 较为稳定
+  69¥/月，每月140G，一年 ¥662 从2020年使用到现在使用一直很稳定
 - **[ShadowSocks](https://secure.shadowsocks.au/aff.php?aff=47119) (推荐码：47119)**:
 19.9$/年，每月100G,已经用了好多年了
 
