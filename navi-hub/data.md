@@ -111,7 +111,7 @@
 - **[中文社区博客第一站](https://www.csdn.net/)**  
   CSDN 号称是中国最大的技术社区，提供技术文章、问答、项目分享等服务。
 
-## 🚀 VPN节点
+## ✈️ VPN节点
 
 
 - **[WgetCloud](https://invite.wgetcloud.ltd/auth/register?code=Fyr3A6) (推荐码：Fyr3A6)**:
@@ -153,7 +153,9 @@
 
 
 ## 参考资料 & 致谢
-[1] [VV科技-免费节点分享站点](https://github.com/free18/v2ray)
+[1] [VV科技-免费节点分享站点](https://github.com/free18/v2ray)  
+[2] [相关站点分享](https://github.com/selierlin/Share-SSR-V2ray/blob/master/1-share-ssr-v2ray.md
+)
 
 
 > 💡 **建议**：将此列表作为个人知识库持续维护，定期更新失效链接，补充新发现的优质站点。  
