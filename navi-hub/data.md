@@ -136,6 +136,13 @@
   -  ⭐️ 注册成功后该站点有ShadowRocket小飞机公益共享账号提供：https://allbluecloud.xyz/apple-accounts
 
 
+- **[NiceDuck](https://dash.haoya.io/dashboard) (邀请码: qAL0CoCJ)** :
+    - 性价比较高，20¥/50/季度, 该节点安全性待测
+    -  ⭐️ 
+
+
+
+
 
 
 - **[orymi](https://orymi.net/#/register?code=X1ZtdLw4) (推荐码：X1ZtdLw4)**:
