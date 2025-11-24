@@ -124,6 +124,9 @@
   - 号称技术流机场：使用我上面链接注册连续三天每天送1G,个人使用大概 15.8¥/160G/月，一年 ¥169.8
   -  ⭐️ 该站点有ShadowRocket小飞机公益共享账号提供：https://x.dg6.im/#/knowledge
 
+- [TAG节点](https://tagss.pro/#/home) (邀请码: SZcoBKK5)
+
+
 - **[红杏云](https://hongxingyun.xyz/web/#/login?code=GcUxLZ4l) (邀请码: GcUxLZ4l)** :
     - 优点：性价比比较高多客户端支持,个人使用大概 14.9¥/200G/月，一年 ¥149.9
     -  ⭐️ 该站点有ShadowRocket小飞机公益共享账号提供：https://x.dg6.im/#/knowledge
