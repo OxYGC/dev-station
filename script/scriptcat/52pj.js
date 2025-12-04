@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         吾爱破解每日定时签到【脚本猫专用】
+// @name         GC-吾爱破解每日定时签到[脚本猫专用]
 // @version      0.4.0-beta
 // @description  定时脚本，每日1次，需要先登陆www.52pojie.cn。（作者不提供任何保证，使用本脚本一切后果自负，否则别用）
 // @author       DreamNya
