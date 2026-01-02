@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>问答互动板</title>
+    <title>问答互动板（支持分组 + 并排显示）</title>
     <!-- SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <style>
@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 700px;
+            max-width: 1000px;
             margin: 40px auto;
             padding: 24px;
         }
@@ -145,10 +145,12 @@
             display: flex;
             gap: 10px;
             margin: 20px 0;
+            flex-wrap: wrap;
         }
 
         #addInput {
             flex: 1;
+            min-width: 200px;
             padding: 12px 16px;
             border: 2px solid #dee2e6;
             border-radius: 50px;
@@ -157,7 +159,18 @@
             transition: border-color 0.2s;
         }
 
-        #addInput:focus {
+        #addGroupSelect {
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 50px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+            min-width: 150px;
+        }
+
+        #addInput:focus,
+        #addGroupSelect:focus {
             border-color: #007bff;
         }
 
@@ -173,15 +186,62 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 16px;
+        }
+
+        /* 👇 响应式网格布局：核心优化 */
+        #groupsContainer {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr;
+            /* 默认单列 */
+        }
+
+        @media (min-width: 768px) {
+            #groupsContainer {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #groupsContainer {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .group-section {
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .group-header {
+            padding: 14px 20px;
+            background: #f1f3f5;
+            font-weight: bold;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .group-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .question-item {
-            padding: 18px 20px;
-            border-bottom: 1px solid #f1f3f5;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
             cursor: grab;
+            border-bottom: 1px solid #f1f3f5;
         }
 
         .question-item:last-child {
@@ -194,54 +254,27 @@
             font-size: 18px;
         }
 
-        .question-text {
-            flex: 1;
-            font-size: 16px;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-
+        .question-text,
         .question-input {
             flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
         .btn-group {
             display: flex;
             gap: 6px;
+            flex-shrink: 0;
         }
 
         .edit-btn,
         .save-btn,
         .cancel-btn,
         .delete-btn {
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 11px;
             font-weight: 600;
-        }
-
-        .edit-btn {
-            background: #ffc107;
-            color: #212529;
-        }
-
-        .save-btn {
-            background: #28a745;
-            color: white;
-        }
-
-        .cancel-btn {
-            background: #6c757d;
-            color: white;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-            color: white;
         }
 
         .empty-state {
@@ -249,6 +282,8 @@
             padding: 40px 20px;
             color: #6c757d;
             font-style: italic;
+            grid-column: 1 / -1;
+            /* 跨满所有列 */
         }
 
         .toast {
@@ -275,8 +310,8 @@
 <body>
 <div class="container">
     <header>
-        <h1>问答互动板</h1>
-        <p class="subtitle">支持拖拽排序 · 数据自动保存</p>
+        <h1>问答互动板（支持分组 + 并排显示）</h1>
+        <p class="subtitle">拖拽排序 · 分组管理 · 响应式布局</p>
     </header>
 
     <div class="controls">
@@ -303,37 +338,42 @@
 
     <div class="input-group">
         <input type="text" id="addInput" placeholder="输入一个问题..." />
+        <select id="addGroupSelect">
+            <option value="">— 选择分组 —</option>
+        </select>
         <button id="addBtn">➕ 添加</button>
     </div>
 
     <div class="questions">
-        <ul id="questionList" style="list-style: none; padding: 0; margin: 0;">
-            <!-- 动态生成 -->
-        </ul>
+        <div id="groupsContainer">
+            <!-- 动态生成分组 -->
+        </div>
     </div>
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
-    const STORAGE_KEY = 'qa_board_data';
+    const STORAGE_KEY = 'qa_board_data_v2';
     const HAS_IMPORTED_KEY = 'qa_has_imported';
 
     let questions = [];
     let currentFileHandle = null;
+    let sortableInstances = [];
 
+    // DOM 元素
     const initDataBtn = document.getElementById('initDataBtn');
     const initOptions = document.getElementById('initOptions');
     const localImportBtn = document.getElementById('localImportBtn');
     const urlInput = document.getElementById('urlInput');
     const urlImportBtn = document.getElementById('urlImportBtn');
-
     const syncBtn = document.getElementById('syncBtn');
     const exportBtn = document.getElementById('exportBtn');
     const clearBtn = document.getElementById('clearBtn');
     const addInput = document.getElementById('addInput');
+    const addGroupSelect = document.getElementById('addGroupSelect');
     const addBtn = document.getElementById('addBtn');
-    const questionList = document.getElementById('questionList');
+    const groupsContainer = document.getElementById('groupsContainer');
     const toast = document.getElementById('toast');
 
     // 工具函数
@@ -347,11 +387,9 @@
         return new Date().toISOString().replace('T', ' ').substring(0, 19);
     }
 
-    function sortQuestions(arr) {
-        return arr.sort((a, b) => {
-            if (a.weight !== b.weight) return a.weight - b.weight;
-            return new Date(a.date) - new Date(b.date);
-        });
+    function ensureGroupNum(q) {
+        if (q.groupNum == null) q.groupNum = 0;
+        return q;
     }
 
     function saveToStorage() {
@@ -374,14 +412,14 @@
                     if (parsed.length > 0 && typeof parsed[0] === 'string') {
                         questions = parsed.map(msg => ({
                             msg,
+                            groupNum: 0,
                             weight: 1,
                             date: getCurrentDateTime()
                         }));
                     } else {
-                        questions = parsed;
+                        questions = parsed.map(ensureGroupNum);
                     }
                 }
-                questions = sortQuestions([...questions]);
             }
         } catch (e) {
             console.warn('加载失败:', e);
@@ -392,14 +430,18 @@
         try {
             const data = JSON.parse(text);
             if (Array.isArray(data.data)) {
-                const validData = data.data.map(item => ({
-                    msg: String(item.msg || '').trim(),
-                    weight: typeof item.weight === 'number' ? item.weight : 1,
-                    date: item.date || getCurrentDateTime()
-                })).filter(q => q.msg);
-                questions = sortQuestions(validData);
+                const validData = data.data
+                    .map(item => ({
+                        msg: String(item.msg || '').trim(),
+                        groupNum: Number.isInteger(item.groupNum) ? item.groupNum : 0,
+                        weight: typeof item.weight === 'number' ? item.weight : 1,
+                        date: item.date || getCurrentDateTime()
+                    }))
+                    .filter(q => q.msg);
+                questions = validData;
                 saveToStorage();
                 render();
+                updateGroupSelect();
                 showToast('✅ 数据初始化成功！');
                 hideInitOptions();
             } else {
@@ -415,7 +457,6 @@
         initOptions.classList.remove('show');
     }
 
-    // ===== 本地导入 =====
     async function handleLocalImport() {
         if (!('showOpenFilePicker' in window)) {
             const input = document.createElement('input');
@@ -449,7 +490,6 @@
         }
     }
 
-    // ===== URL 导入 =====
     async function handleUrlImport() {
         const url = urlInput.value.trim();
         if (!url) {
@@ -463,7 +503,7 @@
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const text = await res.text();
             parseAndLoad(text);
-            currentFileHandle = null; // URL 不支持写回
+            currentFileHandle = null;
             localStorage.setItem(HAS_IMPORTED_KEY, 'true');
         } catch (err) {
             console.error(err);
@@ -471,49 +511,31 @@
         }
     }
 
-    // ===== 其他功能（同步、导出等）保持不变 =====
-    async function syncToFile() {
-        if (!questions.length) {
-            showToast('没有问题可同步！');
-            return;
-        }
+    function getGroups() {
+        const groups = {};
+        questions.forEach(q => {
+            if (!groups[q.groupNum]) groups[q.groupNum] = [];
+            groups[q.groupNum].push(q);
+        });
+        Object.keys(groups).forEach(g => {
+            groups[g].sort((a, b) => a.weight - b.weight);
+        });
+        return groups;
+    }
 
-        const jsonStr = JSON.stringify({ data: questions }, null, 2);
-
-        if (currentFileHandle && 'createWritable' in currentFileHandle) {
-            try {
-                const writable = await currentFileHandle.createWritable();
-                await writable.write(jsonStr);
-                await writable.close();
-                showToast('✅ 已同步到源文件！');
-                return;
-            } catch (err) {
-                console.warn('写入失败:', err);
-            }
-        }
-
-        if (localStorage.getItem(HAS_IMPORTED_KEY) === 'true' && 'showSaveFilePicker' in window) {
-            try {
-                const opts = {
-                    suggestedName: 'qa_questions.json',
-                    types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }]
-                };
-                const newHandle = await window.showSaveFilePicker(opts);
-                currentFileHandle = newHandle;
-                const writable = await newHandle.createWritable();
-                await writable.write(jsonStr);
-                await writable.close();
-                showToast('✅ 已保存（请确认是原文件）');
-                return;
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    console.warn('保存失败:', err);
-                }
-            }
-        }
-
-        downloadFile(jsonStr, 'qa_questions_synced.json');
-        showToast('⚠️ 请手动替换原文件');
+    function updateGroupSelect() {
+        const uniqueGroups = [...new Set(questions.map(q => q.groupNum))].sort((a, b) => a - b);
+        addGroupSelect.innerHTML = '<option value="">— 选择分组 —</option>';
+        uniqueGroups.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g;
+            opt.textContent = `第 ${g} 组`;
+            addGroupSelect.appendChild(opt);
+        });
+        const newOpt = document.createElement('option');
+        newOpt.value = 'new';
+        newOpt.textContent = '🆕 新建分组';
+        addGroupSelect.appendChild(newOpt);
     }
 
     function downloadFile(content, filename) {
@@ -528,124 +550,149 @@
         URL.revokeObjectURL(url);
     }
 
-    // ===== 渲染与拖拽（略，见下方）=====
-    let sortableInstance = null;
-
     function render() {
-        questionList.innerHTML = '';
-        if (questions.length === 0) {
-            const empty = document.createElement('li');
-            empty.className = 'empty-state';
-            empty.textContent = '暂无问题，请初始化数据或添加';
-            questionList.appendChild(empty);
+        sortableInstances.forEach(inst => inst.destroy());
+        sortableInstances = [];
+
+        const groups = getGroups();
+        const groupNums = Object.keys(groups).map(Number).sort((a, b) => a - b);
+
+        if (groupNums.length === 0) {
+            groupsContainer.innerHTML = '<div class="empty-state">暂无问题，请初始化数据或添加</div>';
             return;
         }
 
-        questions.forEach((q, index) => {
-            const li = document.createElement('li');
-            li.className = 'question-item';
-            li.dataset.index = index;
+        groupsContainer.innerHTML = '';
+        groupNums.forEach(groupNum => {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'group-section';
 
-            const handle = document.createElement('span');
-            handle.className = 'drag-handle';
-            handle.innerHTML = '⋮⋮';
+            const header = document.createElement('div');
+            header.className = 'group-header';
+            header.textContent = `第 ${groupNum} 组`;
 
-            const textSpan = document.createElement('span');
-            textSpan.className = 'question-text';
-            textSpan.textContent = q.msg;
+            const list = document.createElement('ul');
+            list.className = 'group-list';
+            list.dataset.group = groupNum;
 
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'question-input';
-            input.value = q.msg;
-            input.style.display = 'none';
+            const items = groups[groupNum];
+            items.forEach((q, idx) => {
+                const li = document.createElement('li');
+                li.className = 'question-item';
+                li.dataset.index = idx;
 
-            const btnGroup = document.createElement('div');
-            btnGroup.className = 'btn-group';
+                const handle = document.createElement('span');
+                handle.className = 'drag-handle';
+                handle.innerHTML = '⋮⋮';
 
-            const editBtn = document.createElement('button');
-            editBtn.className = 'edit-btn';
-            editBtn.textContent = '✏️ 编辑';
-            editBtn.onclick = () => {
-                textSpan.style.display = 'none';
-                input.style.display = 'block';
-                input.focus();
-            };
+                const textSpan = document.createElement('span');
+                textSpan.className = 'question-text';
+                textSpan.textContent = q.msg;
 
-            const saveBtn = document.createElement('button');
-            saveBtn.className = 'save-btn';
-            saveBtn.textContent = '✅ 保存';
-            saveBtn.style.display = 'none';
-            saveBtn.onclick = () => {
-                const newText = input.value.trim();
-                if (newText) {
-                    q.msg = newText;
-                    saveToStorage();
-                    render();
-                }
-            };
-
-            const cancelBtn = document.createElement('button');
-            cancelBtn.className = 'cancel-btn';
-            cancelBtn.textContent = '❌ 取消';
-            cancelBtn.style.display = 'none';
-            cancelBtn.onclick = () => {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'question-input';
                 input.value = q.msg;
-                textSpan.style.display = 'block';
                 input.style.display = 'none';
-            };
 
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.textContent = '🗑️ 删除';
-            deleteBtn.onclick = () => {
-                const idx = parseInt(li.dataset.index);
-                if (idx >= 0) {
-                    questions.splice(idx, 1);
-                    saveToStorage();
-                    render();
-                }
-            };
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'btn-group';
 
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') saveBtn.click();
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.textContent = '✏️ 编辑';
+                editBtn.onclick = () => {
+                    textSpan.style.display = 'none';
+                    input.style.display = 'block';
+                    input.focus();
+                };
+
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'save-btn';
+                saveBtn.textContent = '✅ 保存';
+                saveBtn.style.display = 'none';
+                saveBtn.onclick = () => {
+                    const newText = input.value.trim();
+                    if (newText) {
+                        q.msg = newText;
+                        saveToStorage();
+                        render();
+                    }
+                };
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'cancel-btn';
+                cancelBtn.textContent = '❌ 取消';
+                cancelBtn.style.display = 'none';
+                cancelBtn.onclick = () => {
+                    input.value = q.msg;
+                    textSpan.style.display = 'block';
+                    input.style.display = 'none';
+                };
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '🗑️ 删除';
+                deleteBtn.onclick = () => {
+                    const fullIndex = questions.findIndex(item =>
+                        item.groupNum === groupNum && item.msg === q.msg && item.weight === q.weight
+                    );
+                    if (fullIndex >= 0) {
+                        questions.splice(fullIndex, 1);
+                        saveToStorage();
+                        render();
+                        updateGroupSelect();
+                    }
+                };
+
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') saveBtn.click();
+                });
+
+                input.addEventListener('input', () => {
+                    const hasChange = input.value.trim() !== q.msg;
+                    saveBtn.style.display = hasChange ? 'inline-block' : 'none';
+                    cancelBtn.style.display = hasChange ? 'inline-block' : 'none';
+                });
+
+                btnGroup.append(editBtn, saveBtn, cancelBtn, deleteBtn);
+                li.append(handle, textSpan, input, btnGroup);
+                list.appendChild(li);
             });
 
-            input.addEventListener('input', () => {
-                const hasChange = input.value.trim() !== q.msg;
-                saveBtn.style.display = hasChange ? 'inline-block' : 'none';
-                cancelBtn.style.display = hasChange ? 'inline-block' : 'none';
-            });
+            groupDiv.append(header, list);
+            groupsContainer.appendChild(groupDiv);
 
-            btnGroup.append(editBtn, saveBtn, cancelBtn, deleteBtn);
-            li.append(handle, textSpan, input, btnGroup);
-            questionList.appendChild(li);
-        });
-
-        if (questions.length > 0) {
-            if (sortableInstance) sortableInstance.destroy();
-            sortableInstance = new Sortable(questionList, {
+            const sortable = new Sortable(list, {
                 animation: 150,
                 handle: '.drag-handle',
                 onEnd: function (evt) {
                     const { oldIndex, newIndex } = evt;
                     if (oldIndex === newIndex) return;
-                    const movedItem = questions.splice(oldIndex, 1)[0];
-                    questions.splice(newIndex, 0, movedItem);
-                    questions = questions.map((q, i) => ({ ...q, weight: i + 1 }));
+                    const groupItems = questions.filter(q => q.groupNum === groupNum);
+                    const movedItem = groupItems.splice(oldIndex, 1)[0];
+                    groupItems.splice(newIndex, 0, movedItem);
+                    groupItems.forEach((item, i) => {
+                        const globalIdx = questions.findIndex(q =>
+                            q.groupNum === groupNum && q.msg === item.msg && q.weight === item.weight
+                        );
+                        if (globalIdx >= 0) {
+                            questions[globalIdx].weight = i + 1;
+                        }
+                    });
                     saveToStorage();
                     render();
                 }
             });
-        }
+            sortableInstances.push(sortable);
+        });
     }
 
-    // ===== 事件绑定 =====
+    // 事件绑定
     initDataBtn.addEventListener('click', () => {
         initOptions.classList.toggle('show');
     });
 
-    // 点击外部收起
     document.addEventListener('click', (e) => {
         if (!initDataBtn.contains(e.target) && !initOptions.contains(e.target)) {
             initOptions.classList.remove('show');
@@ -658,7 +705,27 @@
         if (e.key === 'Enter') handleUrlImport();
     });
 
-    syncBtn.addEventListener('click', syncToFile);
+    syncBtn.addEventListener('click', () => {
+        if (!questions.length) {
+            showToast('没有问题可同步！');
+            return;
+        }
+        const jsonStr = JSON.stringify({ data: questions }, null, 2);
+        if (currentFileHandle && 'createWritable' in currentFileHandle) {
+            currentFileHandle.createWritable().then(writable => {
+                writable.write(jsonStr).then(() => writable.close()).then(() => {
+                    showToast('✅ 已同步到源文件！');
+                });
+            }).catch(() => {
+                downloadFile(jsonStr, 'qa_questions_synced.json');
+                showToast('⚠️ 请手动替换原文件');
+            });
+        } else {
+            downloadFile(jsonStr, 'qa_questions_synced.json');
+            showToast('⚠️ 请手动替换原文件');
+        }
+    });
+
     exportBtn.addEventListener('click', () => {
         if (!questions.length) {
             showToast('没有问题可导出！');
@@ -676,23 +743,38 @@
             localStorage.removeItem(STORAGE_KEY);
             localStorage.removeItem(HAS_IMPORTED_KEY);
             render();
+            updateGroupSelect();
             showToast('已清空');
         }
     });
 
     addBtn.addEventListener('click', () => {
         const text = addInput.value.trim();
-        if (text) {
-            const maxWeight = questions.length > 0 ? Math.max(...questions.map(q => q.weight)) : 0;
-            questions.push({
-                msg: text,
-                weight: maxWeight + 1,
-                date: getCurrentDateTime()
-            });
-            saveToStorage();
-            render();
-            addInput.value = '';
+        let groupNum = addGroupSelect.value;
+        if (!text) return;
+        if (!groupNum) {
+            showToast('请选择分组');
+            return;
         }
+        if (groupNum === 'new') {
+            const existingGroups = [...new Set(questions.map(q => q.groupNum))];
+            groupNum = existingGroups.length > 0 ? Math.max(...existingGroups) + 1 : 1;
+        } else {
+            groupNum = parseInt(groupNum);
+        }
+        const groupItems = questions.filter(q => q.groupNum === groupNum);
+        const newWeight = groupItems.length > 0 ? Math.max(...groupItems.map(q => q.weight)) + 1 : 1;
+        questions.push({
+            msg: text,
+            groupNum: groupNum,
+            weight: newWeight,
+            date: getCurrentDateTime()
+        });
+        saveToStorage();
+        render();
+        updateGroupSelect();
+        addInput.value = '';
+        addGroupSelect.value = '';
     });
 
     addInput.addEventListener('keypress', (e) => {
@@ -702,6 +784,7 @@
     // 初始化
     loadFromStorage();
     render();
+    updateGroupSelect();
 </script>
 </body>
 
