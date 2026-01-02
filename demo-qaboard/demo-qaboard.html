@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>问答互动板</title>
+    <!-- SortableJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #495057;
+            margin: 0;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .subtitle {
+            color: #6c757d;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #initDataBtn {
+            background: #28a745;
+            color: white;
+        }
+
+        #syncBtn {
+            background: #007bff;
+            color: white;
+        }
+
+        #exportBtn {
+            background: #6f42c1;
+            color: white;
+        }
+
+        #clearBtn {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* 初始化数据下拉面板 */
+        #initOptions {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            z-index: 10;
+            display: none;
+            width: 280px;
+            margin-top: 8px;
+        }
+
+        #initOptions.show {
+            display: block;
+        }
+
+        .init-option {
+            margin: 8px 0;
+            text-align: center;
+        }
+
+        .init-option label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .init-input-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .init-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .init-input-group button {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        #addInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 50px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #addInput:focus {
+            border-color: #007bff;
+        }
+
+        #addBtn {
+            background: #fd7e14;
+            color: white;
+            padding: 0 20px;
+            border-radius: 50px;
+        }
+
+        .questions {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .question-item {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: grab;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .drag-handle {
+            color: #adb5bd;
+            cursor: move;
+            font-size: 18px;
+        }
+
+        .question-text {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .question-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .edit-btn,
+        .save-btn,
+        .cancel-btn,
+        .delete-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h1>问答互动板</h1>
+        <p class="subtitle">支持拖拽排序 · 数据自动保存</p>
+    </header>
+
+    <div class="controls">
+        <button id="initDataBtn">🔄 初始化数据</button>
+        <button id="syncBtn">🔄 同步（覆盖源文件）</button>
+        <button id="exportBtn">📤 导出新文件</button>
+        <button id="clearBtn">🧹 清空</button>
+
+        <!-- 初始化选项面板 -->
+        <div id="initOptions">
+            <div class="init-option">
+                <label>📁 本地导入</label>
+                <button id="localImportBtn">选择 JSON 文件</button>
+            </div>
+            <div class="init-option">
+                <label>🔗 URL 导入</label>
+                <div class="init-input-group">
+                    <input type="url" id="urlInput" placeholder="https://example.com/data.json" />
+                    <button id="urlImportBtn">加载</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="addInput" placeholder="输入一个问题..." />
+        <button id="addBtn">➕ 添加</button>
+    </div>
+
+    <div class="questions">
+        <ul id="questionList" style="list-style: none; padding: 0; margin: 0;">
+            <!-- 动态生成 -->
+        </ul>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    const STORAGE_KEY = 'qa_board_data';
+    const HAS_IMPORTED_KEY = 'qa_has_imported';
+
+    let questions = [];
+    let currentFileHandle = null;
+
+    const initDataBtn = document.getElementById('initDataBtn');
+    const initOptions = document.getElementById('initOptions');
+    const localImportBtn = document.getElementById('localImportBtn');
+    const urlInput = document.getElementById('urlInput');
+    const urlImportBtn = document.getElementById('urlImportBtn');
+
+    const syncBtn = document.getElementById('syncBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const addInput = document.getElementById('addInput');
+    const addBtn = document.getElementById('addBtn');
+    const questionList = document.getElementById('questionList');
+    const toast = document.getElementById('toast');
+
+    // 工具函数
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function getCurrentDateTime() {
+        return new Date().toISOString().replace('T', ' ').substring(0, 19);
+    }
+
+    function sortQuestions(arr) {
+        return arr.sort((a, b) => {
+            if (a.weight !== b.weight) return a.weight - b.weight;
+            return new Date(a.date) - new Date(b.date);
+        });
+    }
+
+    function saveToStorage() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
+            if (currentFileHandle) {
+                localStorage.setItem(HAS_IMPORTED_KEY, 'true');
+            }
+        } catch (e) {
+            console.warn('localStorage 保存失败:', e);
+        }
+    }
+
+    function loadFromStorage() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    if (parsed.length > 0 && typeof parsed[0] === 'string') {
+                        questions = parsed.map(msg => ({
+                            msg,
+                            weight: 1,
+                            date: getCurrentDateTime()
+                        }));
+                    } else {
+                        questions = parsed;
+                    }
+                }
+                questions = sortQuestions([...questions]);
+            }
+        } catch (e) {
+            console.warn('加载失败:', e);
+        }
+    }
+
+    function parseAndLoad(text) {
+        try {
+            const data = JSON.parse(text);
+            if (Array.isArray(data.data)) {
+                const validData = data.data.map(item => ({
+                    msg: String(item.msg || '').trim(),
+                    weight: typeof item.weight === 'number' ? item.weight : 1,
+                    date: item.date || getCurrentDateTime()
+                })).filter(q => q.msg);
+                questions = sortQuestions(validData);
+                saveToStorage();
+                render();
+                showToast('✅ 数据初始化成功！');
+                hideInitOptions();
+            } else {
+                throw new Error('data 必须是数组');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('❌ JSON 格式错误！');
+        }
+    }
+
+    function hideInitOptions() {
+        initOptions.classList.remove('show');
+    }
+
+    // ===== 本地导入 =====
+    async function handleLocalImport() {
+        if (!('showOpenFilePicker' in window)) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => parseAndLoad(ev.target.result);
+                reader.readAsText(file);
+            };
+            input.click();
+            return;
+        }
+
+        try {
+            const [fileHandle] = await window.showOpenFilePicker({
+                types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }],
+                multiple: false
+            });
+            currentFileHandle = fileHandle;
+            const file = await fileHandle.getFile();
+            const text = await file.text();
+            parseAndLoad(text);
+            localStorage.setItem(HAS_IMPORTED_KEY, 'true');
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                showToast('导入失败：' + (err.message || '未知错误'));
+            }
+        }
+    }
+
+    // ===== URL 导入 =====
+    async function handleUrlImport() {
+        const url = urlInput.value.trim();
+        if (!url) {
+            showToast('请输入有效的 URL');
+            return;
+        }
+
+        try {
+            showToast('正在加载...');
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const text = await res.text();
+            parseAndLoad(text);
+            currentFileHandle = null; // URL 不支持写回
+            localStorage.setItem(HAS_IMPORTED_KEY, 'true');
+        } catch (err) {
+            console.error(err);
+            showToast('❌ URL 加载失败：' + (err.message || '网络错误'));
+        }
+    }
+
+    // ===== 其他功能（同步、导出等）保持不变 =====
+    async function syncToFile() {
+        if (!questions.length) {
+            showToast('没有问题可同步！');
+            return;
+        }
+
+        const jsonStr = JSON.stringify({ data: questions }, null, 2);
+
+        if (currentFileHandle && 'createWritable' in currentFileHandle) {
+            try {
+                const writable = await currentFileHandle.createWritable();
+                await writable.write(jsonStr);
+                await writable.close();
+                showToast('✅ 已同步到源文件！');
+                return;
+            } catch (err) {
+                console.warn('写入失败:', err);
+            }
+        }
+
+        if (localStorage.getItem(HAS_IMPORTED_KEY) === 'true' && 'showSaveFilePicker' in window) {
+            try {
+                const opts = {
+                    suggestedName: 'qa_questions.json',
+                    types: [{ description: 'JSON 文件', accept: { 'application/json': ['.json'] } }]
+                };
+                const newHandle = await window.showSaveFilePicker(opts);
+                currentFileHandle = newHandle;
+                const writable = await newHandle.createWritable();
+                await writable.write(jsonStr);
+                await writable.close();
+                showToast('✅ 已保存（请确认是原文件）');
+                return;
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.warn('保存失败:', err);
+                }
+            }
+        }
+
+        downloadFile(jsonStr, 'qa_questions_synced.json');
+        showToast('⚠️ 请手动替换原文件');
+    }
+
+    function downloadFile(content, filename) {
+        const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // ===== 渲染与拖拽（略，见下方）=====
+    let sortableInstance = null;
+
+    function render() {
+        questionList.innerHTML = '';
+        if (questions.length === 0) {
+            const empty = document.createElement('li');
+            empty.className = 'empty-state';
+            empty.textContent = '暂无问题，请初始化数据或添加';
+            questionList.appendChild(empty);
+            return;
+        }
+
+        questions.forEach((q, index) => {
+            const li = document.createElement('li');
+            li.className = 'question-item';
+            li.dataset.index = index;
+
+            const handle = document.createElement('span');
+            handle.className = 'drag-handle';
+            handle.innerHTML = '⋮⋮';
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'question-text';
+            textSpan.textContent = q.msg;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'question-input';
+            input.value = q.msg;
+            input.style.display = 'none';
+
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'btn-group';
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'edit-btn';
+            editBtn.textContent = '✏️ 编辑';
+            editBtn.onclick = () => {
+                textSpan.style.display = 'none';
+                input.style.display = 'block';
+                input.focus();
+            };
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'save-btn';
+            saveBtn.textContent = '✅ 保存';
+            saveBtn.style.display = 'none';
+            saveBtn.onclick = () => {
+                const newText = input.value.trim();
+                if (newText) {
+                    q.msg = newText;
+                    saveToStorage();
+                    render();
+                }
+            };
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'cancel-btn';
+            cancelBtn.textContent = '❌ 取消';
+            cancelBtn.style.display = 'none';
+            cancelBtn.onclick = () => {
+                input.value = q.msg;
+                textSpan.style.display = 'block';
+                input.style.display = 'none';
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = '🗑️ 删除';
+            deleteBtn.onclick = () => {
+                const idx = parseInt(li.dataset.index);
+                if (idx >= 0) {
+                    questions.splice(idx, 1);
+                    saveToStorage();
+                    render();
+                }
+            };
+
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') saveBtn.click();
+            });
+
+            input.addEventListener('input', () => {
+                const hasChange = input.value.trim() !== q.msg;
+                saveBtn.style.display = hasChange ? 'inline-block' : 'none';
+                cancelBtn.style.display = hasChange ? 'inline-block' : 'none';
+            });
+
+            btnGroup.append(editBtn, saveBtn, cancelBtn, deleteBtn);
+            li.append(handle, textSpan, input, btnGroup);
+            questionList.appendChild(li);
+        });
+
+        if (questions.length > 0) {
+            if (sortableInstance) sortableInstance.destroy();
+            sortableInstance = new Sortable(questionList, {
+                animation: 150,
+                handle: '.drag-handle',
+                onEnd: function (evt) {
+                    const { oldIndex, newIndex } = evt;
+                    if (oldIndex === newIndex) return;
+                    const movedItem = questions.splice(oldIndex, 1)[0];
+                    questions.splice(newIndex, 0, movedItem);
+                    questions = questions.map((q, i) => ({ ...q, weight: i + 1 }));
+                    saveToStorage();
+                    render();
+                }
+            });
+        }
+    }
+
+    // ===== 事件绑定 =====
+    initDataBtn.addEventListener('click', () => {
+        initOptions.classList.toggle('show');
+    });
+
+    // 点击外部收起
+    document.addEventListener('click', (e) => {
+        if (!initDataBtn.contains(e.target) && !initOptions.contains(e.target)) {
+            initOptions.classList.remove('show');
+        }
+    });
+
+    localImportBtn.addEventListener('click', handleLocalImport);
+    urlImportBtn.addEventListener('click', handleUrlImport);
+    urlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleUrlImport();
+    });
+
+    syncBtn.addEventListener('click', syncToFile);
+    exportBtn.addEventListener('click', () => {
+        if (!questions.length) {
+            showToast('没有问题可导出！');
+            return;
+        }
+        const jsonStr = JSON.stringify({ data: questions }, null, 2);
+        downloadFile(jsonStr, 'qa_questions_export.json');
+        showToast('✅ 已导出新文件！');
+    });
+
+    clearBtn.addEventListener('click', () => {
+        if (confirm('确定清空所有问题？')) {
+            questions = [];
+            currentFileHandle = null;
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(HAS_IMPORTED_KEY);
+            render();
+            showToast('已清空');
+        }
+    });
+
+    addBtn.addEventListener('click', () => {
+        const text = addInput.value.trim();
+        if (text) {
+            const maxWeight = questions.length > 0 ? Math.max(...questions.map(q => q.weight)) : 0;
+            questions.push({
+                msg: text,
+                weight: maxWeight + 1,
+                date: getCurrentDateTime()
+            });
+            saveToStorage();
+            render();
+            addInput.value = '';
+        }
+    });
+
+    addInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addBtn.click();
+    });
+
+    // 初始化
+    loadFromStorage();
+    render();
+</script>
+</body>
+
+</html>
