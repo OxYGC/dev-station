@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Nav-site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+            min-height:100vh;
+            padding:20px;
+            color:#0f172a;
+        }
+        body::before{
+            content:"";
+            position:fixed;
+            inset:0;
+            z-index:-1;
+            background:linear-gradient(120deg,#6366f1,#22d3ee,#a78bfa,#6366f1);
+            background-size:300% 300%;
+            animation:gradient 18s ease infinite;
+        }
+        @keyframes gradient{
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
+        }
+
+        .container{max-width:1200px;margin:auto}
+        .hidden{display:none}
+
+        .toolbar{
+            display:flex;
+            gap:10px;
+            align-items:center;
+            padding:14px;
+            margin-bottom:20px;
+            border-radius:16px;
+            background:rgba(255,255,255,.75);
+            backdrop-filter:blur(16px);
+        }
+        .toolbar h1{font-size:22px}
+        .search{
+            flex:1;
+            max-width:220px;
+            padding:6px 10px;
+            border-radius:8px;
+            border:1px solid #cbd5e1;
+        }
+        .btn{
+            padding:6px 10px;
+            border-radius:8px;
+            border:1px solid #cbd5e1;
+            background:#fff;
+            cursor:pointer;
+        }
+
+        .group{
+            margin-bottom:18px;
+            border-radius:16px;
+            background:rgba(255,255,255,.78);
+            backdrop-filter:blur(14px);
+        }
+        .group.dragging{opacity:.4}
+        .group-header{
+            padding:14px 16px;
+            font-weight:600;
+            cursor:grab;
+            display:flex;
+            justify-content:space-between;
+        }
+        .cards{
+            padding:12px;
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:10px;
+            min-height:40px;
+        }
+        .card{
+            display:flex;
+            gap:10px;
+            padding:10px;
+            border-radius:12px;
+            background:#fff;
+            cursor:pointer;
+        }
+        .card.dragging{opacity:.5}
+        .card:hover{background:#f1f5f9}
+        .ico{width:36px;height:36px;border-radius:8px;background:#eef2ff}
+        .ico img{width:100%;height:100%;object-fit:contain}
+
+        .context{
+            position:fixed;
+            background:#fff;
+            border-radius:10px;
+            box-shadow:0 10px 30px rgba(0,0,0,.15);
+            padding:6px;
+            z-index:9999;
+        }
+        .context div{
+            padding:6px 14px;
+            cursor:pointer;
+            border-radius:6px;
+        }
+        .context div:hover{background:#f1f5f9}
+
+        .modal-mask{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:10000;
+        }
+        .modal{
+            width:320px;
+            background:#fff;
+            border-radius:12px;
+            padding:16px;
+        }
+        .modal input,.modal textarea{
+            width:100%;
+            margin-bottom:10px;
+            padding:6px;
+        }
+        .modal-actions{
+            text-align:right;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="toolbar">
+        <h1 id="title">Nav-site</h1>
+        <input id="search" class="search" placeholder="搜索站点 / URL">
+        <button class="btn" id="addGroup">+ 分组</button>
+        <button class="btn" id="clear">🧹 清空</button>
+    </div>
+
+    <div id="groups"></div>
+    <footer id="footer" style="margin:40px 0;text-align:center;opacity:.7"></footer>
+
+    <div id="context" class="context hidden"></div>
+    <div id="modalMask" class="modal-mask hidden"></div>
+
+</div>
+
+<script>
+    /* ================= 数据层 ================= */
+    const STORAGE_KEY='nav_site_data_v2';
+    let state={
+        config:{title:'Nav-site'},
+        categoryList:[],
+        data:[]
+    };
+
+    function persist(){
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    }
+
+    function load(){
+        const local=localStorage.getItem(STORAGE_KEY);
+        if(local){
+            state=JSON.parse(local);
+        }else{
+            state.categoryList=[{id:1,name:'默认分组'}];
+        }
+    }
+
+    function autoLogo(url){
+        try{
+            return 'https://www.google.com/s2/favicons?sz=64&domain='+new URL(url).hostname
+        }catch{
+            return '';
+        }
+    }
+
+    /* ================= 渲染 ================= */
+    const $=id=>document.getElementById(id);
+    let draggingCard=null,draggingGroup=null;
+
+    function render(){
+        $('groups').innerHTML='';
+        state.categoryList.forEach(cat=>{
+            const group=document.createElement('div');
+            group.className='group';
+            group.draggable=true;
+
+            const header=document.createElement('div');
+            header.className='group-header';
+            header.innerHTML=`<span>${cat.name}</span><span>(${count(cat.id)})</span>`;
+
+            header.oncontextmenu=e=>{
+                e.preventDefault();
+                showMenu(e.clientX,e.clientY,[
+                    {text:'➕ 新增站点',fn:()=>openModal(null,cat.id)},
+                    {text:'🗑 删除分组',fn:()=>{
+                            state.categoryList=state.categoryList.filter(g=>g.id!==cat.id);
+                            state.data=state.data.filter(d=>d.categoryId!==cat.id);
+                            persist();render();
+                        }}
+                ]);
+            };
+
+            header.ondragstart=()=>{draggingGroup=cat;group.classList.add('dragging')}
+            header.ondragend=()=>{draggingGroup=null;group.classList.remove('dragging')}
+
+            const cards=document.createElement('div');
+            cards.className='cards';
+
+            cards.ondragover=e=>e.preventDefault();
+            cards.ondrop=()=>{
+                if(draggingCard){
+                    draggingCard.categoryId=cat.id;
+                    persist();render();
+                }
+            };
+
+            state.data.filter(d=>d.categoryId===cat.id).forEach(item=>{
+                const c=document.createElement('div');
+                c.className='card';
+                c.draggable=true;
+                c.innerHTML=`
+        <div class="ico"><img src="${item.logoUrl}"></div>
+        <div>
+          <strong>${item.name}</strong>
+          <div style="font-size:12px;opacity:.7">${item.desc||''}</div>
+        </div>
+      `;
+                c.onclick=()=>window.open(item.url,'_blank');
+                c.ondragstart=()=>{draggingCard=item;c.classList.add('dragging')}
+                c.ondragend=()=>{draggingCard=null;c.classList.remove('dragging')}
+                c.oncontextmenu=e=>{
+                    e.preventDefault();
+                    showMenu(e.clientX,e.clientY,[
+                        {text:'✏️ 编辑',fn:()=>openModal(item,cat.id)},
+                        {text:'🗑 删除',fn:()=>{
+                                state.data=state.data.filter(i=>i.id!==item.id);
+                                persist();render();
+                            }}
+                    ]);
+                };
+                cards.appendChild(c);
+            });
+
+            group.appendChild(header);
+            group.appendChild(cards);
+            $('groups').appendChild(group);
+        });
+    }
+
+    function count(cid){
+        return state.data.filter(d=>d.categoryId===cid).length;
+    }
+
+    /* ================= UI ================= */
+    function showMenu(x,y,items){
+        const m=$('context');
+        m.innerHTML='';
+        items.forEach(it=>{
+            const d=document.createElement('div');
+            d.innerText=it.text;
+            d.onclick=()=>{it.fn();m.classList.add('hidden')}
+            m.appendChild(d);
+        });
+        m.style.left=x+'px';
+        m.style.top=y+'px';
+        m.classList.remove('hidden');
+    }
+    document.onclick=()=>$('context').classList.add('hidden');
+
+    function openModal(item,categoryId){
+        const mask=$('modalMask');
+        mask.innerHTML=`
+    <div class="modal">
+      <h3>${item?'编辑':'新增'}站点</h3>
+      <input id="m_name" placeholder="名称" value="${item?.name||''}">
+      <input id="m_url" placeholder="URL" value="${item?.url||''}">
+      <textarea id="m_desc" placeholder="描述">${item?.desc||''}</textarea>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">取消</button>
+        <button class="btn" onclick="saveSite(${item?.id||'null'},${categoryId})">保存</button>
+      </div>
+    </div>`;
+        mask.classList.remove('hidden');
+    }
+    function closeModal(){ $('modalMask').classList.add('hidden') }
+
+    function saveSite(id,cid){
+        const name=$('m_name').value;
+        const url=$('m_url').value;
+        const desc=$('m_desc').value;
+        if(!url)return alert('URL 必填');
+        if(id){
+            Object.assign(state.data.find(i=>i.id===id),{name,url,desc,logoUrl:autoLogo(url)});
+        }else{
+            state.data.push({
+                id:Date.now(),
+                categoryId:cid,
+                name,desc,url,
+                logoUrl:autoLogo(url)
+            });
+        }
+        persist();closeModal();render();
+    }
+
+    /* ================= 启动 ================= */
+    $('addGroup').onclick=()=>{
+        const name=prompt('分组名');
+        if(!name)return;
+        state.categoryList.push({id:Date.now(),name});
+        persist();render();
+    };
+    $('clear').onclick=()=>{
+        if(confirm('清空所有数据？')){
+            localStorage.removeItem(STORAGE_KEY);
+            load();render();
+        }
+    };
+    $('search').oninput=e=>{
+        const q=e.target.value.toLowerCase();
+        document.querySelectorAll('.card').forEach(c=>{
+            c.classList.toggle('hidden',!c.innerText.toLowerCase().includes(q));
+        });
+    };
+
+    load();
+    render();
+</script>
+</body>
+</html>

@@ -1,555 +1,259 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>导航站点 - Nav Site</title>
+    <title>Nav-site Pro</title>
+
     <style>
-        /* ========== 全局 ========== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+            min-height:100vh;
+            padding:20px;
+            color:#0f172a;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
-            background-color: #f9fafb;
-            color: #1e293b;
-            padding: 20px;
-            line-height: 1.5;
+        body::before{
+            content:"";
+            position:fixed;
+            inset:0;
+            z-index:-1;
+            background:linear-gradient(120deg,#6366f1,#22d3ee,#a78bfa,#6366f1);
+            background-size:300% 300%;
+            animation:gradient 18s ease infinite;
         }
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-        }
-
-        /* ========== 顶部操作栏 ========== */
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            gap: 12px;
-        }
-        .toolbar h1 {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        .btn {
-            padding: 6px 12px;
-            background: #4f46e5;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-        .btn:hover { background: #4338ca; }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #cbd5e1;
-            color: #475569;
-        }
-        .btn-outline:hover {
-            background: #f1f5f9;
+        @keyframes gradient{
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
         }
 
-        /* ========== 分组容器 ========== */
-        .group {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-        .group-header {
-            padding: 14px 16px;
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .group-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-        .group-actions .btn {
-            padding: 4px 8px;
-            font-size: 12px;
+        .container{max-width:1200px;margin:auto}
+        .toolbar,.group,.context,.modal{
+            background:rgba(255,255,255,.75);
+            backdrop-filter:blur(14px);
+            border-radius:14px;
         }
 
-        /* ========== 卡片区域 ========== */
-        .cards {
-            padding: 16px;
-            min-height: 60px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 14px;
+        .toolbar{
+            padding:12px;
+            display:flex;
+            gap:10px;
+            align-items:center;
+            margin-bottom:20px;
         }
-        .drag-over {
-            background-color: #f0f9ff;
-            outline: 2px dashed #93c5fd;
-            outline-offset: -2px;
-        }
+        .toolbar h1{font-size:22px}
+        .search{flex:1;max-width:220px;padding:6px 10px;border-radius:8px;border:1px solid #ccc}
+        .btn{padding:6px 10px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer}
 
-        /* ========== 卡片样式（复用你确认的样式） ========== */
-        .card {
-            display: flex;
-            align-items: center;
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 12px 14px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-            transition: box-shadow 0.2s ease, transform 0.15s ease;
-            gap: 12px;
-            position: relative;
-            max-width: 100%;
-            cursor: move;
-        }
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
-        }
-        .card .card-body {
-            display: flex;
-            alignments: center;
-            text-decoration: none;
-            color: inherit;
-            flex: 1;
-            min-width: 0;
-            gap: 12px;
-            width: 100%;
-        }
-        .card .ico {
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card .ico img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-        .card .ms-2 {
-            flex: 1;
-            min-width: 0;
-        }
-        .card .ms-2 h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1e293b;
-            margin: 0;
-            line-height: 1.3;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .card .ms-2 p {
-            font-size: 13px;
-            color: #64748b;
-            margin: 4px 0 0;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .card .togo {
-            width: 34px;
-            height: 34px;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border-radius: 6px;
-            background: #f8fafc;
-            color: #94a3b8 !important;
-            text-decoration: none !important;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-            font-size: 0;
-        }
-        .card .togo:hover {
-            background: #f0f4ff;
-            color: #4f46e5 !important;
-            transform: translateX(1px);
-        }
-        .card .togo .io {
-            font-size: 16px;
-            line-height: 1;
-            display: block;
-            width: 16px;
-            height: 16px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2394a3b8' d='M10 17l5-5-5-5z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-        .card .togo:hover .io {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234f46e5' d='M10 17l5-5-5-5z'/%3E%3C/svg%3E");
-        }
+        .group{margin-bottom:18px}
+        .group-header{padding:12px 16px;font-weight:600;cursor:grab}
 
-        /* ========== 新建分组输入 ========== */
-        .new-group-form {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
+        .cards{
+            padding:12px;
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:10px;
         }
-        .new-group-form input {
-            flex: 1;
-            padding: 6px 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
+        .card{
+            display:flex;
+            gap:10px;
+            padding:10px;
+            border-radius:10px;
+            background:#fff;
+            cursor:pointer;
         }
-        .hidden { display: none; }
+        .card:hover{background:#f1f5f9}
 
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #64748b;
-            font-size: 13px;
-            padding: 20px 0;
+        .ico{width:36px;height:36px;border-radius:8px;background:#eef2ff;display:flex;align-items:center;justify-content:center}
+        .ico img{width:100%;height:100%;object-fit:contain}
+        .info h3{font-size:14px}
+        .info p{font-size:12px;color:#64748b}
+
+        .context{
+            position:fixed;
+            z-index:999;
+            padding:6px;
+            box-shadow:0 8px 20px rgba(0,0,0,.15);
         }
-        footer a { color: #4f46e5; text-decoration: none; }
+        .context div{padding:6px 14px;cursor:pointer}
+        .context div:hover{background:#e0e7ff}
+
+        .modal-mask{
+            position:fixed;inset:0;
+            background:rgba(0,0,0,.3);
+            display:flex;align-items:center;justify-content:center;
+            z-index:1000;
+        }
+        .modal{
+            padding:20px;
+            width:320px;
+        }
+        .modal h3{margin-bottom:12px}
+        .modal label{font-size:13px}
+        .modal input, .modal textarea{
+            width:100%;margin:6px 0 12px;
+            padding:6px;border-radius:6px;border:1px solid #ccc;
+        }
+        .modal-actions{text-align:right}
+        .hidden{display:none}
     </style>
 </head>
+
 <body>
 <div class="container">
     <div class="toolbar">
-        <h1 id="page-title">导航站点</h1>
-        <div>
-            <button class="btn btn-outline" id="exportBtn">导出</button>
-            <button class="btn" id="importBtn">导入</button>
-            <input type="file" id="fileInput" accept=".json" class="hidden">
-        </div>
+        <h1 id="title">Nav-site</h1>
+        <input id="search" class="search" placeholder="搜索（/）"/>
+        <button class="btn" id="exportBtn">导出 JSON</button>
+        <button class="btn" id="importBtn">导入 JSON</button>
+        <button class="btn" id="clearBtn">🧹 清空配置</button>
     </div>
-
-    <!-- 分组容器（动态生成） -->
-    <div id="groupsContainer"></div>
-
-    <button class="btn" id="addCategoryBtn">+ 新建类型分组</button>
-
-    <footer id="page-footer">
-        Copyright &copy; 2015–2026 <a href="http://iooiee.com">iooiee.com</a>. All rights reserved.
-    </footer>
+    <div id="groups"></div>
 </div>
 
+<input type="file" id="fileInput" hidden />
+<div id="context" class="context hidden"></div>
+<div id="modalMask" class="modal-mask hidden"></div>
+
 <script>
-    // ======================
-    // 数据模型
-    // ======================
-    let state = {
-        config: {
-            title: "导航站点",
-            subTitle: "",
-            footerText: "Copyright &copy; 2015–2026 <a href=\"http://iooiee.com\">iooiee.com</a>. All rights reserved."
-        },
-        categoryList: [],
-        data: []
+    const STORAGE_KEY='nav_site_data_v2';
+    const GROUP_ORDER_KEY='nav_group_order';
+
+    let state={config:{},categoryList:[],data:[]};
+    const $=id=>document.getElementById(id);
+    const save=()=>{
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+        localStorage.setItem(GROUP_ORDER_KEY,JSON.stringify(state.categoryList.map(c=>c.id)));
     };
 
-    const STORAGE_KEY = 'nav_site_data_v2';
-    const GROUP_ORDER_KEY = 'nav_group_order';
-    const DEFAULT_CONFIG_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
-
-    // ======================
-    // 工具函数
-    // ======================
-    function b64Encode(str) {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
+    function autoLogo(url){
+        return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`;
     }
 
-    function saveToStorage() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            config: state.config,
-            categoryList: state.categoryList,
-            data: state.data
-        }));
-        // 保存分组顺序（按 weight 排序后的 id 列表）
-        const orderedIds = [...state.categoryList]
-            .sort((a, b) => (a.weight || 0) - (b.weight || 0))
-            .map(c => c.id);
-        localStorage.setItem(GROUP_ORDER_KEY, JSON.stringify(orderedIds));
+    /* ===== 初始化 ===== */
+    function init(){
+        const local=localStorage.getItem(STORAGE_KEY);
+        if(local) state=JSON.parse(local);
+        render();
     }
 
-    function loadFromStorage() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                state.config = parsed.config || state.config;
-                state.categoryList = parsed.categoryList || [];
-                state.data = parsed.data || [];
-                document.title = state.config.title;
-                document.getElementById('page-title').textContent = state.config.title;
-                document.getElementById('page-footer').innerHTML = state.config.footerText.replace('{CURRENT_YEAR}', new Date().getFullYear());
-                return true;
-            } catch (e) {
-                console.warn('Failed to parse localStorage data', e);
-            }
-        }
-        return false;
-    }
+    /* ===== 渲染 ===== */
+    function render(){
+        const box=$('groups');box.innerHTML='';
+        state.categoryList.forEach(cat=>{
+            const g=document.createElement('div');
+            g.className='group';
+            g.innerHTML=`<div class="group-header">${cat.name}</div><div class="cards"></div>`;
+            const cards=g.querySelector('.cards');
 
-    async function loadRemoteDefault() {
-        try {
-            const confRes = await fetch(DEFAULT_CONFIG_URL);
-            const conf = await confRes.json();
-            state.config = conf.config;
+            cards.oncontextmenu=e=>{
+                e.preventDefault();
+                showMenu(e.clientX,e.clientY,[
+                    {text:'➕ 增加站点',fn:()=>openSiteModal(null,cat.id)}
+                ]);
+            };
 
-            const dataRes = await fetch(conf.api.homeUrl);
-            const remoteData = await dataRes.json();
-            state.categoryList = remoteData.categoryList || [];
-            state.data = remoteData.data || [];
-
-            saveToStorage(); // 首次加载后存本地
-            renderAll();
-        } catch (e) {
-            console.error('Failed to load remote default data', e);
-            alert('⚠️ 无法加载默认数据，请检查网络或稍后重试。');
-        }
-    }
-
-    // ======================
-    // 渲染函数
-    // ======================
-    function renderAll() {
-        const container = document.getElementById('groupsContainer');
-        container.innerHTML = '';
-
-        // 按 weight 排序分组
-        const sortedCategories = [...state.categoryList].sort((a, b) => (a.weight || 0) - (b.weight || 0));
-
-        sortedCategories.forEach(category => {
-            const items = state.data.filter(item => item.categoryId === category.id);
-            const groupEl = createGroupElement(category, items);
-            container.appendChild(groupEl);
-        });
-    }
-
-    function createGroupElement(category, items) {
-        const group = document.createElement('div');
-        group.className = 'group';
-        group.dataset.categoryId = category.id;
-
-        // 头部
-        const header = document.createElement('div');
-        header.className = 'group-header';
-        header.draggable = true;
-        header.dataset.dragType = 'group';
-        header.dataset.categoryId = category.id;
-
-        const title = document.createElement('div');
-        title.className = 'group-title';
-        title.textContent = `${category.name} (${items.length})`;
-
-        const actions = document.createElement('div');
-        actions.className = 'group-actions';
-        const delBtn = document.createElement('button');
-        delBtn.className = 'btn btn-outline';
-        delBtn.textContent = '删除';
-        delBtn.onclick = () => deleteCategory(category.id);
-
-        actions.appendChild(delBtn);
-        header.appendChild(title);
-        header.appendChild(actions);
-
-        // 卡片区域
-        const cards = document.createElement('div');
-        cards.className = 'cards';
-        cards.dataset.categoryId = category.id;
-        cards.addEventListener('dragover', handleDragOver);
-        cards.addEventListener('drop', handleDrop);
-
-        items.sort((a, b) => (a.weight || 0) - (b.weight || 0)).forEach(item => {
-            const card = createCardElement(item);
-            cards.appendChild(card);
-        });
-
-        group.appendChild(header);
-        group.appendChild(cards);
-        return group;
-    }
-
-    function createCardElement(item) {
-        const encodedUrl = b64Encode(item.url);
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.draggable = true;
-        card.dataset.dragType = 'item';
-        card.dataset.itemId = item.id;
-
-        card.innerHTML = `
-        <a href="https://16map.com/sites/${item.id}.html" class="card-body" title="${item.name}" data-url="${encodedUrl}">
-          <div class="ico">
-            <img src="${item.logoUrl || '//placehold.co/44?text=' + item.name[0]}" alt="${item.name}">
-          </div>
-          <div class="ms-2">
-            <h3>${item.name}</h3>
-            <p>${item.desc || ''}</p>
-          </div>
-        </a>
-        <a href="https://go.16map.com/?url=${encodedUrl}"
-           class="togo text-center text-muted is-views"
-           target="_blank" rel="external nofollow noopener" title="详情">
-          <i class="io io-arrow-right-bold-2"></i>
-        </a>
-      `;
-        return card;
-    }
-
-    // ======================
-    // 交互逻辑
-    // ======================
-    function deleteCategory(id) {
-        if (!confirm('确定删除该分组及其中所有导航？')) return;
-        state.categoryList = state.categoryList.filter(c => c.id !== id);
-        state.data = state.data.filter(item => item.categoryId !== id);
-        saveToStorage();
-        renderAll();
-    }
-
-    document.getElementById('addCategoryBtn').addEventListener('click', () => {
-        const name = prompt('请输入新分组名称：');
-        if (name && name.trim()) {
-            const newId = Math.max(0, ...state.categoryList.map(c => c.id)) + 1;
-            state.categoryList.push({
-                id: newId,
-                name: name.trim(),
-                desc: name.trim(),
-                weight: state.categoryList.length
+            state.data.filter(i=>i.categoryId===cat.id).forEach(i=>{
+                const c=document.createElement('div');
+                c.className='card';
+                c.onclick=()=>window.open(i.url,'_blank');
+                c.oncontextmenu=e=>{
+                    e.preventDefault();
+                    showMenu(e.clientX,e.clientY,[
+                        {text:'✏️ 编辑',fn:()=>openSiteModal(i,cat.id)},
+                        {text:'🗑 删除',fn:()=>deleteSite(i.id)}
+                    ]);
+                };
+                c.innerHTML=`<div class="ico"><img src="${i.logoUrl}"></div>
+        <div class="info"><h3>${i.name}</h3><p>${i.desc||''}</p></div>`;
+                cards.appendChild(c);
             });
-            saveToStorage();
-            renderAll();
-        }
-    });
-
-    // 导入/导出
-    document.getElementById('exportBtn').addEventListener('click', () => {
-        const dataStr = JSON.stringify({
-            config: state.config,
-            categoryList: state.categoryList,
-            data: state.data
-        }, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'nav-site-export.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-
-    document.getElementById('importBtn').addEventListener('click', () => {
-        document.getElementById('fileInput').click();
-    });
-
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const imported = JSON.parse(event.target.result);
-                if (imported.categoryList && imported.data) {
-                    state.config = imported.config || state.config;
-                    state.categoryList = imported.categoryList;
-                    state.data = imported.data;
-                    saveToStorage();
-                    renderAll();
-                    alert('✅ 导入成功！');
-                } else {
-                    alert('❌ 文件格式不正确');
-                }
-            } catch (err) {
-                alert('❌ 导入失败：' + err.message);
-            }
-        };
-        reader.readAsText(file);
-        e.target.value = ''; // 允许重复选择同一文件
-    });
-
-    // ======================
-    // 拖拽排序
-    // ======================
-    let dragItem = null;
-
-    document.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('card') || e.target.closest('.group-header')) {
-            dragItem = e.target.closest('[draggable]');
-            setTimeout(() => e.target.classList.add('dragging'), 0);
-        }
-    });
-
-    document.addEventListener('dragend', (e) => {
-        const dragging = document.querySelector('.dragging');
-        if (dragging) dragging.classList.remove('dragging');
-        dragItem = null;
-    });
-
-    function handleDragOver(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        e.currentTarget.classList.add('drag-over');
-    }
-
-    document.querySelectorAll('.cards, .group-header').forEach(el => {
-        el.addEventListener('dragleave', (e) => {
-            e.currentTarget.classList.remove('drag-over');
+            box.appendChild(g);
         });
-    });
-
-    function handleDrop(e) {
-        e.preventDefault();
-        e.currentTarget.classList.remove('drag-over');
-        if (!dragItem) return;
-
-        const dropTarget = e.currentTarget;
-        const dragType = dragItem.dataset.dragType;
-        const dropCategoryId = parseInt(dropTarget.dataset.categoryId);
-
-        if (dragType === 'item') {
-            const itemId = parseInt(dragItem.dataset.itemId);
-            const item = state.data.find(i => i.id === itemId);
-            if (item && item.categoryId !== dropCategoryId) {
-                item.categoryId = dropCategoryId;
-                saveToStorage();
-                renderAll();
-            }
-        }
     }
 
-    // 分组头部拖拽（简化：仅记录顺序，实际排序由 weight 控制）
-    document.addEventListener('drop', (e) => {
-        if (e.target.closest('.group-header')) {
-            // 这里可扩展分组排序（略复杂，暂以 weight 为主）
-            console.log('分组拖拽排序（预留）');
-        }
-    });
+    /* ===== 右键菜单 ===== */
+    const menu=$('context');
+    function showMenu(x,y,items){
+        menu.innerHTML='';
+        items.forEach(i=>{
+            const d=document.createElement('div');
+            d.innerText=i.text;
+            d.onclick=()=>{menu.classList.add('hidden');i.fn()};
+            menu.appendChild(d);
+        });
+        menu.style.left=x+'px';menu.style.top=y+'px';
+        menu.classList.remove('hidden');
+    }
+    document.onclick=()=>menu.classList.add('hidden');
 
-    // ======================
-    // 初始化
-    // ======================
-    (async () => {
-        if (!loadFromStorage()) {
-            await loadRemoteDefault();
-        } else {
-            renderAll();
+    /* ===== 编辑弹窗 ===== */
+    function openSiteModal(item,categoryId){
+        const mask=$('modalMask');
+        mask.innerHTML=`
+    <div class="modal">
+      <h3>${item?'编辑站点':'新增站点'}</h3>
+      <label>名称</label>
+      <input id="m_name" value="${item?.name||''}">
+      <label>描述</label>
+      <textarea id="m_desc">${item?.desc||''}</textarea>
+      <label>URL</label>
+      <input id="m_url" value="${item?.url||''}">
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">取消</button>
+        <button class="btn" onclick="saveSite(${item?.id||'null'},${categoryId})">保存</button>
+      </div>
+    </div>`;
+        mask.classList.remove('hidden');
+    }
+    function closeModal(){$('modalMask').classList.add('hidden')}
+
+    function saveSite(id,categoryId){
+        const name=$('m_name').value;
+        const desc=$('m_desc').value;
+        const url=$('m_url').value;
+        if(!url)return alert('URL 必填');
+        if(id){
+            const i=state.data.find(i=>i.id===id);
+            Object.assign(i,{name,desc,url,logoUrl:autoLogo(url)});
+        }else{
+            state.data.push({
+                id:Date.now(),
+                categoryId,
+                name,
+                desc,
+                url,
+                logoUrl:autoLogo(url)
+            });
         }
-    })();
+        save();closeModal();render();
+    }
+    function deleteSite(id){
+        state.data=state.data.filter(i=>i.id!==id);
+        save();render();
+    }
+
+    /* ===== 工具按钮 ===== */
+    $('clearBtn').onclick=()=>{
+        if(!confirm('确认清空所有配置？'))return;
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(GROUP_ORDER_KEY);
+        state={config:{},categoryList:[],data:[]};
+        render();
+    };
+
+    /* ===== 空白右键 ===== */
+    document.body.oncontextmenu=e=>{
+        if(e.target===document.body||e.target.id==='groups'){
+            e.preventDefault();
+            showMenu(e.clientX,e.clientY,[
+                {text:'➕ 增加站点',fn:()=>openSiteModal(null,state.categoryList[0]?.id)}
+            ]);
+        }
+    };
+
+    init();
 </script>
 </body>
 </html>
