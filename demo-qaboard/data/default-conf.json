@@ -1,0 +1,13 @@
+{
+  "config": {
+    "title": "我是标题",
+    "subTitle": "我是副标题",
+    "footer": "我是页脚",
+    "footerLinkText": "建议/合作 联系方式 keygenee@gmail.com",
+    "footerLink": "https://github.com/OxYGC"
+
+  },
+  "apiUrl":{
+    "default": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json"
+  }
+}
