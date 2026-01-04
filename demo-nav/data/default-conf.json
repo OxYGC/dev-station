@@ -1,8 +1,8 @@
 {
   "config": {
     "icoUrl": "https://coinmarketcap.com/favicon.ico",
-    "title": "我是标题",
-    "subTitle": "我是副标题",
+    "title": "NavHub",
+    "subTitle": "NavHub Manager",
     "footerText": "Copyright &copy; 2015-{CURRENT_YEAR} <a href=\"http://iooiee.com\">iooiee.com</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href=\"mailto:keygenee@gmail.com\">keygenee@gmail.com</a>"
   },
   "api":{
