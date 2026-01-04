@@ -1,322 +1,283 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Nav-site</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavHub Web3</title>
+    <link id="favicon" rel="icon" href="">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-            min-height:100vh;
-            padding:20px;
-            color:#0f172a;
-        }
-        body::before{
-            content:"";
-            position:fixed;
-            inset:0;
-            z-index:-1;
-            background:linear-gradient(120deg,#6366f1,#22d3ee,#a78bfa,#6366f1);
-            background-size:300% 300%;
-            animation:gradient 20s ease infinite;
-        }
-        @keyframes gradient{
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent-color: #6366f1;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
         }
 
-        .container{max-width:1200px;margin:auto}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .toolbar{
-            display:flex;
-            gap:10px;
-            align-items:center;
-            padding:14px;
-            margin-bottom:20px;
-            border-radius:16px;
-            background:rgba(255,255,255,.75);
-            backdrop-filter:blur(16px);
-        }
-        .toolbar h1{font-size:22px}
-        .toolbar small{opacity:.6}
-
-        .search{
-            flex:1;
-            max-width:220px;
-            padding:6px 10px;
-            border-radius:8px;
-            border:1px solid #cbd5e1;
+        body {
+            font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            padding: 20px;
         }
 
-        .btn{
-            padding:6px 10px;
-            border-radius:8px;
-            border:1px solid #cbd5e1;
-            background:#fff;
-            cursor:pointer;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .group{
-            margin-bottom:18px;
-            border-radius:16px;
-            background:rgba(255,255,255,.78);
-            backdrop-filter:blur(14px);
-            transition:.2s;
-        }
-        .group.dragging{opacity:.4}
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; }
 
-        .group-header{
-            padding:14px 16px;
-            font-weight:600;
-            cursor:grab;
-            display:flex;
-            justify-content:space-between;
+        /* Header & Web3 Title */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding: 10px 20px;
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); border-radius: 16px;
+            border: 1px solid var(--glass-border); box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative; z-index: 1000;
         }
 
-        .cards{
-            padding:12px;
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-            gap:10px;
-            min-height:40px;
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .web3-title {
+            font-size: 1.4rem; font-weight: 900;
+            background: linear-gradient(90deg, #4f46e5, #ec4899, #06b6d4, #4f46e5);
+            background-size: 300% 100%; animation: waveText 4s linear infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        @keyframes waveText { 0% { background-position: 0% 0%; } 100% { background-position: 100% 0%; } }
+        .web3-subtitle { font-size: 0.7rem; background: rgba(255,255,255,0.4); padding: 2px 8px; border-radius: 20px; color: #475569; border: 1px solid rgba(255,255,255,0.3); }
+
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .search-bar {
+            width: 120px; padding: 8px 12px; border-radius: 10px;
+            border: 1px solid var(--glass-border); background: rgba(255,255,255,0.3);
+            outline: none; font-size: 13px; transition: 0.4s;
+        }
+        .search-bar:focus { width: 220px; background: white; }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.3); border: 1px solid var(--glass-border);
+            border-radius: 10px; padding: 6px 12px; cursor: pointer; font-size: 11px; font-weight: bold;
         }
 
-        .card{
-            display:flex;
-            gap:10px;
-            padding:10px;
-            border-radius:12px;
-            background:#fff;
-            cursor:pointer;
-            transition:.15s;
+        .settings-container { position: relative; z-index: 2000; }
+        .gear-btn {
+            background: rgba(255,255,255,0.3); border: 1px solid var(--glass-border);
+            border-radius: 10px; width: 34px; height: 34px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
-        .card:hover{background:#f1f5f9}
-        .card.dragging{opacity:.5}
 
-        .ico{
-            width:36px;height:36px;
-            border-radius:8px;
-            background:#eef2ff;
+        .dropdown-menu {
+            position: absolute; right: 0; top: 45px; background: white;
+            border-radius: 12px; display: none; flex-direction: column; min-width: 180px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 1px solid #f1f5f9;
         }
-        .ico img{width:100%;height:100%;object-fit:contain}
+        .dropdown-menu.show { display: flex; }
+        .dropdown-item { padding: 12px 16px; font-size: 13px; cursor: pointer; }
+        .dropdown-item:hover { background: #f8fafc; color: var(--accent-color); }
 
-        .hidden{display:none}
+        /* Grid */
+        .category-section {
+            margin-bottom: 25px; background: var(--glass-bg); backdrop-filter: blur(12px);
+            border-radius: 18px; padding: 18px; border: 1px solid var(--glass-border);
+        }
+        .category-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .category-info { font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+        .site-card {
+            background: rgba(255,255,255,0.7); border-radius: 12px; padding: 10px;
+            display: flex; align-items: center; gap: 12px; text-decoration: none;
+            color: inherit; border: 1px solid transparent; transition: 0.3s;
+        }
+        .site-card:hover { transform: translateY(-2px); background: white; border-color: var(--accent-color); }
+
+        .site-logo { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; }
+        .site-name { font-weight: 700; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .site-desc { font-size: 0.7rem; color: var(--text-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        footer { text-align: center; padding: 40px; font-size: 12px; color: white; }
     </style>
 </head>
-
 <body>
+
+<div id="loading" style="position:fixed; inset:0; background:#fff; z-index:9999; display:flex; align-items:center; justify-content:center; font-weight:bold;">WEB3 DEPLOYING...</div>
+
 <div class="container">
-
-    <div class="toolbar">
-        <div>
-            <h1 id="title">Nav-site</h1>
-            <small id="subtitle"></small>
+    <header>
+        <div class="header-left">
+            <h1 id="site-title" class="web3-title">NavHub</h1>
+            <span id="site-subtitle" class="web3-subtitle"></span>
         </div>
-        <input id="search" class="search" placeholder="搜索站点 / URL（/）"/>
-        <button class="btn" id="addGroupBtn">+ 分组</button>
-        <button class="btn" id="clearBtn">🧹 清空</button>
-    </div>
-
-    <div id="groups"></div>
-
-    <footer id="footer" style="margin:40px 0;text-align:center;font-size:13px;opacity:.7"></footer>
-    <div id="context" class="context hidden"></div>
+        <div class="header-right">
+            <input type="text" id="search-input" class="search-bar" placeholder="Search...">
+            <button id="lang-btn" class="lang-btn" onclick="i18n.toggle()">EN</button>
+            <div class="settings-container">
+                <button class="gear-btn" onclick="ui.toggleSettings(event)">⚙️</button>
+                <div id="dropdown-menu" class="dropdown-menu">
+                    <div class="dropdown-item" onclick="app.resetData()" data-i18n="reset">🧹 重置系统</div>
+                    <div class="dropdown-item" onclick="io.exportData()" data-i18n="export">📤 导出 JSON</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="nav-content"></main>
 </div>
 
-<script type="module">
-    /* =============================
-     * 引入数据层
-     * ============================= */
-    import {
-        state,
-        loadAppState,
-        applyGroupOrder,
-        persistState,
-        clearAllData
-    } from './data.js';
+<footer id="site-footer"></footer>
 
-    /* =============================
-     * 工具
-     * ============================= */
-    const $ = id => document.getElementById(id);
+<script>
+    const STORAGE_KEY = 'nav_v3_data';
+    const DEFAULT_CONF_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
 
-    /* =============================
-     * 渲染
-     * ============================= */
-    function render(){
-        $('title').innerText = state.config.title || 'Nav-site';
-        $('subtitle').innerText = state.config.subTitle || '';
-        $('footer').innerHTML =
-            (state.config.footerText || '').replace('{CURRENT_YEAR}', new Date().getFullYear());
+    const i18n = {
+        lang: localStorage.getItem('nav_lang') || 'zh',
+        data: {
+            zh: { reset: "🧹 重置系统", export: "📤 导出 JSON", search: "搜索...", deploy: "部署中..." },
+            en: { reset: "🧹 Reset Hub", export: "📤 Export JSON", search: "Search...", deploy: "Deploying..." }
+        },
+        toggle() {
+            this.lang = this.lang === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('nav_lang', this.lang);
+            this.apply();
+        },
+        apply() {
+            const d = this.data[this.lang];
+            document.getElementById('lang-btn').innerText = this.lang === 'zh' ? 'EN' : '中文';
+            document.getElementById('search-input').placeholder = d.search;
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = d[el.getAttribute('data-i18n')]; });
+            ui.renderAll(app.state);
+        }
+    };
 
-        const box = $('groups');
-        box.innerHTML = '';
+    const app = {
+        state: { config: {}, categoryList: [], data: [] },
+        async init() {
+            const local = localStorage.getItem(STORAGE_KEY);
+            if (local) {
+                this.state = JSON.parse(local);
+                this.finish();
+            } else {
+                await this.loadRemote();
+            }
+        },
+        async loadRemote() {
+            try {
+                const resp = await fetch(DEFAULT_CONF_URL);
+                const conf = await resp.json();
+                this.state.config = conf.config;
+                const dataResp = await fetch(conf.api.homeUrl);
+                const rawData = await dataResp.json();
+                this.state.categoryList = rawData.categoryList;
+                this.state.data = rawData.data;
+                this.save();
+            } catch (e) { console.error("Load Failed"); }
+            this.finish();
+        },
+        finish() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('site-title').innerText = this.state.config.title;
+            document.getElementById('site-subtitle').innerText = this.state.config.subTitle;
+            i18n.apply();
+        },
+        save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state)); },
+        resetData() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+    };
 
-        state.categoryList.forEach(cat=>{
-            const group = document.createElement('div');
-            group.className = 'group';
-            group.draggable = true;
+    const ui = {
+        failedIcons: new Set(),
 
-            const header = document.createElement('div');
-            header.className = 'group-header';
-            header.innerHTML = `<span>${cat.name}</span><span>(${countItems(cat.id)})</span>`;
+        renderAll(state) {
+            const container = document.getElementById('nav-content');
+            container.innerHTML = '';
+            state.categoryList.forEach(cat => {
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                const sites = state.data.filter(s => s.categoryId === cat.id);
+                section.innerHTML = `
+                <div class="category-header"><div class="category-info">${cat.name}</div></div>
+                <div class="card-grid"></div>
+            `;
+                const grid = section.querySelector('.card-grid');
+                sites.forEach(s => grid.appendChild(this.createCard(s)));
+                container.appendChild(section);
+            });
+        },
 
-            const cards = document.createElement('div');
-            cards.className = 'cards';
+        createCard(site) {
+            const card = document.createElement('a');
+            card.className = 'site-card'; card.href = site.url; card.target = '_blank';
 
-            // ✅ 右键菜单（修复版）
-            cards.oncontextmenu = e => {
-                e.preventDefault();
-                showMenu(e.clientX, e.clientY, [
-                    { text: '➕ 增加站点', fn: () => openSiteModal(null, cat.id) }
-                ]);
-            };
-            group.appendChild(header);
-            group.appendChild(cards);
-            box.appendChild(group);
+            // 核心：初始使用 Base64 SVG，绝不产生网络请求
+            const placeholder = this.getWeb3Icon(site.name);
 
-            state.data
-                .filter(i => i.categoryId === cat.id)
-                .sort((a,b)=>a.weight-b.weight)
-                .forEach(item=>{
-                    const c = document.createElement('div');
-                    c.className = 'card';
-                    c.draggable = true;
-
-                    c.innerHTML = `
-          <div class="ico"><img src="${item.logoUrl || ''}"></div>
-          <div>
-            <strong>${item.name}</strong>
-            <div style="font-size:12px;opacity:.7">${item.desc || ''}</div>
-          </div>
+            card.innerHTML = `
+            <img class="site-logo" src="${placeholder}">
+            <div class="site-info">
+                <div class="site-name">${site.name}</div>
+                <div class="site-desc">${site.desc || site.url}</div>
+            </div>
         `;
 
-                    c.onclick = () => window.open(item.url, '_blank');
-                    cards.appendChild(c);
-                });
+            this.probeIcon(card.querySelector('.site-logo'), site.url);
+            return card;
+        },
 
-            group.appendChild(header);
-            group.appendChild(cards);
-            box.appendChild(group);
-        });
-    }
+        // 静默探测：在内存中加载，成功才换图
+        probeIcon(imgEl, url) {
+            try {
+                const domain = new URL(url).hostname;
+                const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
+                if (this.failedIcons.has(iconUrl)) return;
 
-    /* ===== 右键菜单 ===== */
-    const menu=$('context');
-    function showMenu(x, y, items) {
-        const menu = document.getElementById('context');
-        menu.innerHTML = '';
-        items.forEach(it => {
-            const div = document.createElement('div');
-            div.innerText = it.text;
-            div.onclick = () => {
-                it.fn();
-                menu.classList.add('hidden');
-            };
-            menu.appendChild(div);
-        });
-        menu.style.left = x + 'px';
-        menu.style.top = y + 'px';
-        menu.classList.remove('hidden');
-    }
+                const tester = new Image();
+                tester.onload = () => { imgEl.src = iconUrl; };
+                tester.onerror = () => { this.failedIcons.add(iconUrl); };
+                tester.src = iconUrl;
+            } catch(e) {}
+        },
 
-    document.onclick=()=>menu.classList.add('hidden');
+        getWeb3Icon(name) {
+            const char = name.charAt(0).toUpperCase();
+            const colors = [['#4f46e5', '#7c3aed'], ['#ec4899', '#f43f5e'], ['#06b6d4', '#3b82f6'], ['#10b981', '#059669']];
+            const hash = name.length % colors.length;
+            const c = colors[hash];
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+            <defs><linearGradient id="g${hash}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${c[0]}"/><stop offset="100%" stop-color="${c[1]}"/></linearGradient></defs>
+            <rect width="32" height="32" rx="8" fill="url(#g${hash})"/><text x="50%" y="55%" fill="white" font-family="sans-serif" font-weight="bold" font-size="16" text-anchor="middle">${char}</text>
+        </svg>`;
+            return `data:image/svg+xml;base64,${btoa(svg)}`;
+        },
 
-    /* ===== 编辑弹窗 ===== */
-    function openSiteModal(item,categoryId){
-        const mask=$('modalMask');
-        mask.innerHTML=`
-    <div class="modal">
-      <h3>${item?'编辑站点':'新增站点'}</h3>
-      <label>名称</label>
-      <input id="m_name" value="${item?.name||''}">
-      <label>描述</label>
-      <textarea id="m_desc">${item?.desc||''}</textarea>
-      <label>URL</label>
-      <input id="m_url" value="${item?.url||''}">
-      <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">取消</button>
-        <button class="btn" onclick="saveSite(${item?.id||'null'},${categoryId})">保存</button>
-      </div>
-    </div>`;
-        mask.classList.remove('hidden');
-    }
-    function closeModal(){$('modalMask').classList.add('hidden')}
-
-    function saveSite(id,categoryId){
-        const name=$('m_name').value;
-        const desc=$('m_desc').value;
-        const url=$('m_url').value;
-        if(!url)return alert('URL 必填');
-        if(id){
-            const i=state.data.find(i=>i.id===id);
-            Object.assign(i,{name,desc,url,logoUrl:autoLogo(url)});
-        }else{
-            state.data.push({
-                id:Date.now(),
-                categoryId,
-                name,
-                desc,
-                url,
-                logoUrl:autoLogo(url)
-            });
-        }
-        save();closeModal();render();
-    }
-    function deleteSite(id){
-        state.data=state.data.filter(i=>i.id!==id);
-        save();render();
-    }
-
-
-
-    function countItems(cid){
-        return state.data.filter(d=>d.categoryId===cid).length;
-    }
-
-    /* =============================
-     * 事件
-     * ============================= */
-    $('addGroupBtn').onclick = ()=>{
-        const name = prompt('分组名称');
-        if(!name) return;
-        state.categoryList.push({
-            id: Date.now(),
-            name,
-            desc: name,
-            weight: state.categoryList.length
-        });
-        persistState();
-        render();
+        toggleSettings(e) { e.stopPropagation(); document.getElementById('dropdown-menu').classList.toggle('show'); }
     };
 
-    $('clearBtn').onclick = ()=>{
-        if(confirm('确认清空所有配置？')){
-            clearAllData();
-            render();
+    const io = {
+        exportData() {
+            const blob = new Blob([JSON.stringify(app.state)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'config.json'; a.click();
         }
     };
 
-    $('search').oninput = e=>{
-        const q = e.target.value.toLowerCase();
-        document.querySelectorAll('.card').forEach(c=>{
-            c.classList.toggle('hidden', !c.innerText.toLowerCase().includes(q));
-        });
+    app.bindEvents = () => {
+        window.onclick = () => document.getElementById('dropdown-menu').classList.remove('show');
+        document.getElementById('search-input').oninput = (e) => {
+            const v = e.target.value.toLowerCase();
+            document.querySelectorAll('.site-card').forEach(c => c.style.display = c.innerText.toLowerCase().includes(v) ? 'flex' : 'none');
+        };
     };
 
-    /* =============================
-     * 启动
-     * ============================= */
-    async function bootstrap(){
-        await loadAppState();
-        applyGroupOrder();
-        render();
-    }
-    bootstrap();
+    app.init();
+    app.bindEvents();
 </script>
 </body>
 </html>
