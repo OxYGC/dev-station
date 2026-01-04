@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>问答互动板</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #495057;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            margin-top: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #initDataBtn {
+            background: #28a745;
+            color: white;
+        }
+
+        #syncBtn {
+            background: #007bff;
+            color: white;
+        }
+
+        #exportBtn {
+            background: #6f42c1;
+            color: white;
+        }
+
+        #clearBtn {
+            background: #6c757d;
+            color: white;
+        }
+
+        #initOptions {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            z-index: 10;
+            display: none;
+            width: 280px;
+            margin-top: 8px;
+        }
+
+        #initOptions.show {
+            display: block;
+        }
+
+        .init-option {
+            margin: 8px 0;
+            text-align: center;
+        }
+
+        .init-option label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .init-input-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .init-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        #addInput {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 50px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        #addGroupSelect {
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 50px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+            min-width: 150px;
+        }
+
+        #addInput:focus,
+#addGroupSelect:focus {
+            border-color: #007bff;
+        }
+
+        #addBtn {
+            background: #fd7e14;
+color: white;
+            padding: 0 20px;
+            border-radius: 50px;
+        }
+
+        .questions {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 16px;
+        }
+
+        /* 响应式网格 */
+        #groupsContainer {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr;
+            align-items: start;
+        }
+
+        @media (min-width: 768px) {
+            #groupsContainer {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #groupsContainer {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .group-section {
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: 320px;
+        }
+
+        .group-header {
+            flex-shrink: 0;
+            padding: 14px 20px;
+            background: #f1f3f5;
+            font-weight: bold;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .group-header>span:last-child {
+            flex: 1;
+        }
+
+        .drag-handle,
+        .group-drag-handle {
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 4px;
+            color: #adb5bd;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .drag-handle:hover,
+        .group-drag-handle:hover {
+            color: #6c757d;
+            background: #e9ecef;
+        }
+
+        .group-drag-handle {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .group-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .question-item {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: grab;
+            border-bottom: 1px solid #f1f3f5;
+            position: relative;
+            min-height: 52px;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-text,
+        .question-input {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+            min-width: 0;
+        }
+
+        /* === 新增：两行截断 === */
+        .question-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        .question-input {
+            display: none;
+        }
+
+        .btn-group {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex !important;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 14px;
+            padding: 4px 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            z-index: 2;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .question-item:hover .btn-group {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        .question-item.show-actions .btn-group {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-group button {
+            padding: 4px 8px;
+            font-size: 12px;
+            min-width: auto;
+            height: 26px;
+            border: none;
+            border-radius: 6px;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #495057;
+            opacity: 0.95;
+        }
+
+        .btn-group button:hover {
+            background: rgba(0, 0, 0, 0.06);
+            opacity: 1;
+        }
+
+        .question-item.hidden {
+            display: none;
+        }
+
+        .more-btn {
+            flex-shrink: 0;
+            width: 100%;
+            padding: 12px;
+            background: #f8f9fa;
+            border: none;
+            color: #007bff;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .more-btn:hover {
+            background: #e9ecef;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* === 新增：模态框样式 === */
+        #modalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        #modalOverlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #modalContent {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        #modalContent h3 {
+            margin: 0 0 16px;
+        }
+
+        // ... 事件绑定 ...
+        document.getElementById('initDataBtn').addEventListener('click', () => {
+            document.getElementById('initOptions').classList.toggle('show');
+        });
+        const addBtn = document.getElementById('addBtn');
+    
+        // 添加按钮事件监听器
+        addBtn.addEventListener('click', () => {
+            const input = document.getElementById('addInput');
+            const select = document.getElementById('addGroupSelect');
+            
+            const msg = input.value.trim();
+            if (!msg) {
+                showToast('请输入问题内容');
+                return;
+            }
+    
+            let groupNum = Number(select.value);
+            if (select.value === 'new') {
+                // 获取当前最大的组号，创建新组
+                const maxGroup = questions.length > 0 
+                    ? Math.max(...questions.map(q => q.groupNum)) 
+                    : -1;
+                groupNum = maxGroup + 1;
+            } else if (!select.value) {
+                // 如果未选择分组，使用默认分组 0
+                groupNum = 0;
+            }
+    
+            const newQuestion = {
+                id: generateId(),
+                msg: msg,
+                groupNum: groupNum,
+                weight: questions.filter(q => q.groupNum === groupNum).length + 1, // 使用组内问题数量作为权重
+                date: getCurrentDateTime()
+            };
+    
+            questions.push(newQuestion);
+            saveToStorage();
+            render();
+            updateGroupSelect();
+    
+            // 清空输入框
+            input.value = '';
+            select.value = '';
+            
+            showToast('✅ 问题已添加');
+        });
+    
+        document.getElementById('addInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addBtn.click();
+            }
+        });
+    
+        document.getElementById('localImportBtn').addEventListener('click', handleLocalImport);
+        document.getElementById('urlImportBtn').addEventListener('click', handleUrlImport);
+            color: #495057;
+        }
+
+        #modalContent p {
+            margin: 0;
+            line-height: 1.6;
+            font-size: 16px;
+            white-space: pre-wrap;
+        }
+
+        #closeModal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #f1f3f5;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-footer {
+            margin-top: 40px;
+            padding: 20px 12px 30px;
+            text-align: center;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .page-footer a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .page-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h1>问答互动板</h1>
+        <p class="subtitle">快来导入你的问题进行互动吧</p>
+    </header>
+
+    <div class="controls">
+        <button id="initDataBtn">🔄 初始化数据</button>
+        <button id="syncBtn">🔄 同步（覆盖源文件）</button>
+        <button id="exportBtn">📤 导出新文件</button>
+        <button id="clearBtn">🧹 清空</button>
+
+        <div id="initOptions">
+            <div class="init-option">
+                <label>📁 本地导入</label>
+                <button id="localImportBtn">选择 JSON 文件</button>
+            </div>
+            <div class="init-option">
+                <label>🔗 URL 导入</label>
+                <div class="init-input-group">
+                    <input type="url" id="urlInput" placeholder="https://example.com/data.json" />
+                    <button id="urlImportBtn">加载</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="addInput" placeholder="输入一个问题..." />
+        <select id="addGroupSelect">
+            <option value="">— 选择分组 —</option>
+        </select>
+        <button id="addBtn">➕ 添加</button>
+    </div>
+
+    <div class="questions">
+        <div id="groupsContainer"></div>
+    </div>
+</div>
+
+<!-- 模态框：用于显示完整问题 -->
+<div id="modalOverlay">
+    <div id="modalContent">
+        <button id="closeModal">×</button>
+        <h3>问题详情</h3>
+        <p id="modalText"></p>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<footer class="page-footer">
+    <p>建议 / 合作邮箱：
+        <a href="mailto:keygenee@gmail.com">keygenee@gmail.com</a>
+    </p>
+</footer>
+<script>
+    const STORAGE_KEY = 'qa_board_data_v2';
+    const GROUP_ORDER_KEY = 'qa_group_order';
+    const HAS_IMPORTED_KEY = 'qa_has_imported';
+    const DEFAULT_DATA_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json';
+
+    let questions = [];
+    let currentFileHandle = null;
+    let sortableInstances = [];
+    let groupSortable = null;
+
+    // --- 工具函数 ---
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function getCurrentDateTime() {
+        return new Date().toISOString().replace('T', ' ').substring(0, 19);
+    }
+
+    function saveToStorage() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
+            if (currentFileHandle) {
+                localStorage.setItem(HAS_IMPORTED_KEY, 'true');
+            }
+        } catch (e) {
+            console.warn('localStorage 保存失败:', e);
+        }
+    }
+
+    function normalizeQuestions(rawData) {
+        if (!Array.isArray(rawData)) return [];
+        return rawData
+            .map(item => ({
+                id: item.id || generateId(),
+                msg: String(item.msg || '').trim(),
+                groupNum: Number.isInteger(item.groupNum) ? item.groupNum : 0,
+                weight: typeof item.weight === 'number' ? item.weight : 1,
+                date: item.date || getCurrentDateTime(),
+                _showAll: !!item._showAll
+            }))
+            .filter(q => q.msg);
+    }
+
+    // --- 数据加载 ---
+    async function fetchDefaultData() {
+        try {
+            showToast('正在加载默认数据...');
+            const res = await fetch(DEFAULT_DATA_URL);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            if (!Array.isArray(data.data)) throw new Error('Invalid data format');
+            const normalized = normalizeQuestions(data.data);
+            if (normalized.length === 0) throw new Error('No valid questions');
+            questions = normalized;
+            saveToStorage();
+            render();
+            updateGroupSelect();
+            showToast('✅ 已加载默认数据');
+        } catch (err) {
+            console.error('Failed to load default data:', err);
+            showToast('⚠️ 默认数据加载失败，请手动导入');
+            render();
+            updateGroupSelect();
+        }
+    }
+
+    async function tryLoadData() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    questions = normalizeQuestions(parsed);
+                    render();
+                    updateGroupSelect();
+                    return;
+                }
+            }
+        } catch (e) {
+            console.warn('Local storage parse error:', e);
+        }
+        await fetchDefaultData();
+    }
+
+    function parseAndLoad(text) {
+        try {
+            const data = JSON.parse(text);
+            let rawData = data;
+            if (data && Array.isArray(data.data)) {
+                rawData = data.data;
+            } else if (!Array.isArray(data)) {
+                throw new Error('Expected array or {data: [...]}');
+            }
+            const normalized = normalizeQuestions(rawData);
+            if (normalized.length === 0) throw new Error('No valid questions');
+            questions = normalized;
+            saveToStorage();
+            render();
+            updateGroupSelect();
+            showToast('✅ 数据导入成功！');
+            hideInitOptions();
+        } catch (err) {
+            console.error(err);
+            showToast('❌ JSON 格式错误！');
+        }
+    }
+
+    // --- 渲染与交互 ---
+    function getGroups() {
+        const groups = {};
+        questions.forEach(q => {
+            if (!groups[q.groupNum]) groups[q.groupNum] = [];
+            groups[q.groupNum].push(q);
+        });
+        Object.keys(groups).forEach(g => {
+            groups[g].sort((a, b) => a.weight - b.weight);
+        });
+        return groups;
+    }
+
+    function updateGroupSelect() {
+        const uniqueGroups = [...new Set(questions.map(q => q.groupNum))].sort((a, b) => a - b);
+        const select = document.getElementById('addGroupSelect');
+        select.innerHTML = '<option value="">— 选择分组 —</option>';
+        uniqueGroups.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = g; opt.textContent = `第 ${g} 组`;
+            select.appendChild(opt);
+        });
+        const newOpt = document.createElement('option');
+        newOpt.value = 'new'; newOpt.textContent = '🆕 新建分组';
+        select.appendChild(newOpt);
+    }
+
+    function downloadFile(content, filename) {
+        const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function findQuestionIndexById(id) {
+        return questions.findIndex(q => q.id === id);
+    }
+
+    function render() {
+        sortableInstances.forEach(inst => inst.destroy());
+        sortableInstances = [];
+        if (groupSortable) {
+            groupSortable.destroy();
+            groupSortable = null;
+        }
+
+        const groups = getGroups();
+        let groupNums = Object.keys(groups).map(Number);
+
+        const savedOrder = localStorage.getItem(GROUP_ORDER_KEY);
+        if (savedOrder) {
+            try {
+                const order = JSON.parse(savedOrder);
+                groupNums.sort((a, b) => {
+const ia = order.indexOf(a);
+                    const ib = order.indexOf(b);
+                    if (ia === -1 && ib === -1) return a - b;
+                    if (ia === -1) return 1;
+                    if (ib === -1) return -1;
+                    return ia - ib;
+                });
+            } catch (e) {
+                groupNums.sort((a, b) => a - b);
+            }
+        } else {
+            groupNums.sort((a, b) => a - b);
+        }
+
+        const container = document.getElementById('groupsContainer');
+        if (groupNums.length === 0) {
+            container.innerHTML = '<div class="empty-state">暂无问题，请添加或导入</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        groupNums.forEach(groupNum => {
+            const groupItems = groups[groupNum];
+            const total = groupItems.length;
+            const showAll = groupItems.some(q => q._showAll);
+
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'group-section';
+
+            const header = document.createElement('div');
+            header.className = 'group-header';
+            header.innerHTML = `
+                    <span class="group-drag-handle">⋮⋮</span>
+                    <span>第 ${groupNum} 组 (${total})</span>
+                `;
+
+            const list = document.createElement('ul');
+            list.className = 'group-list';
+            list.dataset.group = groupNum;
+
+            const itemsToShow = showAll ? groupItems : groupItems.slice(0, 12);
+            itemsToShow.forEach(q => {
+                const li = document.createElement('li');
+                li.className = 'question-item';
+                li.dataset.id = q.id;
+
+                li.innerHTML = `
+                        <span class="drag-handle">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="9" x2="19" y2="9"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <line x1="5" y1="15" x2="19" y2="15"></line>
+                            </svg>
+                        </span>
+                        <span class="question-text">${q.msg}</span>
+                        <input type="text" class="question-input" value="${q.msg}" style="display:none;" />
+                        <div class="btn-group">
+                            <button class="edit-btn">✏️ 编辑</button>
+                            <button class="save-btn" style="display:none;">✅ 保存</button>
+                            <button class="cancel-btn" style="display:none;">❌ 取消</button>
+                            <button class="delete-btn">🗑️ 删除</button>
+                        </div>
+                    `;
+
+                // 编辑/删除事件
+                li.addEventListener('click', (e) => {
+                    const btn = e.target;
+                    const id = q.id;
+                    if (btn.classList.contains('edit-btn')) {
+                        li.querySelector('.question-text').style.display = 'none';
+                        li.querySelector('.question-input').style.display = 'block';
+                        li.querySelector('.question-input').focus();
+                    } else if (btn.classList.contains('save-btn')) {
+                        const input = li.querySelector('.question-input');
+                        const newText = input.value.trim();
+                        if (newText) {
+                            const idx = findQuestionIndexById(id);
+                            if (idx >= 0) {
+                                questions[idx].msg = newText;
+                                saveToStorage();
+                                render();
+                            }
+                        }
+                    } else if (btn.classList.contains('cancel-btn')) {
+                        const input = li.querySelector('.question-input');
+                        input.value = q.msg;
+                        li.querySelector('.question-text').style.display = 'block';
+                        input.style.display = 'none';
+                    } else if (btn.classList.contains('delete-btn')) {
+                        const idx = findQuestionIndexById(id);
+                        if (idx >= 0) {
+                            questions.splice(idx, 1);
+                            saveToStorage();
+                            render();
+                            updateGroupSelect();
+                        }
+                    }
+                });
+
+                const input = li.querySelector('.question-input');
+                input.addEventListener('input', () => {
+                    const hasChange = input.value.trim() !== q.msg;
+                    li.querySelector('.save-btn').style.display = hasChange ? 'inline-block' : 'none';
+                    li.querySelector('.cancel-btn').style.display = hasChange ? 'inline-block' : 'none';
+                });
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') li.querySelector('.save-btn').click();
+                });
+
+                // 移动端长按显示
+                let touchStart = 0;
+                li.addEventListener('touchstart', () => touchStart = Date.now());
+                li.addEventListener('touchend', () => {
+                    if (Date.now() - touchStart > 300) {
+                        li.classList.add('show-actions');
+                        setTimeout(() => li.classList.remove('show-actions'), 3000);
+                    }
+                });
+
+                // 👇 新增：点击文本弹窗
+                li.querySelector('.question-text').addEventListener('click', () => {
+                    document.getElementById('modalText').textContent = q.msg;
+                    document.getElementById('modalOverlay').classList.add('show');
+                });
+
+                list.appendChild(li);
+            });
+
+            if (total > 12) {
+                const moreBtn = document.createElement('button');
+                moreBtn.className = 'more-btn';
+                moreBtn.textContent = showAll ? '▴ 收起' : '▾ 更多';
+                moreBtn.onclick = () => {
+                    groupItems.forEach(q => q._showAll = !showAll);
+                    saveToStorage();
+                    render();
+                };
+                groupDiv.append(header, list, moreBtn);
+            } else {
+                groupDiv.append(header, list);
+            }
+
+            container.appendChild(groupDiv);
+
+            // 👇 替换为支持跨组拖拽的 Sortable
+            const sortable = new Sortable(list, {
+                group: 'shared-questions',
+                animation: 150,
+                handle: '.drag-handle',
+                onAdd: function (evt) {
+                    const draggedEl = evt.item;
+                    const newGroupNum = Number(list.dataset.group);
+                    const id = draggedEl.dataset.id;
+                    const idx = findQuestionIndexById(id);
+                    if (idx >= 0) {
+                        questions[idx].groupNum = newGroupNum;
+                        const newGroupItems = questions.filter(q => q.groupNum === newGroupNum);
+                        questions[idx].weight = newGroupItems.length;
+                    }
+                    draggedEl.remove();
+                    saveToStorage();
+                    render();
+                },
+                onUpdate: function (evt) {
+                    const { oldIndex, newIndex } = evt;
+                    if (oldIndex === newIndex) return;
+                    const fullGroup = questions.filter(q => q.groupNum === groupNum);
+                    const moved = fullGroup.splice(oldIndex, 1)[0];
+                    fullGroup.splice(newIndex, 0, moved);
+                    fullGroup.forEach((item, i) => {
+                        const idx = findQuestionIndexById(item.id);
+                        if (idx >= 0) questions[idx].weight = i + 1;
+                    });
+                    saveToStorage();
+                    render();
+                }
+            });
+            sortableInstances.push(sortable);
+        });
+
+        // 分组拖拽
+        groupSortable = new Sortable(container, {
+            animation: 150,
+            handle: '.group-drag-handle',
+            draggable: '.group-section',
+            onEnd: function () {
+                const newOrder = Array.from(container.children)
+                    .map(child => Number(child.querySelector('.group-list').dataset.group));
+                localStorage.setItem(GROUP_ORDER_KEY, JSON.stringify(newOrder));
+                showToast('✅ 分组顺序已更新');
+            }
+        });
+    }
+
+
+
+    // --- 更新 handleLocalImport 使用现代 File System Access API ---
+    async function handleLocalImport() {
+        if (!window.showOpenFilePicker) {
+            // 降级：传统 input 方式（无法同步，只能导出）
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    parseAndLoad(reader.result);
+                    // 传统方式无法获得可写句柄，清空 currentFileHandle
+                    currentFileHandle = null;
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+            return;
+        }
+
+        try {
+            const [fileHandle] = await window.showOpenFilePicker({
+                types: [{
+                    description: 'JSON 文件',
+                    accept: { 'application/json': ['.json'] }
+                }],
+                excludeAcceptAllOption: true
+            });
+            const file = await fileHandle.getFile();
+            const text = await file.text();
+            parseAndLoad(text);
+            // 保存句柄用于后续“同步”
+            currentFileHandle = fileHandle;
+            showToast('✅ 已从本地加载，支持同步回写');
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('文件导入失败:', err);
+                showToast('❌ 文件导入被取消或失败');
+            }
+        }
+    }
+
+    // --- 新增：导出新文件 ---
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const exportData = {
+            version: '1.0',
+            exportedAt: getCurrentDateTime(),
+            data: questions.map(q => ({
+                id: q.id,
+                msg: q.msg,
+                groupNum: q.groupNum,
+                weight: q.weight,
+                date: q.date
+            }))
+        };
+        const jsonStr = JSON.stringify(exportData, null, 2);
+        downloadFile(jsonStr, `qa-export-${new Date().toISOString().slice(0, 10)}.json`);
+    });
+
+    // --- 新增：同步（覆盖源文件）---
+    document.getElementById('syncBtn').addEventListener('click', async () => {
+        if (!currentFileHandle) {
+            showToast('⚠️ 请先通过"本地导入"打开一个文件，才能同步回写');
+            return;
+        }
+
+        try {
+            const writable = await currentFileHandle.createWritable();
+            const syncData = {
+                version: '1.0',
+                syncedAt: getCurrentDateTime(),
+                data: questions.map(q => ({
+                    id: q.id,
+                    msg: q.msg,
+                    groupNum: q.groupNum,
+                    weight: q.weight,
+                    date: q.date
+                }))
+            };
+            await writable.write(JSON.stringify(syncData, null, 2));
+            await writable.close();
+            showToast('✅ 已成功同步到原文件！');
+        } catch (err) {
+            console.error('同步失败:', err);
+            showToast('❌ 同步失败：' + (err.message || '未知错误'));
+        }
+    });
+
+
+
+    function handleUrlImport() {
+        const url = document.getElementById('urlInput').value.trim();
+        if (!url) {
+            showToast('请输入 URL');
+            return;
+        }
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                let rawData = data;
+                if (data && Array.isArray(data.data)) rawData = data.data;
+                parseAndLoad(JSON.stringify(rawData));
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('❌ URL 加载失败');
+            });
+    }
+
+    function hideInitOptions() {
+        document.getElementById('initOptions').classList.remove('show');
+    }
+
+    // --- 事件绑定 ---
+    document.getElementById('initDataBtn').addEventListener('click', () => {
+        document.getElementById('initOptions').classList.toggle('show');
+    });
+    const addBtn = document.getElementById('addBtn');
+
+    // 添加按钮事件监听器
+    addBtn.addEventListener('click', () => {
+        const input = document.getElementById('addInput');
+        const select = document.getElementById('addGroupSelect');
+        
+        const msg = input.value.trim();
+        if (!msg) {
+            showToast('请输入问题内容');
+            return;
+        }
+
+        let groupNum = Number(select.value);
+        if (select.value === 'new') {
+            // 获取当前最大的组号，创建新组
+            const maxGroup = questions.length > 0 
+                ? Math.max(...questions.map(q => q.groupNum)) 
+                : -1;
+            groupNum = maxGroup + 1;
+        } else if (!select.value) {
+            // 如果未选择分组，使用默认分组 0
+            groupNum = 0;
+        }
+
+        const newQuestion = {
+            id: generateId(),
+            msg: msg,
+            groupNum: groupNum,
+            weight: questions.filter(q => q.groupNum === groupNum).length + 1, // 使用组内问题数量作为权重
+            date: getCurrentDateTime()
+        };
+
+        questions.push(newQuestion);
+        saveToStorage();
+        render();
+        updateGroupSelect();
+
+        // 清空输入框
+        input.value = '';
+        select.value = '';
+        
+        showToast('✅ 问题已添加');
+    });
+
+    // 回车键添加问题
+    document.getElementById('addInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addBtn.click();
+        }
+    });
+
+    document.getElementById('localImportBtn').addEventListener('click', handleLocalImport);
+    document.getElementById('urlImportBtn').addEventListener('click', handleUrlImport);
+    // 👇 新增：清空功能
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        if (confirm('确定要清空所有问题吗？此操作不可恢复。')) {
+            questions = [];
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(GROUP_ORDER_KEY);
+            localStorage.removeItem(HAS_IMPORTED_KEY);
+            render();
+            updateGroupSelect();
+            showToast('🧹 所有数据已清空');
+        }
+    });
+
+
+    // 关闭模态框
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('modalOverlay').classList.remove('show');
+    });
+
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modalOverlay')) {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+    });
+
+    // 启动
+    tryLoadData();
+</script>
+</body>
+
+</html>
