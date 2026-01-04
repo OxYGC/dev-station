@@ -1,5 +1,6 @@
 {
   "categoryList": [
+    {"id": 1767546542043, "name": "热门推荐", "weight": 0},
     { "id": 1, "name": "行情与数据", "desc": "市场行情与聚合数据", "weight": 0 },
     { "id": 2, "name": "区块链浏览器", "desc": "主流链浏览器", "weight": 1 },
     { "id": 3, "name": "研究与分析", "desc": "投研、链上分析", "weight": 2 },
@@ -12,6 +13,37 @@
     { "id": 10, "name": "安全与审计", "desc": "安全工具与审计机构", "weight": 9 }
   ],
   "data": [
+    {
+      "id": 2001,
+      "categoryId": 1767546542043,
+      "name": "CoinMarketCap",
+      "desc": "全球主流加密资产市值与行情数据平台",
+      "url": "https://coinmarketcap.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinmarketcap.com",
+      "weight": 0,
+      "date": "2024-06-12"
+    },
+    {
+      "id": 2004,
+      "categoryId": 1767546542043,
+      "name": "DefiLlama",
+      "desc": "DeFi 协议与多链 TVL 数据聚合",
+      "url": "https://defillama.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=defillama.com",
+      "weight": 3,
+      "date": "2024-06-12"
+    },
+    {
+      "id": 2005,
+      "categoryId": 1767546542043,
+      "name": "CoinGlass",
+      "desc": "加密衍生品爆仓、持仓与资金费率数据",
+      "url": "https://www.coinglass.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinglass.com",
+      "weight": 4,
+      "date": "2024-06-12"
+    },
+
     { "id": 2001, "categoryId": 1, "name": "CoinMarketCap", "desc": "全球主流加密资产市值与行情数据平台", "url": "https://coinmarketcap.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinmarketcap.com", "weight": 0, "date": "2024-06-12" },
     { "id": 2002, "categoryId": 1, "name": "CoinGecko", "desc": "加密货币价格、交易量与市场数据聚合", "url": "https://www.coingecko.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coingecko.com", "weight": 1, "date": "2024-06-12" },
     { "id": 2003, "categoryId": 1, "name": "TradingView", "desc": "金融与加密资产行情图表与技术分析", "url": "https://www.tradingview.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=tradingview.com", "weight": 2, "date": "2024-06-12" },
