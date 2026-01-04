@@ -54,6 +54,12 @@
         .btn-outline:hover {
             background: #f1f5f9;
         }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
         .btn-danger {
             background: #ef4444;
         }
@@ -81,6 +87,10 @@
             font-size: 16px;
             font-weight: 600;
             color: #1e293b;
+        }
+        .group-actions {
+            display: flex;
+            gap: 6px;
         }
         .group-actions .btn {
             padding: 4px 8px;
@@ -117,7 +127,7 @@
             gap: 12px;
             position: relative;
             max-width: 100%;
-            cursor: pointer; /* 可点击编辑 */
+            cursor: pointer;
         }
         .card:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -333,13 +343,43 @@
                 <input type="url" id="editUrl" required>
             </div>
             <div class="form-group">
-                <label for="editLogoUrl">Logo URL</label>
-                <input type="url" id="editLogoUrl">
+                <label for="editLogoUrl">Logo URL（可选）</label>
+                <input type="url" id="editLogoUrl" placeholder="https://example.com/favicon.ico">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="deleteItemBtn">删除</button>
                 <button type="button" class="btn btn-outline" id="cancelEditBtn">取消</button>
                 <button type="submit" class="btn">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 新增站点模态框 -->
+<div class="modal" id="addItemModal">
+    <div class="modal-content">
+        <h2>添加新站点</h2>
+        <form id="addItemForm">
+            <input type="hidden" id="addItemCategoryId">
+            <div class="form-group">
+                <label for="addItemName">名称 *</label>
+                <input type="text" id="addItemName" required>
+            </div>
+            <div class="form-group">
+                <label for="addItemUrl">网址 (URL) *</label>
+                <input type="url" id="addItemUrl" required placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label for="addItemDesc">描述</label>
+                <textarea id="addItemDesc"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="addItemLogoUrl">Logo URL（可选）</label>
+                <input type="url" id="addItemLogoUrl" placeholder="https://example.com/favicon.ico">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelAddBtn">取消</button>
+                <button type="submit" class="btn btn-success">添加</button>
             </div>
         </form>
     </div>
@@ -421,7 +461,7 @@
     }
 
     // ======================
-    // 渲染函数（微调：绑定卡片点击事件）
+    // 渲染函数（适配 logoUrl）
     // ======================
     function renderAll() {
         const container = document.getElementById('groupsContainer');
@@ -453,11 +493,19 @@
 
         const actions = document.createElement('div');
         actions.className = 'group-actions';
+
+        // 🔥 新增“添加站点”按钮
+        const addSiteBtn = document.createElement('button');
+        addSiteBtn.className = 'btn btn-success';
+        addSiteBtn.textContent = '+ 添加站点';
+        addSiteBtn.onclick = () => openAddItemModal(category.id);
+
         const delBtn = document.createElement('button');
         delBtn.className = 'btn btn-outline';
         delBtn.textContent = '删除';
         delBtn.onclick = () => deleteCategory(category.id);
 
+        actions.appendChild(addSiteBtn);
         actions.appendChild(delBtn);
         header.appendChild(title);
         header.appendChild(actions);
@@ -468,7 +516,6 @@
         cards.addEventListener('dragover', handleDragOver);
         cards.addEventListener('drop', handleDrop);
 
-        // 排序后渲染
         const sortedItems = [...items].sort((a, b) => (a.weight || 0) - (b.weight || 0));
         sortedItems.forEach(item => {
             const card = createCardElement(item);
@@ -488,10 +535,13 @@
         card.dataset.dragType = 'item';
         card.dataset.itemId = item.id;
 
+        // 🔥 优先使用 logoUrl，否则用首字母占位
+        const logoSrc = item.logoUrl || `//placehold.co/44?text=${(item.name?.[0] || '?')}`;
+
         card.innerHTML = `
         <a href="https://16map.com/sites/${item.id}.html" class="card-body" title="${item.name}" data-url="${encodedUrl}">
           <div class="ico">
-            <img src="${item.logoUrl || '//placehold.co/44?text=' + item.name[0]}" alt="${item.name}">
+            <img src="${logoSrc}" alt="${item.name}">
           </div>
           <div class="ms-2">
             <h3>${item.name}</h3>
@@ -505,21 +555,16 @@
         </a>
       `;
 
-        // 🔥 绑定点击事件：默认编辑，Ctrl/Cmd+Click 跳转
         card.addEventListener('click', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                // 允许原生跳转
-                return;
-            }
+            if (e.ctrlKey || e.metaKey) return;
             e.preventDefault();
             openEditModal(item);
         });
 
-        // 阻止 .togo 的默认点击冒泡（避免触发编辑）
         const togoLink = card.querySelector('.togo');
         if (togoLink) {
             togoLink.addEventListener('click', (e) => {
-                e.stopPropagation(); // 不触发卡片点击
+                e.stopPropagation();
             });
         }
 
@@ -527,7 +572,7 @@
     }
 
     // ======================
-    // 编辑功能
+    // 编辑 & 新增功能
     // ======================
     function openEditModal(item) {
         document.getElementById('editItemId').value = item.id;
@@ -535,7 +580,6 @@
         document.getElementById('editDesc').value = item.desc || '';
         document.getElementById('editUrl').value = item.url;
         document.getElementById('editLogoUrl').value = item.logoUrl || '';
-
         document.getElementById('editModal').classList.add('active');
     }
 
@@ -567,8 +611,59 @@
         document.getElementById('editModal').classList.remove('active');
     });
 
+    // 🔥 新增站点功能
+    function openAddItemModal(categoryId) {
+        document.getElementById('addItemCategoryId').value = categoryId;
+        document.getElementById('addItemName').value = '';
+        document.getElementById('addItemUrl').value = '';
+        document.getElementById('addItemDesc').value = '';
+        document.getElementById('addItemLogoUrl').value = '';
+        document.getElementById('addItemModal').classList.add('active');
+    }
+
+    document.getElementById('cancelAddBtn').addEventListener('click', () => {
+        document.getElementById('addItemModal').classList.remove('active');
+    });
+
+    document.getElementById('addItemForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const categoryId = parseInt(document.getElementById('addItemCategoryId').value);
+        const name = document.getElementById('addItemName').value.trim();
+        const url = document.getElementById('addItemUrl').value.trim();
+        const desc = document.getElementById('addItemDesc').value.trim();
+        const logoUrl = document.getElementById('addItemLogoUrl').value.trim() || '';
+
+        if (!name || !url) return;
+
+        // 生成新 ID
+        const maxId = state.data.length ? Math.max(...state.data.map(i => i.id)) : 0;
+        const newId = maxId + 1;
+
+        // 获取当前分组的下一个 weight
+        const groupItems = state.data.filter(i => i.categoryId === categoryId);
+        const weight = groupItems.length + 1;
+
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+        state.data.push({
+            id: newId,
+            categoryId,
+            name,
+            desc,
+            url,
+            logoUrl,
+            weight,
+            date: dateStr
+        });
+
+        saveToStorage();
+        renderAll();
+        document.getElementById('addItemModal').classList.remove('active');
+    });
+
     // ======================
-    // 拖拽排序（增强：支持同组内排序）
+    // 拖拽排序（不变）
     // ======================
     let dragItem = null;
 
@@ -608,27 +703,22 @@
         const item = state.data.find(i => i.id === itemId);
         if (!item) return;
 
-        // 同组内排序
         if (item.categoryId === dropCategoryId) {
             const cardsContainer = dropTarget;
             const allCards = Array.from(cardsContainer.children);
-            const dropIndex = allCards.indexOf(e.target.closest('.card')) || allCards.length - 1;
+            const dropIndex = allCards.indexOf(e.target.closest('.card'));
+            const finalIndex = dropIndex === -1 ? allCards.length : dropIndex;
 
-            // 重新计算 weight：按新顺序分配 1,2,3...
             const siblingItems = state.data
                 .filter(i => i.categoryId === dropCategoryId)
                 .sort((a, b) => (a.weight || 0) - (b.weight || 0));
 
-            // 找到被拖动项在原列表中的位置并移除
             const draggedIndex = siblingItems.findIndex(i => i.id === itemId);
             if (draggedIndex !== -1) {
                 siblingItems.splice(draggedIndex, 1);
             }
+            siblingItems.splice(finalIndex, 0, item);
 
-            // 插入到新位置
-            siblingItems.splice(dropIndex, 0, item);
-
-            // 重新分配 weight
             siblingItems.forEach((it, idx) => {
                 it.weight = idx + 1;
             });
@@ -638,9 +728,7 @@
             return;
         }
 
-        // 跨组移动
         item.categoryId = dropCategoryId;
-        // 重置 weight 为末尾
         const newGroupItems = state.data.filter(i => i.categoryId === dropCategoryId);
         item.weight = newGroupItems.length + 1;
         saveToStorage();

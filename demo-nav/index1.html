@@ -54,12 +54,6 @@
         .btn-outline:hover {
             background: #f1f5f9;
         }
-        .btn-danger {
-            background: #ef4444;
-        }
-        .btn-danger:hover {
-            background: #dc2626;
-        }
 
         /* ========== 分组容器 ========== */
         .group {
@@ -100,12 +94,8 @@
             outline: 2px dashed #93c5fd;
             outline-offset: -2px;
         }
-        .card.dragging {
-            opacity: 0.6;
-            transform: rotate(3deg);
-        }
 
-        /* ========== 卡片样式 ========== */
+        /* ========== 卡片样式（复用你确认的样式） ========== */
         .card {
             display: flex;
             align-items: center;
@@ -117,7 +107,7 @@
             gap: 12px;
             position: relative;
             max-width: 100%;
-            cursor: pointer; /* 可点击编辑 */
+            cursor: move;
         }
         .card:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -125,12 +115,13 @@
         }
         .card .card-body {
             display: flex;
+            alignments: center;
             text-decoration: none;
             color: inherit;
             flex: 1;
             min-width: 0;
             gap: 12px;
-            width: calc(100% - 40px);
+            width: 100%;
         }
         .card .ico {
             width: 44px;
@@ -223,67 +214,6 @@
         }
         .hidden { display: none; }
 
-        /* ========== 模态框 ========== */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s;
-        }
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .modal h2 {
-            margin-bottom: 16px;
-            font-size: 18px;
-            color: #1e293b;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #334155;
-        }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
         footer {
             text-align: center;
             margin-top: 40px;
@@ -305,6 +235,7 @@
         </div>
     </div>
 
+    <!-- 分组容器（动态生成） -->
     <div id="groupsContainer"></div>
 
     <button class="btn" id="addCategoryBtn">+ 新建类型分组</button>
@@ -314,40 +245,9 @@
     </footer>
 </div>
 
-<!-- 编辑模态框 -->
-<div class="modal" id="editModal">
-    <div class="modal-content">
-        <h2>编辑导航项</h2>
-        <form id="editForm">
-            <input type="hidden" id="editItemId">
-            <div class="form-group">
-                <label for="editName">名称</label>
-                <input type="text" id="editName" required>
-            </div>
-            <div class="form-group">
-                <label for="editDesc">描述</label>
-                <textarea id="editDesc"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="editUrl">网址 (URL)</label>
-                <input type="url" id="editUrl" required>
-            </div>
-            <div class="form-group">
-                <label for="editLogoUrl">Logo URL</label>
-                <input type="url" id="editLogoUrl">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="deleteItemBtn">删除</button>
-                <button type="button" class="btn btn-outline" id="cancelEditBtn">取消</button>
-                <button type="submit" class="btn">保存</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
     // ======================
-    // 数据模型（不变）
+    // 数据模型
     // ======================
     let state = {
         config: {
@@ -364,7 +264,7 @@
     const DEFAULT_CONFIG_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
 
     // ======================
-    // 工具函数（不变）
+    // 工具函数
     // ======================
     function b64Encode(str) {
         return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
@@ -376,6 +276,7 @@
             categoryList: state.categoryList,
             data: state.data
         }));
+        // 保存分组顺序（按 weight 排序后的 id 列表）
         const orderedIds = [...state.categoryList]
             .sort((a, b) => (a.weight || 0) - (b.weight || 0))
             .map(c => c.id);
@@ -412,7 +313,7 @@
             state.categoryList = remoteData.categoryList || [];
             state.data = remoteData.data || [];
 
-            saveToStorage();
+            saveToStorage(); // 首次加载后存本地
             renderAll();
         } catch (e) {
             console.error('Failed to load remote default data', e);
@@ -421,12 +322,13 @@
     }
 
     // ======================
-    // 渲染函数（微调：绑定卡片点击事件）
+    // 渲染函数
     // ======================
     function renderAll() {
         const container = document.getElementById('groupsContainer');
         container.innerHTML = '';
 
+        // 按 weight 排序分组
         const sortedCategories = [...state.categoryList].sort((a, b) => (a.weight || 0) - (b.weight || 0));
 
         sortedCategories.forEach(category => {
@@ -441,6 +343,7 @@
         group.className = 'group';
         group.dataset.categoryId = category.id;
 
+        // 头部
         const header = document.createElement('div');
         header.className = 'group-header';
         header.draggable = true;
@@ -462,15 +365,14 @@
         header.appendChild(title);
         header.appendChild(actions);
 
+        // 卡片区域
         const cards = document.createElement('div');
         cards.className = 'cards';
         cards.dataset.categoryId = category.id;
         cards.addEventListener('dragover', handleDragOver);
         cards.addEventListener('drop', handleDrop);
 
-        // 排序后渲染
-        const sortedItems = [...items].sort((a, b) => (a.weight || 0) - (b.weight || 0));
-        sortedItems.forEach(item => {
+        items.sort((a, b) => (a.weight || 0) - (b.weight || 0)).forEach(item => {
             const card = createCardElement(item);
             cards.appendChild(card);
         });
@@ -504,151 +406,11 @@
           <i class="io io-arrow-right-bold-2"></i>
         </a>
       `;
-
-        // 🔥 绑定点击事件：默认编辑，Ctrl/Cmd+Click 跳转
-        card.addEventListener('click', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                // 允许原生跳转
-                return;
-            }
-            e.preventDefault();
-            openEditModal(item);
-        });
-
-        // 阻止 .togo 的默认点击冒泡（避免触发编辑）
-        const togoLink = card.querySelector('.togo');
-        if (togoLink) {
-            togoLink.addEventListener('click', (e) => {
-                e.stopPropagation(); // 不触发卡片点击
-            });
-        }
-
         return card;
     }
 
     // ======================
-    // 编辑功能
-    // ======================
-    function openEditModal(item) {
-        document.getElementById('editItemId').value = item.id;
-        document.getElementById('editName').value = item.name;
-        document.getElementById('editDesc').value = item.desc || '';
-        document.getElementById('editUrl').value = item.url;
-        document.getElementById('editLogoUrl').value = item.logoUrl || '';
-
-        document.getElementById('editModal').classList.add('active');
-    }
-
-    document.getElementById('cancelEditBtn').addEventListener('click', () => {
-        document.getElementById('editModal').classList.remove('active');
-    });
-
-    document.getElementById('editForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('editItemId').value);
-        const item = state.data.find(i => i.id === id);
-        if (item) {
-            item.name = document.getElementById('editName').value.trim();
-            item.desc = document.getElementById('editDesc').value.trim();
-            item.url = document.getElementById('editUrl').value.trim();
-            item.logoUrl = document.getElementById('editLogoUrl').value.trim() || '';
-            saveToStorage();
-            renderAll();
-            document.getElementById('editModal').classList.remove('active');
-        }
-    });
-
-    document.getElementById('deleteItemBtn').addEventListener('click', () => {
-        if (!confirm('确定删除此导航项？')) return;
-        const id = parseInt(document.getElementById('editItemId').value);
-        state.data = state.data.filter(i => i.id !== id);
-        saveToStorage();
-        renderAll();
-        document.getElementById('editModal').classList.remove('active');
-    });
-
-    // ======================
-    // 拖拽排序（增强：支持同组内排序）
-    // ======================
-    let dragItem = null;
-
-    document.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('card') || e.target.closest('.group-header')) {
-            dragItem = e.target.closest('[draggable]');
-            setTimeout(() => e.target.classList.add('dragging'), 0);
-        }
-    });
-
-    document.addEventListener('dragend', (e) => {
-        const dragging = document.querySelector('.dragging');
-        if (dragging) dragging.classList.remove('dragging');
-        dragItem = null;
-    });
-
-    function handleDragOver(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        e.currentTarget.classList.add('drag-over');
-    }
-
-    document.querySelectorAll('.cards, .group-header').forEach(el => {
-        el.addEventListener('dragleave', (e) => {
-            e.currentTarget.classList.remove('drag-over');
-        });
-    });
-
-    function handleDrop(e) {
-        e.preventDefault();
-        e.currentTarget.classList.remove('drag-over');
-        if (!dragItem || dragItem.dataset.dragType !== 'item') return;
-
-        const dropTarget = e.currentTarget;
-        const dropCategoryId = parseInt(dropTarget.dataset.categoryId);
-        const itemId = parseInt(dragItem.dataset.itemId);
-        const item = state.data.find(i => i.id === itemId);
-        if (!item) return;
-
-        // 同组内排序
-        if (item.categoryId === dropCategoryId) {
-            const cardsContainer = dropTarget;
-            const allCards = Array.from(cardsContainer.children);
-            const dropIndex = allCards.indexOf(e.target.closest('.card')) || allCards.length - 1;
-
-            // 重新计算 weight：按新顺序分配 1,2,3...
-            const siblingItems = state.data
-                .filter(i => i.categoryId === dropCategoryId)
-                .sort((a, b) => (a.weight || 0) - (b.weight || 0));
-
-            // 找到被拖动项在原列表中的位置并移除
-            const draggedIndex = siblingItems.findIndex(i => i.id === itemId);
-            if (draggedIndex !== -1) {
-                siblingItems.splice(draggedIndex, 1);
-            }
-
-            // 插入到新位置
-            siblingItems.splice(dropIndex, 0, item);
-
-            // 重新分配 weight
-            siblingItems.forEach((it, idx) => {
-                it.weight = idx + 1;
-            });
-
-            saveToStorage();
-            renderAll();
-            return;
-        }
-
-        // 跨组移动
-        item.categoryId = dropCategoryId;
-        // 重置 weight 为末尾
-        const newGroupItems = state.data.filter(i => i.categoryId === dropCategoryId);
-        item.weight = newGroupItems.length + 1;
-        saveToStorage();
-        renderAll();
-    }
-
-    // ======================
-    // 其他交互（不变）
+    // 交互逻辑
     // ======================
     function deleteCategory(id) {
         if (!confirm('确定删除该分组及其中所有导航？')) return;
@@ -673,6 +435,7 @@
         }
     });
 
+    // 导入/导出
     document.getElementById('exportBtn').addEventListener('click', () => {
         const dataStr = JSON.stringify({
             config: state.config,
@@ -716,7 +479,65 @@
             }
         };
         reader.readAsText(file);
-        e.target.value = '';
+        e.target.value = ''; // 允许重复选择同一文件
+    });
+
+    // ======================
+    // 拖拽排序
+    // ======================
+    let dragItem = null;
+
+    document.addEventListener('dragstart', (e) => {
+        if (e.target.classList.contains('card') || e.target.closest('.group-header')) {
+            dragItem = e.target.closest('[draggable]');
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+    });
+
+    document.addEventListener('dragend', (e) => {
+        const dragging = document.querySelector('.dragging');
+        if (dragging) dragging.classList.remove('dragging');
+        dragItem = null;
+    });
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    document.querySelectorAll('.cards, .group-header').forEach(el => {
+        el.addEventListener('dragleave', (e) => {
+            e.currentTarget.classList.remove('drag-over');
+        });
+    });
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        if (!dragItem) return;
+
+        const dropTarget = e.currentTarget;
+        const dragType = dragItem.dataset.dragType;
+        const dropCategoryId = parseInt(dropTarget.dataset.categoryId);
+
+        if (dragType === 'item') {
+            const itemId = parseInt(dragItem.dataset.itemId);
+            const item = state.data.find(i => i.id === itemId);
+            if (item && item.categoryId !== dropCategoryId) {
+                item.categoryId = dropCategoryId;
+                saveToStorage();
+                renderAll();
+            }
+        }
+    }
+
+    // 分组头部拖拽（简化：仅记录顺序，实际排序由 weight 控制）
+    document.addEventListener('drop', (e) => {
+        if (e.target.closest('.group-header')) {
+            // 这里可扩展分组排序（略复杂，暂以 weight 为主）
+            console.log('分组拖拽排序（预留）');
+        }
     });
 
     // ======================
