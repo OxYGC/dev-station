@@ -4,7 +4,7 @@
     "subTitle": "我是副标题",
     "footerText": "Copyright &copy; 2015-{CURRENT_YEAR} <a href=\"http://iooiee.com\">iooiee.com</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href=\"mailto:keygenee@gmail.com\">keygenee@gmail.com</a>"
   },
-  "apiUrl":{
-    "home": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json"
+  "api":{
+    "homeUrl": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json"
   }
 }

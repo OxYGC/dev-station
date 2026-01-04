@@ -1,400 +1,272 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>问答互动板</title>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航站点</title>
     <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --secondary-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #333;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
         }
 
         h1 {
-            font-size: 2.2rem;
-            color: #495057;
-            margin: 0;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
         }
 
         .subtitle {
-            color: #6c757d;
-            margin-top: 8px;
+            font-size: 1.2rem;
+            color: var(--light-text);
+            margin-bottom: 20px;
         }
 
         .controls {
             display: flex;
-            gap: 10px;
-            margin: 20px 0;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
-            justify-content: center;
-            position: relative;
         }
 
-        button {
-            padding: 10px 16px;
+        .btn {
+            padding: 10px 20px;
             border: none;
-            border-radius: 50px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 14px;
             font-weight: 600;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        button:hover {
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5ae0;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        #initDataBtn {
-            background: #28a745;
+        .btn-success {
+            background-color: var(--success-color);
             color: white;
         }
 
-        #syncBtn {
-            background: #007bff;
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
             color: white;
         }
 
-        #exportBtn {
-            background: #6f42c1;
-            color: white;
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
         }
 
-        #clearBtn {
-            background: #6c757d;
-            color: white;
-        }
-
-        #initOptions {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            padding: 16px;
-            z-index: 10;
-            display: none;
-            width: 280px;
-            margin-top: 8px;
-        }
-
-        #initOptions.show {
-            display: block;
-        }
-
-        .init-option {
-            margin: 8px 0;
-            text-align: center;
-        }
-
-        .init-option label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .init-input-group {
-            display: flex;
-            gap: 6px;
-        }
-
-        .init-input-group input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        #addInput {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 16px;
-            border: 2px solid #dee2e6;
-            border-radius: 50px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        #addGroupSelect {
-            padding: 12px 16px;
-            border: 2px solid #dee2e6;
-            border-radius: 50px;
-            font-size: 15px;
-            outline: none;
-            background: white;
-            min-width: 150px;
-        }
-
-        #addInput:focus,
-#addGroupSelect:focus {
-            border-color: #007bff;
-        }
-
-        #addBtn {
-            background: #fd7e14;
-color: white;
-            padding: 0 20px;
-            border-radius: 50px;
-        }
-
-        .questions {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 16px;
-        }
-
-        /* 响应式网格 */
-        #groupsContainer {
+        .nav-groups {
             display: grid;
-            gap: 20px;
-            grid-template-columns: 1fr;
-            align-items: start;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
         }
 
-        @media (min-width: 768px) {
-            #groupsContainer {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (min-width: 1200px) {
-            #groupsContainer {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        .group-section {
-            background: #fafafa;
-            border-radius: 12px;
-            border: 1px solid #e9ecef;
+        .nav-group {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            min-height: 320px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-group:hover {
+            transform: translateY(-5px);
         }
 
         .group-header {
-            flex-shrink: 0;
-            padding: 14px 20px;
-            background: #f1f3f5;
-            font-weight: bold;
-            color: #495057;
-            border-bottom: 1px solid #e9ecef;
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
         }
 
-        .group-header>span:last-child {
-            flex: 1;
+        .group-title {
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
-        .drag-handle,
-        .group-drag-handle {
-            cursor: move;
+        .group-count {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .group-actions button {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px;
-            border-radius: 4px;
-            color: #adb5bd;
-            transition: color 0.2s, background 0.2s;
         }
 
-        .drag-handle:hover,
-        .group-drag-handle:hover {
-            color: #6c757d;
-            background: #e9ecef;
+        .group-actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .group-drag-handle {
-            font-size: 16px;
-            line-height: 1;
+        .nav-list {
+            padding: 15px;
+            min-height: 100px;
         }
 
-        .group-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        .question-item {
-            padding: 16px 20px;
+        .nav-item {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            cursor: grab;
-            border-bottom: 1px solid #f1f3f5;
-            position: relative;
-            min-height: 52px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.2s ease;
+            cursor: move;
         }
 
-        .question-item:last-child {
-            border-bottom: none;
+        .nav-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
         }
 
-        .question-text,
-        .question-input {
+        .nav-info {
             flex: 1;
-            font-size: 15px;
-            line-height: 1.5;
-            word-break: break-word;
             min-width: 0;
         }
 
-        /* === 新增：两行截断 === */
-        .question-text {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+        .nav-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            cursor: pointer;
         }
 
-        .question-input {
-            display: none;
+        .nav-desc {
+            font-size: 0.85rem;
+            color: var(--light-text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .btn-group {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex !important;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border-radius: 14px;
-            padding: 4px 6px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-            z-index: 2;
+        .nav-url {
+            font-size: 0.8rem;
+            color: var(--light-text);
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .question-item:hover .btn-group {
-                opacity: 1;
-                visibility: visible;
-            }
+        .nav-actions {
+            display: flex;
+            gap: 8px;
         }
 
-        .question-item.show-actions .btn-group {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .btn-group button {
-            padding: 4px 8px;
-            font-size: 12px;
-            min-width: auto;
-            height: 26px;
+        .nav-actions button {
+            background: transparent;
             border: none;
-            border-radius: 6px;
-            background: none;
+            color: var(--light-text);
             cursor: pointer;
-            font-weight: 600;
-            color: #495057;
-            opacity: 0.95;
+            font-size: 1rem;
+            padding: 5px;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-group button:hover {
-            background: rgba(0, 0, 0, 0.06);
-            opacity: 1;
-        }
-
-        .question-item.hidden {
-            display: none;
-        }
-
-        .more-btn {
-            flex-shrink: 0;
-            width: 100%;
-            padding: 12px;
-            background: #f8f9fa;
-            border: none;
-            color: #007bff;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            border-top: 1px solid #e9ecef;
-            border-radius: 0 0 12px 12px;
-        }
-
-        .more-btn:hover {
+        .nav-actions button:hover {
             background: #e9ecef;
-            transform: none;
-            box-shadow: none;
+            color: var(--primary-color);
         }
 
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
-            color: #6c757d;
+            padding: 20px;
+            color: var(--light-text);
             font-style: italic;
-            grid-column: 1 / -1;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .toast.show {
-            opacity: 1;
-        }
-
-        /* === 新增：模态框样式 === */
-        #modalOverlay {
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -402,770 +274,841 @@ color: white;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             display: flex;
-            align-items: center;
             justify-content: center;
-            z-index: 2000;
+            align-items: center;
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            transition: all 0.3s ease;
         }
 
-        #modalOverlay.show {
+        .modal.active {
             opacity: 1;
             visibility: visible;
         }
 
-        #modalContent {
+        .modal-content {
             background: white;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
         }
 
-        #modalContent h3 {
-            margin: 0 0 16px;
+        .modal.active .modal-content {
+            transform: translateY(0);
         }
 
-        // ... 事件绑定 ...
-        document.getElementById('initDataBtn').addEventListener('click', () => {
-            document.getElementById('initOptions').classList.toggle('show');
-        });
-        const addBtn = document.getElementById('addBtn');
-    
-        // 添加按钮事件监听器
-        addBtn.addEventListener('click', () => {
-            const input = document.getElementById('addInput');
-            const select = document.getElementById('addGroupSelect');
-            
-            const msg = input.value.trim();
-            if (!msg) {
-                showToast('请输入问题内容');
-                return;
-            }
-    
-            let groupNum = Number(select.value);
-            if (select.value === 'new') {
-                // 获取当前最大的组号，创建新组
-                const maxGroup = questions.length > 0 
-                    ? Math.max(...questions.map(q => q.groupNum)) 
-                    : -1;
-                groupNum = maxGroup + 1;
-            } else if (!select.value) {
-                // 如果未选择分组，使用默认分组 0
-                groupNum = 0;
-            }
-    
-            const newQuestion = {
-                id: generateId(),
-                msg: msg,
-                groupNum: groupNum,
-                weight: questions.filter(q => q.groupNum === groupNum).length + 1, // 使用组内问题数量作为权重
-                date: getCurrentDateTime()
-            };
-    
-            questions.push(newQuestion);
-            saveToStorage();
-            render();
-            updateGroupSelect();
-    
-            // 清空输入框
-            input.value = '';
-            select.value = '';
-            
-            showToast('✅ 问题已添加');
-        });
-    
-        document.getElementById('addInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addBtn.click();
-            }
-        });
-    
-        document.getElementById('localImportBtn').addEventListener('click', handleLocalImport);
-        document.getElementById('urlImportBtn').addEventListener('click', handleUrlImport);
-            color: #495057;
-        }
-
-        #modalContent p {
-            margin: 0;
-            line-height: 1.6;
-            font-size: 16px;
-            white-space: pre-wrap;
-        }
-
-        #closeModal {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #f1f3f5;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-weight: bold;
-            cursor: pointer;
+        .modal-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
         }
-        .page-footer {
-            margin-top: 40px;
-            padding: 20px 12px 30px;
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer {
             text-align: center;
-            font-size: 13px;
-            color: #6c757d;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--light-text);
+            font-size: 0.9rem;
         }
 
-        .page-footer a {
-            color: #495057;
-            text-decoration: none;
-            font-weight: 500;
+        .dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
         }
 
-        .page-footer a:hover {
-            text-decoration: underline;
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+
+            .nav-groups {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
-
 <body>
 <div class="container">
     <header>
-        <h1>问答互动板</h1>
-        <p class="subtitle">快来导入你的问题进行互动吧</p>
-    </header>
-
-    <div class="controls">
-        <button id="initDataBtn">🔄 初始化数据</button>
-        <button id="syncBtn">🔄 同步（覆盖源文件）</button>
-        <button id="exportBtn">📤 导出新文件</button>
-        <button id="clearBtn">🧹 清空</button>
-
-        <div id="initOptions">
-            <div class="init-option">
-                <label>📁 本地导入</label>
-                <button id="localImportBtn">选择 JSON 文件</button>
-            </div>
-            <div class="init-option">
-                <label>🔗 URL 导入</label>
-                <div class="init-input-group">
-                    <input type="url" id="urlInput" placeholder="https://example.com/data.json" />
-                    <button id="urlImportBtn">加载</button>
-                </div>
+        <h1 id="page-title">我是标题</h1>
+        <p class="subtitle" id="page-subtitle">我是副标题</p>
+        <div class="controls">
+            <button id="add-group-btn" class="btn btn-primary">
+                <span>+</span> 新建类型分组
+            </button>
+            <div>
+                <button id="import-btn" class="btn btn-warning">导入数据</button>
+                <button id="export-btn" class="btn btn-success">导出数据</button>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="input-group">
-        <input type="text" id="addInput" placeholder="输入一个问题..." />
-        <select id="addGroupSelect">
-            <option value="">— 选择分组 —</option>
-        </select>
-        <button id="addBtn">➕ 添加</button>
-    </div>
+    <main>
+        <div class="nav-groups" id="nav-groups-container"></div>
+    </main>
 
-    <div class="questions">
-        <div id="groupsContainer"></div>
+    <footer id="page-footer">
+        Copyright &copy; 2015-2026 <a href="http://iooiee.com">iooiee.com</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href="mailto:keygenee@gmail.com">keygenee@gmail.com</a>
+    </footer>
+</div>
+
+<!-- 添加分组模态框 -->
+<div class="modal" id="add-group-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">新建类型分组</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="group-name">分组名称</label>
+            <input type="text" id="group-name" class="form-control" placeholder="请输入分组名称">
+        </div>
+        <div class="form-group">
+            <label for="group-desc">分组描述</label>
+            <input type="text" id="group-desc" class="form-control" placeholder="请输入分组描述（可选）">
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-add-group" class="btn">取消</button>
+            <button id="confirm-add-group" class="btn btn-primary">创建</button>
+        </div>
     </div>
 </div>
 
-<!-- 模态框：用于显示完整问题 -->
-<div id="modalOverlay">
-    <div id="modalContent">
-        <button id="closeModal">×</button>
-        <h3>问题详情</h3>
-        <p id="modalText"></p>
+<!-- 编辑分组模态框 -->
+<div class="modal" id="edit-group-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">编辑分组</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="edit-group-name">分组名称</label>
+            <input type="text" id="edit-group-name" class="form-control" placeholder="请输入分组名称">
+        </div>
+        <div class="form-group">
+            <label for="edit-group-desc">分组描述</label>
+            <input type="text" id="edit-group-desc" class="form-control" placeholder="请输入分组描述（可选）">
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-edit-group" class="btn">取消</button>
+            <button id="confirm-edit-group" class="btn btn-primary">保存</button>
+        </div>
     </div>
 </div>
 
-<div id="toast" class="toast"></div>
-<footer class="page-footer">
-    <p>建议 / 合作邮箱：
-        <a href="mailto:keygenee@gmail.com">keygenee@gmail.com</a>
-    </p>
-</footer>
+<!-- 添加导航项模态框 -->
+<div class="modal" id="add-nav-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">添加导航项</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="nav-name">名称</label>
+            <input type="text" id="nav-name" class="form-control" placeholder="请输入导航名称">
+        </div>
+        <div class="form-group">
+            <label for="nav-url">URL</label>
+            <input type="url" id="nav-url" class="form-control" placeholder="https://example.com">
+        </div>
+        <div class="form-group">
+            <label for="nav-desc">描述</label>
+            <input type="text" id="nav-desc" class="form-control" placeholder="请输入描述（可选）">
+        </div>
+        <div class="form-group">
+            <label for="nav-category">所属分组</label>
+            <select id="nav-category" class="form-control"></select>
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-add-nav" class="btn">取消</button>
+            <button id="confirm-add-nav" class="btn btn-primary">添加</button>
+        </div>
+    </div>
+</div>
+
+<!-- 导入数据模态框 -->
+<div class="modal" id="import-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">导入数据</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="import-data">粘贴JSON数据</label>
+            <textarea id="import-data" class="form-control" rows="10" placeholder='{"categoryList": [...], "data": [...]}'></textarea>
+        </div>
+        <div class="modal-footer">
+            <button id="cancel-import" class="btn">取消</button>
+            <button id="confirm-import" class="btn btn-success">导入</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    const STORAGE_KEY = 'qa_board_data_v2';
-    const GROUP_ORDER_KEY = 'qa_group_order';
-    const HAS_IMPORTED_KEY = 'qa_has_imported';
-    const DEFAULT_DATA_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json';
+    // 数据结构定义
+    const defaultData = {
+        config: {
+            title: "我是标题",
+            subTitle: "我是副标题",
+            footerText: "Copyright &copy; 2015-{CURRENT_YEAR} <a href=\"http://iooiee.com\">iooiee.com</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href=\"mailto:keygenee@gmail.com\">keygenee@gmail.com</a>"
+        },
+        categoryList: [],
+        data: []
+    };
 
-    let questions = [];
-    let currentFileHandle = null;
-    let sortableInstances = [];
-    let groupSortable = null;
+    // 状态管理
+    let appState = {
+        config: { ...defaultData.config },
+        categoryList: [],
+        data: [],
+        groupOrder: []
+    };
 
-    // --- 工具函数 ---
-    function generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-    }
+    // DOM元素引用
+    const elements = {
+        container: document.getElementById('nav-groups-container'),
+        addGroupBtn: document.getElementById('add-group-btn'),
+        importBtn: document.getElementById('import-btn'),
+        exportBtn: document.getElementById('export-btn'),
+        addGroupModal: document.getElementById('add-group-modal'),
+        editGroupModal: document.getElementById('edit-group-modal'),
+        addNavModal: document.getElementById('add-nav-modal'),
+        importModal: document.getElementById('import-modal'),
+        pageTitle: document.getElementById('page-title'),
+        pageSubtitle: document.getElementById('page-subtitle'),
+        pageFooter: document.getElementById('page-footer')
+    };
 
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
+    // 初始化应用
+    function initApp() {
+        // 尝试从localStorage加载数据
+        const savedData = localStorage.getItem('nav_site_data_v2');
+        const savedGroupOrder = localStorage.getItem('nav_group_order');
 
-    function getCurrentDateTime() {
-        return new Date().toISOString().replace('T', ' ').substring(0, 19);
-    }
-
-    function saveToStorage() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
-            if (currentFileHandle) {
-                localStorage.setItem(HAS_IMPORTED_KEY, 'true');
+        if (savedData) {
+            try {
+                const parsedData = JSON.parse(savedData);
+                appState = {
+                    ...parsedData,
+                    groupOrder: savedGroupOrder ? JSON.parse(savedGroupOrder) : []
+                };
+            } catch (e) {
+                console.error('Failed to parse saved data', e);
             }
-        } catch (e) {
-            console.warn('localStorage 保存失败:', e);
+        } else {
+            // 如果没有本地数据，尝试加载远程默认数据
+            loadRemoteData();
         }
+
+        // 更新UI
+        updateUI();
+        setupEventListeners();
     }
 
-    function normalizeQuestions(rawData) {
-        if (!Array.isArray(rawData)) return [];
-        return rawData
-            .map(item => ({
-                id: item.id || generateId(),
-                msg: String(item.msg || '').trim(),
-                groupNum: Number.isInteger(item.groupNum) ? item.groupNum : 0,
-                weight: typeof item.weight === 'number' ? item.weight : 1,
-                date: item.date || getCurrentDateTime(),
-                _showAll: !!item._showAll
-            }))
-            .filter(q => q.msg);
-    }
-
-    // --- 数据加载 ---
-    async function fetchDefaultData() {
+    // 加载远程默认数据
+    async function loadRemoteData() {
         try {
-            showToast('正在加载默认数据...');
-            const res = await fetch(DEFAULT_DATA_URL);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            if (!Array.isArray(data.data)) throw new Error('Invalid data format');
-            const normalized = normalizeQuestions(data.data);
-            if (normalized.length === 0) throw new Error('No valid questions');
-            questions = normalized;
-            saveToStorage();
-            render();
-            updateGroupSelect();
-            showToast('✅ 已加载默认数据');
-        } catch (err) {
-            console.error('Failed to load default data:', err);
-            showToast('⚠️ 默认数据加载失败，请手动导入');
-            render();
-            updateGroupSelect();
-        }
-    }
+            // 先加载配置文件
+            const configResponse = await fetch('https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json');
+            const configData = await configResponse.json();
 
-    async function tryLoadData() {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed)) {
-                    questions = normalizeQuestions(parsed);
-                    render();
-                    updateGroupSelect();
-                    return;
+            // 更新配置
+            appState.config = configData.config;
+
+            // 加载导航数据
+            const dataResponse = await fetch(configData.api.homeUrl);
+            const navData = await dataResponse.json();
+
+            // 过滤掉无效的导航项（只保留有categoryId的）
+            appState.data = navData.data.filter(item =>
+                item.categoryId !== undefined &&
+                typeof item.categoryId === 'number'
+            );
+
+            // 处理分类列表（修复重复ID问题）
+            const uniqueCategories = [];
+            const seenIds = new Set();
+
+            for (const category of navData.categoryList) {
+                if (!seenIds.has(category.id)) {
+                    seenIds.add(category.id);
+                    uniqueCategories.push(category);
                 }
             }
-        } catch (e) {
-            console.warn('Local storage parse error:', e);
+
+            appState.categoryList = uniqueCategories;
+            appState.groupOrder = uniqueCategories.map(c => c.id);
+
+            // 保存到本地存储
+            saveToLocalStorage();
+        } catch (error) {
+            console.error('Failed to load remote data:', error);
+            // 如果远程加载失败，使用空数据
+            appState = { ...defaultData, groupOrder: [] };
         }
-        await fetchDefaultData();
     }
 
-    function parseAndLoad(text) {
-        try {
-            const data = JSON.parse(text);
-            let rawData = data;
-            if (data && Array.isArray(data.data)) {
-                rawData = data.data;
-            } else if (!Array.isArray(data)) {
-                throw new Error('Expected array or {data: [...]}');
+    // 保存到本地存储
+    function saveToLocalStorage() {
+        localStorage.setItem('nav_site_data_v2', JSON.stringify({
+            config: appState.config,
+            categoryList: appState.categoryList,
+            data: appState.data
+        }));
+        localStorage.setItem('nav_group_order', JSON.stringify(appState.groupOrder));
+    }
+
+    // 更新UI
+    function updateUI() {
+        // 更新页面标题和副标题
+        elements.pageTitle.textContent = appState.config.title;
+        elements.pageSubtitle.textContent = appState.config.subTitle;
+
+        // 更新页脚（替换年份）
+        const currentYear = new Date().getFullYear();
+        elements.pageFooter.innerHTML = appState.config.footerText.replace('{CURRENT_YEAR}', currentYear);
+
+        // 渲染导航分组
+        renderNavGroups();
+    }
+
+    // 渲染导航分组
+    function renderNavGroups() {
+        elements.container.innerHTML = '';
+
+        // 按照groupOrder排序分组
+        const sortedCategories = [...appState.categoryList].sort((a, b) => {
+            const indexA = appState.groupOrder.indexOf(a.id);
+            const indexB = appState.groupOrder.indexOf(b.id);
+            return indexA - indexB;
+        });
+
+        // 渲染每个分组
+        sortedCategories.forEach(category => {
+            const groupElement = createGroupElement(category);
+            elements.container.appendChild(groupElement);
+        });
+
+        // 如果没有分组，显示提示
+        if (sortedCategories.length === 0) {
+            elements.container.innerHTML = `
+                    <div class="empty-state">
+                        <p>暂无导航分组，请点击"新建类型分组"创建</p>
+                    </div>
+                `;
+        }
+
+        // 初始化拖拽功能
+        initDragAndDrop();
+    }
+
+    // 创建分组元素
+    function createGroupElement(category) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'nav-group';
+        groupDiv.dataset.categoryId = category.id;
+
+        // 计算该分组中的导航项数量
+        const itemCount = appState.data.filter(item => item.categoryId === category.id).length;
+
+        groupDiv.innerHTML = `
+                <div class="group-header">
+                    <div class="group-title">${category.name} <span class="group-count">${itemCount}</span></div>
+                    <div class="group-actions">
+                        <button class="edit-group-btn" title="编辑分组">
+                            <i>✏️</i>
+                        </button>
+                        <button class="delete-group-btn" title="删除分组">
+                            <i>🗑️</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="nav-list" id="nav-list-${category.id}">
+                    ${renderNavItems(category.id)}
+                </div>
+            `;
+
+        // 添加"添加导航"按钮
+        const addNavBtn = document.createElement('button');
+        addNavBtn.className = 'btn btn-primary';
+        addNavBtn.style.width = '100%';
+        addNavBtn.style.marginTop = '10px';
+        addNavBtn.innerHTML = '<span>+</span> 添加导航';
+        addNavBtn.onclick = () => openAddNavModal(category.id);
+        groupDiv.querySelector('.nav-list').appendChild(addNavBtn);
+
+        return groupDiv;
+    }
+
+    // 渲染导航项
+    function renderNavItems(categoryId) {
+        const items = appState.data.filter(item => item.categoryId === categoryId);
+
+        if (items.length === 0) {
+            return '<div class="empty-state">暂无导航项</div>';
+        }
+
+        return items.map(item => `
+                <div class="nav-item" draggable="true" data-id="${item.id}" data-category="${item.categoryId}">
+                    <div class="nav-info">
+                        <div class="nav-name">${item.name}</div>
+                        <div class="nav-desc">${item.desc || ''}</div>
+                        <div class="nav-url">${item.url}</div>
+                    </div>
+                    <div class="nav-actions">
+                        <button class="edit-nav-btn" title="编辑">
+                            <i>✏️</i>
+                        </button>
+                        <button class="delete-nav-btn" title="删除">
+                            <i>🗑️</i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // 初始化拖拽功能
+    function initDragAndDrop() {
+        const draggables = document.querySelectorAll('.nav-item');
+        const dropZones = document.querySelectorAll('.nav-list');
+
+        // 拖拽开始
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        // 拖拽进入区域
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(zone, e.clientY);
+                const draggable = document.querySelector('.dragging');
+
+                if (afterElement == null) {
+                    zone.appendChild(draggable);
+                } else {
+                    zone.insertBefore(draggable, afterElement);
+                }
+            });
+
+            // 处理拖拽完成
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                const draggable = document.querySelector('.dragging');
+                if (!draggable) return;
+
+                const newCategoryId = parseInt(zone.id.split('-')[2]);
+                const itemId = parseInt(draggable.dataset.id);
+
+                // 更新数据
+                const itemIndex = appState.data.findIndex(item => item.id === itemId);
+                if (itemIndex !== -1) {
+                    appState.data[itemIndex].categoryId = newCategoryId;
+                    saveToLocalStorage();
+                    updateUI();
+                }
+            });
+        });
+    }
+
+    // 获取拖拽后的位置元素
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.nav-item:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
             }
-            const normalized = normalizeQuestions(rawData);
-            if (normalized.length === 0) throw new Error('No valid questions');
-            questions = normalized;
-            saveToStorage();
-            render();
-            updateGroupSelect();
-            showToast('✅ 数据导入成功！');
-            hideInitOptions();
-        } catch (err) {
-            console.error(err);
-            showToast('❌ JSON 格式错误！');
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // 打开添加分组模态框
+    function openAddGroupModal() {
+        document.getElementById('group-name').value = '';
+        document.getElementById('group-desc').value = '';
+        elements.addGroupModal.classList.add('active');
+    }
+
+    // 打开编辑分组模态框
+    function openEditGroupModal(categoryId) {
+        const category = appState.categoryList.find(c => c.id === categoryId);
+        if (!category) return;
+
+        document.getElementById('edit-group-name').value = category.name;
+        document.getElementById('edit-group-desc').value = category.desc || '';
+        document.getElementById('confirm-edit-group').dataset.categoryId = categoryId;
+        elements.editGroupModal.classList.add('active');
+    }
+
+    // 打开添加导航模态框
+    function openAddNavModal(categoryId) {
+        document.getElementById('nav-name').value = '';
+        document.getElementById('nav-url').value = '';
+        document.getElementById('nav-desc').value = '';
+
+        // 填充分组下拉菜单
+        const categorySelect = document.getElementById('nav-category');
+        categorySelect.innerHTML = '';
+        appState.categoryList.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            if (category.id === categoryId) {
+                option.selected = true;
+            }
+            categorySelect.appendChild(option);
+        });
+
+        elements.addNavModal.classList.add('active');
+    }
+
+    // 关闭所有模态框
+    function closeAllModals() {
+        elements.addGroupModal.classList.remove('active');
+        elements.editGroupModal.classList.remove('active');
+        elements.addNavModal.classList.remove('active');
+        elements.importModal.classList.remove('active');
+    }
+
+    // 设置事件监听器
+    function setupEventListeners() {
+        // 按钮事件
+        elements.addGroupBtn.addEventListener('click', openAddGroupModal);
+        elements.importBtn.addEventListener('click', () => {
+            document.getElementById('import-data').value = '';
+            elements.importModal.classList.add('active');
+        });
+        elements.exportBtn.addEventListener('click', exportData);
+
+        // 模态框关闭事件
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', closeAllModals);
+        });
+
+        // 添加分组
+        document.getElementById('confirm-add-group').addEventListener('click', addNewGroup);
+        document.getElementById('cancel-add-group').addEventListener('click', closeAllModals);
+
+        // 编辑分组
+        document.getElementById('confirm-edit-group').addEventListener('click', updateGroup);
+        document.getElementById('cancel-edit-group').addEventListener('click', closeAllModals);
+
+        // 添加导航
+        document.getElementById('confirm-add-nav').addEventListener('click', addNewNav);
+        document.getElementById('cancel-add-nav').addEventListener('click', closeAllModals);
+
+        // 导入数据
+        document.getElementById('confirm-import').addEventListener('click', importData);
+        document.getElementById('cancel-import').addEventListener('click', closeAllModals);
+
+        // 动态事件委托
+        elements.container.addEventListener('click', handleContainerClick);
+    }
+
+    // 处理容器点击事件（使用事件委托）
+    function handleContainerClick(e) {
+        // 删除分组
+        if (e.target.closest('.delete-group-btn')) {
+            const groupElement = e.target.closest('.nav-group');
+            const categoryId = parseInt(groupElement.dataset.categoryId);
+            deleteGroup(categoryId);
+        }
+
+        // 编辑分组
+        if (e.target.closest('.edit-group-btn')) {
+            const groupElement = e.target.closest('.nav-group');
+            const categoryId = parseInt(groupElement.dataset.categoryId);
+            openEditGroupModal(categoryId);
+        }
+
+        // 删除导航项
+        if (e.target.closest('.delete-nav-btn')) {
+            const navItem = e.target.closest('.nav-item');
+            const itemId = parseInt(navItem.dataset.id);
+            deleteNavItem(itemId);
+        }
+
+        // 编辑导航项
+        if (e.target.closest('.edit-nav-btn')) {
+            const navItem = e.target.closest('.nav-item');
+            const itemId = parseInt(navItem.dataset.id);
+            editNavItem(itemId);
         }
     }
 
-    // --- 渲染与交互 ---
-    function getGroups() {
-        const groups = {};
-        questions.forEach(q => {
-            if (!groups[q.groupNum]) groups[q.groupNum] = [];
-            groups[q.groupNum].push(q);
+    // 添加新分组
+    function addNewGroup() {
+        const name = document.getElementById('group-name').value.trim();
+        const desc = document.getElementById('group-desc').value.trim();
+
+        if (!name) {
+            alert('分组名称不能为空');
+            return;
+        }
+
+        // 生成唯一ID
+        const newId = Math.max(...appState.categoryList.map(c => c.id), 0) + 1;
+
+        appState.categoryList.push({
+            id: newId,
+            name: name,
+            desc: desc,
+            weight: 1
         });
-        Object.keys(groups).forEach(g => {
-            groups[g].sort((a, b) => a.weight - b.weight);
-        });
-        return groups;
+
+        appState.groupOrder.push(newId);
+        saveToLocalStorage();
+        updateUI();
+        closeAllModals();
     }
 
-    function updateGroupSelect() {
-        const uniqueGroups = [...new Set(questions.map(q => q.groupNum))].sort((a, b) => a - b);
-        const select = document.getElementById('addGroupSelect');
-        select.innerHTML = '<option value="">— 选择分组 —</option>';
-        uniqueGroups.forEach(g => {
-            const opt = document.createElement('option');
-            opt.value = g; opt.textContent = `第 ${g} 组`;
-            select.appendChild(opt);
-        });
-        const newOpt = document.createElement('option');
-        newOpt.value = 'new'; newOpt.textContent = '🆕 新建分组';
-        select.appendChild(newOpt);
+    // 更新分组
+    function updateGroup() {
+        const categoryId = parseInt(document.getElementById('confirm-edit-group').dataset.categoryId);
+        const name = document.getElementById('edit-group-name').value.trim();
+        const desc = document.getElementById('edit-group-desc').value.trim();
+
+        if (!name) {
+            alert('分组名称不能为空');
+            return;
+        }
+
+        const categoryIndex = appState.categoryList.findIndex(c => c.id === categoryId);
+        if (categoryIndex !== -1) {
+            appState.categoryList[categoryIndex].name = name;
+            appState.categoryList[categoryIndex].desc = desc;
+            saveToLocalStorage();
+            updateUI();
+            closeAllModals();
+        }
     }
 
-    function downloadFile(content, filename) {
-        const blob = new Blob([content], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
+    // 删除分组
+    function deleteGroup(categoryId) {
+        if (!confirm('确定要删除这个分组吗？该分组下的所有导航项也会被删除！')) {
+            return;
+        }
+
+        // 删除分组
+        appState.categoryList = appState.categoryList.filter(c => c.id !== categoryId);
+
+        // 删除分组中的所有导航项
+        appState.data = appState.data.filter(item => item.categoryId !== categoryId);
+
+        // 从排序数组中移除
+        appState.groupOrder = appState.groupOrder.filter(id => id !== categoryId);
+
+        saveToLocalStorage();
+        updateUI();
+    }
+
+    // 添加新导航项
+    function addNewNav() {
+        const name = document.getElementById('nav-name').value.trim();
+        const url = document.getElementById('nav-url').value.trim();
+        const desc = document.getElementById('nav-desc').value.trim();
+        const categoryId = parseInt(document.getElementById('nav-category').value);
+
+        if (!name || !url) {
+            alert('名称和URL不能为空');
+            return;
+        }
+
+        // 验证URL格式
+        try {
+            new URL(url);
+        } catch (e) {
+            alert('请输入有效的URL');
+            return;
+        }
+
+        // 生成唯一ID
+        const newId = Math.max(...appState.data.map(item => item.id), 0) + 1;
+
+        appState.data.push({
+            id: newId,
+            categoryId: categoryId,
+            name: name,
+            desc: desc,
+            url: url,
+            weight: 1,
+            date: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        });
+
+        saveToLocalStorage();
+        updateUI();
+        closeAllModals();
+    }
+
+    // 编辑导航项
+    function editNavItem(itemId) {
+        const item = appState.data.find(i => i.id === itemId);
+        if (!item) return;
+
+        // 在实际应用中，这里应该打开编辑模态框
+        // 为简化，我们直接使用alert进行编辑
+        const newName = prompt('编辑名称:', item.name);
+        if (newName === null) return;
+
+        const newUrl = prompt('编辑URL:', item.url);
+        if (newUrl === null) return;
+
+        const newDesc = prompt('编辑描述:', item.desc || '');
+        if (newDesc === null) return;
+
+        // 验证URL
+        try {
+            new URL(newUrl);
+        } catch (e) {
+            alert('请输入有效的URL');
+            return;
+        }
+
+        item.name = newName;
+        item.url = newUrl;
+        item.desc = newDesc;
+        item.date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+        saveToLocalStorage();
+        updateUI();
+    }
+
+    // 删除导航项
+    function deleteNavItem(itemId) {
+        if (!confirm('确定要删除这个导航项吗？')) {
+            return;
+        }
+
+        appState.data = appState.data.filter(item => item.id !== itemId);
+        saveToLocalStorage();
+        updateUI();
+    }
+
+    // 导出数据
+    function exportData() {
+        const dataStr = JSON.stringify({
+            config: appState.config,
+            categoryList: appState.categoryList,
+            data: appState.data
+        }, null, 2);
+
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+
         const a = document.createElement('a');
-        a.href = url; a.download = filename;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        a.href = url;
+        a.download = 'nav-site-data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
 
-    function findQuestionIndexById(id) {
-        return questions.findIndex(q => q.id === id);
-    }
-
-    function render() {
-        sortableInstances.forEach(inst => inst.destroy());
-        sortableInstances = [];
-        if (groupSortable) {
-            groupSortable.destroy();
-            groupSortable = null;
-        }
-
-        const groups = getGroups();
-        let groupNums = Object.keys(groups).map(Number);
-
-        const savedOrder = localStorage.getItem(GROUP_ORDER_KEY);
-        if (savedOrder) {
-            try {
-                const order = JSON.parse(savedOrder);
-                groupNums.sort((a, b) => {
-const ia = order.indexOf(a);
-                    const ib = order.indexOf(b);
-                    if (ia === -1 && ib === -1) return a - b;
-                    if (ia === -1) return 1;
-                    if (ib === -1) return -1;
-                    return ia - ib;
-                });
-            } catch (e) {
-                groupNums.sort((a, b) => a - b);
-            }
-        } else {
-            groupNums.sort((a, b) => a - b);
-        }
-
-        const container = document.getElementById('groupsContainer');
-        if (groupNums.length === 0) {
-            container.innerHTML = '<div class="empty-state">暂无问题，请添加或导入</div>';
-            return;
-        }
-
-        container.innerHTML = '';
-        groupNums.forEach(groupNum => {
-            const groupItems = groups[groupNum];
-            const total = groupItems.length;
-            const showAll = groupItems.some(q => q._showAll);
-
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'group-section';
-
-            const header = document.createElement('div');
-            header.className = 'group-header';
-            header.innerHTML = `
-                    <span class="group-drag-handle">⋮⋮</span>
-                    <span>第 ${groupNum} 组 (${total})</span>
-                `;
-
-            const list = document.createElement('ul');
-            list.className = 'group-list';
-            list.dataset.group = groupNum;
-
-            const itemsToShow = showAll ? groupItems : groupItems.slice(0, 12);
-            itemsToShow.forEach(q => {
-                const li = document.createElement('li');
-                li.className = 'question-item';
-                li.dataset.id = q.id;
-
-                li.innerHTML = `
-                        <span class="drag-handle">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="5" y1="9" x2="19" y2="9"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <line x1="5" y1="15" x2="19" y2="15"></line>
-                            </svg>
-                        </span>
-                        <span class="question-text">${q.msg}</span>
-                        <input type="text" class="question-input" value="${q.msg}" style="display:none;" />
-                        <div class="btn-group">
-                            <button class="edit-btn">✏️ 编辑</button>
-                            <button class="save-btn" style="display:none;">✅ 保存</button>
-                            <button class="cancel-btn" style="display:none;">❌ 取消</button>
-                            <button class="delete-btn">🗑️ 删除</button>
-                        </div>
-                    `;
-
-                // 编辑/删除事件
-                li.addEventListener('click', (e) => {
-                    const btn = e.target;
-                    const id = q.id;
-                    if (btn.classList.contains('edit-btn')) {
-                        li.querySelector('.question-text').style.display = 'none';
-                        li.querySelector('.question-input').style.display = 'block';
-                        li.querySelector('.question-input').focus();
-                    } else if (btn.classList.contains('save-btn')) {
-                        const input = li.querySelector('.question-input');
-                        const newText = input.value.trim();
-                        if (newText) {
-                            const idx = findQuestionIndexById(id);
-                            if (idx >= 0) {
-                                questions[idx].msg = newText;
-                                saveToStorage();
-                                render();
-                            }
-                        }
-                    } else if (btn.classList.contains('cancel-btn')) {
-                        const input = li.querySelector('.question-input');
-                        input.value = q.msg;
-                        li.querySelector('.question-text').style.display = 'block';
-                        input.style.display = 'none';
-                    } else if (btn.classList.contains('delete-btn')) {
-                        const idx = findQuestionIndexById(id);
-                        if (idx >= 0) {
-                            questions.splice(idx, 1);
-                            saveToStorage();
-                            render();
-                            updateGroupSelect();
-                        }
-                    }
-                });
-
-                const input = li.querySelector('.question-input');
-                input.addEventListener('input', () => {
-                    const hasChange = input.value.trim() !== q.msg;
-                    li.querySelector('.save-btn').style.display = hasChange ? 'inline-block' : 'none';
-                    li.querySelector('.cancel-btn').style.display = hasChange ? 'inline-block' : 'none';
-                });
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') li.querySelector('.save-btn').click();
-                });
-
-                // 移动端长按显示
-                let touchStart = 0;
-                li.addEventListener('touchstart', () => touchStart = Date.now());
-                li.addEventListener('touchend', () => {
-                    if (Date.now() - touchStart > 300) {
-                        li.classList.add('show-actions');
-                        setTimeout(() => li.classList.remove('show-actions'), 3000);
-                    }
-                });
-
-                // 👇 新增：点击文本弹窗
-                li.querySelector('.question-text').addEventListener('click', () => {
-                    document.getElementById('modalText').textContent = q.msg;
-                    document.getElementById('modalOverlay').classList.add('show');
-                });
-
-                list.appendChild(li);
-            });
-
-            if (total > 12) {
-                const moreBtn = document.createElement('button');
-                moreBtn.className = 'more-btn';
-                moreBtn.textContent = showAll ? '▴ 收起' : '▾ 更多';
-                moreBtn.onclick = () => {
-                    groupItems.forEach(q => q._showAll = !showAll);
-                    saveToStorage();
-                    render();
-                };
-                groupDiv.append(header, list, moreBtn);
-            } else {
-                groupDiv.append(header, list);
-            }
-
-            container.appendChild(groupDiv);
-
-            // 👇 替换为支持跨组拖拽的 Sortable
-            const sortable = new Sortable(list, {
-                group: 'shared-questions',
-                animation: 150,
-                handle: '.drag-handle',
-                onAdd: function (evt) {
-                    const draggedEl = evt.item;
-                    const newGroupNum = Number(list.dataset.group);
-                    const id = draggedEl.dataset.id;
-                    const idx = findQuestionIndexById(id);
-                    if (idx >= 0) {
-                        questions[idx].groupNum = newGroupNum;
-                        const newGroupItems = questions.filter(q => q.groupNum === newGroupNum);
-                        questions[idx].weight = newGroupItems.length;
-                    }
-                    draggedEl.remove();
-                    saveToStorage();
-                    render();
-                },
-                onUpdate: function (evt) {
-                    const { oldIndex, newIndex } = evt;
-                    if (oldIndex === newIndex) return;
-                    const fullGroup = questions.filter(q => q.groupNum === groupNum);
-                    const moved = fullGroup.splice(oldIndex, 1)[0];
-                    fullGroup.splice(newIndex, 0, moved);
-                    fullGroup.forEach((item, i) => {
-                        const idx = findQuestionIndexById(item.id);
-                        if (idx >= 0) questions[idx].weight = i + 1;
-                    });
-                    saveToStorage();
-                    render();
-                }
-            });
-            sortableInstances.push(sortable);
-        });
-
-        // 分组拖拽
-        groupSortable = new Sortable(container, {
-            animation: 150,
-            handle: '.group-drag-handle',
-            draggable: '.group-section',
-            onEnd: function () {
-                const newOrder = Array.from(container.children)
-                    .map(child => Number(child.querySelector('.group-list').dataset.group));
-                localStorage.setItem(GROUP_ORDER_KEY, JSON.stringify(newOrder));
-                showToast('✅ 分组顺序已更新');
-            }
-        });
-    }
-
-
-
-    // --- 更新 handleLocalImport 使用现代 File System Access API ---
-    async function handleLocalImport() {
-        if (!window.showOpenFilePicker) {
-            // 降级：传统 input 方式（无法同步，只能导出）
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                    parseAndLoad(reader.result);
-                    // 传统方式无法获得可写句柄，清空 currentFileHandle
-                    currentFileHandle = null;
-                };
-                reader.readAsText(file);
-            };
-            input.click();
+    // 导入数据
+    function importData() {
+        const dataStr = document.getElementById('import-data').value.trim();
+        if (!dataStr) {
+            alert('请提供JSON数据');
             return;
         }
 
         try {
-            const [fileHandle] = await window.showOpenFilePicker({
-                types: [{
-                    description: 'JSON 文件',
-                    accept: { 'application/json': ['.json'] }
-                }],
-                excludeAcceptAllOption: true
-            });
-            const file = await fileHandle.getFile();
-            const text = await file.text();
-            parseAndLoad(text);
-            // 保存句柄用于后续“同步”
-            currentFileHandle = fileHandle;
-            showToast('✅ 已从本地加载，支持同步回写');
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.error('文件导入失败:', err);
-                showToast('❌ 文件导入被取消或失败');
+            const importedData = JSON.parse(dataStr);
+
+            // 验证数据结构
+            if (!importedData.categoryList || !importedData.data) {
+                throw new Error('无效的数据结构');
             }
+
+            // 更新状态
+            appState.config = importedData.config || defaultData.config;
+            appState.categoryList = importedData.categoryList;
+            appState.data = importedData.data;
+
+            // 重建groupOrder
+            appState.groupOrder = importedData.categoryList.map(c => c.id);
+
+            saveToLocalStorage();
+            updateUI();
+            closeAllModals();
+            alert('数据导入成功！');
+        } catch (e) {
+            alert('导入失败：' + e.message);
         }
     }
 
-    // --- 新增：导出新文件 ---
-    document.getElementById('exportBtn').addEventListener('click', () => {
-        const exportData = {
-            version: '1.0',
-            exportedAt: getCurrentDateTime(),
-            data: questions.map(q => ({
-                id: q.id,
-                msg: q.msg,
-                groupNum: q.groupNum,
-                weight: q.weight,
-                date: q.date
-            }))
-        };
-        const jsonStr = JSON.stringify(exportData, null, 2);
-        downloadFile(jsonStr, `qa-export-${new Date().toISOString().slice(0, 10)}.json`);
-    });
-
-    // --- 新增：同步（覆盖源文件）---
-    document.getElementById('syncBtn').addEventListener('click', async () => {
-        if (!currentFileHandle) {
-            showToast('⚠️ 请先通过"本地导入"打开一个文件，才能同步回写');
-            return;
-        }
-
-        try {
-            const writable = await currentFileHandle.createWritable();
-            const syncData = {
-                version: '1.0',
-                syncedAt: getCurrentDateTime(),
-                data: questions.map(q => ({
-                    id: q.id,
-                    msg: q.msg,
-                    groupNum: q.groupNum,
-                    weight: q.weight,
-                    date: q.date
-                }))
-            };
-            await writable.write(JSON.stringify(syncData, null, 2));
-            await writable.close();
-            showToast('✅ 已成功同步到原文件！');
-        } catch (err) {
-            console.error('同步失败:', err);
-            showToast('❌ 同步失败：' + (err.message || '未知错误'));
-        }
-    });
-
-
-
-    function handleUrlImport() {
-        const url = document.getElementById('urlInput').value.trim();
-        if (!url) {
-            showToast('请输入 URL');
-            return;
-        }
-        fetch(url)
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                let rawData = data;
-                if (data && Array.isArray(data.data)) rawData = data.data;
-                parseAndLoad(JSON.stringify(rawData));
-            })
-            .catch(err => {
-                console.error(err);
-                showToast('❌ URL 加载失败');
-            });
-    }
-
-    function hideInitOptions() {
-        document.getElementById('initOptions').classList.remove('show');
-    }
-
-    // --- 事件绑定 ---
-    document.getElementById('initDataBtn').addEventListener('click', () => {
-        document.getElementById('initOptions').classList.toggle('show');
-    });
-    const addBtn = document.getElementById('addBtn');
-
-    // 添加按钮事件监听器
-    addBtn.addEventListener('click', () => {
-        const input = document.getElementById('addInput');
-        const select = document.getElementById('addGroupSelect');
-        
-        const msg = input.value.trim();
-        if (!msg) {
-            showToast('请输入问题内容');
-            return;
-        }
-
-        let groupNum = Number(select.value);
-        if (select.value === 'new') {
-            // 获取当前最大的组号，创建新组
-            const maxGroup = questions.length > 0 
-                ? Math.max(...questions.map(q => q.groupNum)) 
-                : -1;
-            groupNum = maxGroup + 1;
-        } else if (!select.value) {
-            // 如果未选择分组，使用默认分组 0
-            groupNum = 0;
-        }
-
-        const newQuestion = {
-            id: generateId(),
-            msg: msg,
-            groupNum: groupNum,
-            weight: questions.filter(q => q.groupNum === groupNum).length + 1, // 使用组内问题数量作为权重
-            date: getCurrentDateTime()
-        };
-
-        questions.push(newQuestion);
-        saveToStorage();
-        render();
-        updateGroupSelect();
-
-        // 清空输入框
-        input.value = '';
-        select.value = '';
-        
-        showToast('✅ 问题已添加');
-    });
-
-    // 回车键添加问题
-    document.getElementById('addInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addBtn.click();
-        }
-    });
-
-    document.getElementById('localImportBtn').addEventListener('click', handleLocalImport);
-    document.getElementById('urlImportBtn').addEventListener('click', handleUrlImport);
-    // 👇 新增：清空功能
-    document.getElementById('clearBtn').addEventListener('click', () => {
-        if (confirm('确定要清空所有问题吗？此操作不可恢复。')) {
-            questions = [];
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.removeItem(GROUP_ORDER_KEY);
-            localStorage.removeItem(HAS_IMPORTED_KEY);
-            render();
-            updateGroupSelect();
-            showToast('🧹 所有数据已清空');
-        }
-    });
-
-
-    // 关闭模态框
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('modalOverlay').classList.remove('show');
-    });
-
-    document.getElementById('modalOverlay').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('modalOverlay')) {
-            document.getElementById('modalOverlay').classList.remove('show');
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.getElementById('modalOverlay').classList.remove('show');
-        }
-    });
-
-    // 启动
-    tryLoadData();
+    // 初始化应用
+    document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
-
 </html>
