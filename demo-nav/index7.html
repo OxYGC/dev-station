@@ -1,333 +1,398 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Nav-site</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavHub</title>
+    <link id="favicon" rel="icon" href="">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-
-        /* ===== gradient.style 风格流动背景 ===== */
-        body{
-            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-            min-height:100vh;
-            color:#1e293b;
-            padding:20px;
-            position:relative;
-            overflow-x:hidden;
-        }
-        body::before{
-            content:"";
-            position:fixed;
-            inset:0;
-            z-index:-1;
-            background:linear-gradient(
-                    120deg,
-                    #6366f1,
-                    #22d3ee,
-                    #a78bfa,
-                    #6366f1
-            );
-            background-size:300% 300%;
-            animation:gradientMove 18s ease infinite;
-        }
-        @keyframes gradientMove{
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --accent-color: #6366f1;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
         }
 
-        .container{max-width:1100px;margin:auto}
-        .hidden{display:none}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ===== 毛玻璃容器 ===== */
-        .toolbar,.group{
-            background:rgba(255,255,255,.75);
-            backdrop-filter:blur(14px);
-            -webkit-backdrop-filter:blur(14px);
-            border-radius:12px;
-        }
-
-        /* Toolbar */
-        .toolbar{
-            display:flex;
-            gap:10px;
-            align-items:center;
-            padding:12px 14px;
-            margin-bottom:20px;
-        }
-        .toolbar h1{font-size:22px}
-        .search{
-            flex:1;
-            max-width:240px;
-            padding:8px 12px;
-            border-radius:8px;
-            border:1px solid rgba(0,0,0,.1);
-            background:rgba(255,255,255,.6);
+        body {
+            font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #f3f4f6, #e5e7eb, #d1d5db, #f3f4f6);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Buttons */
-        .btn{padding:6px 12px;border-radius:6px;border:none;cursor:pointer}
-        .btn-outline{background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.1)}
+        @keyframes gradientBG { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
 
-        /* Group */
-        .group{
-            margin-bottom:20px;
-            box-shadow:0 10px 30px rgba(0,0,0,.08);
-        }
-        .group-header{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:12px 16px;
-            cursor:grab;
-            user-select:none;
-        }
-        .group-header.dragging{opacity:.5}
-        .group-title{font-weight:600}
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
-        .cards{
-            padding:14px;
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-            gap:10px;
-            min-height:80px;
-        }
-        .cards.drag-over{
-            outline:2px dashed #6366f1;
-            border-radius:10px;
+        /* Header Layout Optimization */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 10px 15px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
         }
 
-        /* Card */
-        .card{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:8px 10px;
-            border-radius:10px;
-            background:rgba(255,255,255,.9);
-            box-shadow:0 2px 6px rgba(0,0,0,.08);
-            cursor:grab;
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-left h1 { font-size: 1.2rem; font-weight: 800; background: linear-gradient(to right, #4f46e5, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-left p { font-size: 0.75rem; color: var(--text-sub); border-left: 1px solid #ccc; padding-left: 10px; }
+
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        /* Search Box Animation */
+        .search-wrapper { position: relative; display: flex; align-items: center; }
+        .search-bar {
+            width: 150px;
+            padding: 6px 12px 6px 30px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.5);
+            outline: none;
+            font-size: 13px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card.dragging{opacity:.5}
-        .ico{width:36px;height:36px;border-radius:6px;background:#eef2ff;display:flex;align-items:center;justify-content:center}
-        .ico img{width:100%;height:100%;object-fit:contain}
-        .info{flex:1;min-width:0}
-        .info h3{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .info p{font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .search-bar:focus { width: 300px; background: white; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .search-icon { position: absolute; left: 10px; font-size: 12px; color: var(--text-sub); pointer-events: none; }
+        .search-hint { position: absolute; right: 10px; font-size: 10px; color: #999; border: 1px solid #ddd; padding: 0 4px; border-radius: 3px; pointer-events: none; }
+
+        /* Gear Menu */
+        .settings-container { position: relative; }
+        .gear-btn {
+            background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-sub);
+            padding: 5px; border-radius: 50%; transition: 0.3s; display: flex;
+        }
+        .gear-btn:hover { background: rgba(0,0,0,0.05); transform: rotate(45deg); }
+
+        .dropdown-menu {
+            position: absolute; right: 0; top: 35px; background: white;
+            border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none; flex-direction: column; min-width: 160px; z-index: 1100; overflow: hidden;
+            border: 1px solid #eee;
+        }
+        .dropdown-menu.show { display: flex; }
+        .dropdown-item {
+            padding: 10px 15px; font-size: 13px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 8px; color: var(--text-main);
+        }
+        .dropdown-item:hover { background: #f8fafc; color: var(--accent-color); }
+        .dropdown-item.danger { color: #ef4444; border-top: 1px solid #f1f5f9; }
+
+        /* Content Grid */
+        .category-section { margin-bottom: 20px; background: rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 15px; border: 1px solid var(--glass-border); }
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .category-info { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
+        .category-count { font-size: 0.7rem; color: #777; background: rgba(0,0,0,0.05); padding: 1px 6px; border-radius: 8px; }
+        .expand-btn { background: none; border: 1px solid #ccc; font-size: 11px; padding: 2px 8px; border-radius: 4px; cursor: pointer; color: var(--text-sub); display: none; }
+
+        .card-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;
+            max-height: 140px; overflow: hidden; transition: max-height 0.4s ease;
+        }
+        .category-section.expanded .card-grid { max-height: 2000px; }
+
+        .site-card {
+            background: white; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: inherit; border: 1px solid #f1f5f9; height: 56px; transition: 0.2s;
+        }
+        .site-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: var(--accent-color); }
+        .site-logo { width: 28px; height: 28px; border-radius: 4px; flex-shrink: 0; }
+        .site-info { flex: 1; min-width: 0; }
+        .site-name { font-weight: 600; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .site-desc { font-size: 0.65rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-sub); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 20px; }
+        footer a { color: var(--accent-color); text-decoration: none; }
+
+        /* Overlays */
+        #context-menu { position: fixed; background: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; z-index: 2000; padding: 5px 0; min-width: 120px; border: 1px solid #eee; }
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(2px); }
+        .modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 12px; }
+        .form-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+        .loading { position: fixed; inset:0; background: #f8fafc; z-index: 9999; display: flex; align-items: center; justify-content: center; font-weight: bold; }
     </style>
 </head>
-
 <body>
+
+<div id="loading" class="loading">正在同步配置...</div>
+
 <div class="container">
+    <header>
+        <div class="header-left">
+            <h1 id="site-title">NavHub</h1>
+            <p id="site-subtitle"></p>
+        </div>
+        <div class="header-right">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" class="search-bar" placeholder="搜索...">
+                <span class="search-hint">/</span>
+            </div>
+            <div class="settings-container">
+                <button class="gear-btn" onclick="ui.toggleSettings(event)">⚙️</button>
+                <div id="dropdown-menu" class="dropdown-menu">
+                    <div class="dropdown-item" onclick="ui.showModal('category')">📁 新增分组</div>
+                    <div class="dropdown-item" onclick="io.exportData()">📤 导出 JSON</div>
+                    <div class="dropdown-item" onclick="document.getElementById('import-file').click()">📥 导入 JSON</div>
+                    <div class="dropdown-item danger" onclick="app.resetData()">🧹 清空并重置</div>
+                </div>
+                <input type="file" id="import-file" hidden accept=".json" onchange="io.importData(event)">
+            </div>
+        </div>
+    </header>
 
-    <div class="toolbar">
-        <h1 id="title">导航站点</h1>
-        <input id="search" class="search" placeholder="搜索站点 / URL（/ 或 Ctrl+K）"/>
-        <button class="btn btn-outline" id="addGroup">+ 新建类型分组</button>
+    <main id="nav-content"></main>
+</div>
+
+<footer id="site-footer"></footer>
+
+<div id="context-menu"></div>
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <h3 id="modal-title" style="margin-bottom:15px; font-size: 1rem;">管理</h3>
+        <div id="modal-form"></div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px">
+            <button style="padding: 5px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor:pointer;" onclick="ui.closeModal()">取消</button>
+            <button style="padding: 5px 12px; border-radius: 6px; border: none; background: var(--accent-color); color:white; cursor:pointer;" id="modal-save">保存</button>
+        </div>
     </div>
-
-    <div id="groups"></div>
-
-    <footer id="footer" style="margin-top:40px;text-align:center;color:#e5e7eb;font-size:13px"></footer>
-
 </div>
 
 <script>
-    /* ================= 配置 ================= */
-    const STORAGE_KEY='nav_site_data_v2';
-    const GROUP_ORDER_KEY='nav_group_order';
-    const DEFAULT_CONF='https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
+    const STORAGE_KEY = 'nav_site_data_v2';
+    const DEFAULT_CONF_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
 
-    let state={config:{},categoryList:[],data:[]};
+    const app = {
+        state: { config: {}, categoryList: [], data: [] },
 
-    /* ================= 工具 ================= */
-    const $=id=>document.getElementById(id);
-    const save=()=>{
-        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-        localStorage.setItem(GROUP_ORDER_KEY,JSON.stringify(state.categoryList.map(c=>c.id)));
-    };
-    const autoLogo=url=>{
-        try{return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`}
-        catch{return ''}
-    };
-    const normalizeData=()=>{
-        const seenCat=new Set();
-        state.categoryList=state.categoryList.filter(c=>{
-            if(seenCat.has(c.id)) return false;
-            seenCat.add(c.id);
-            return true;
-        });
-        const seenItem=new Set();
-        state.data=state.data.filter(i=>{
-            if(seenItem.has(i.id)) return false;
-            seenItem.add(i.id);
-            return true;
-        });
-        state.categoryList.forEach(c=>{
-            const items=state.data.filter(i=>i.categoryId===c.id);
-            items.sort((a,b)=>(a.weight||0)-(b.weight||0))
-                .forEach((it,idx)=>it.weight=idx+1);
-        });
-    };
+        async init() {
+            const local = localStorage.getItem(STORAGE_KEY);
+            if (local) {
+                this.state = JSON.parse(local);
+                this.finish();
+            } else {
+                await this.loadRemote();
+            }
+        },
 
-    /* ================= 初始化 ================= */
-    async function init(){
-        const local=localStorage.getItem(STORAGE_KEY);
-        if(local){
-            state=JSON.parse(local);
-        }else{
-            const conf=await fetch(DEFAULT_CONF).then(r=>r.json());
-            state.config=conf.config||{};
-            const remote=await fetch(conf.api.homeUrl).then(r=>r.json());
-            state.categoryList=remote.categoryList||[];
-            state.data=remote.data||[];
-            normalizeData();
-            save();
-        }
-        render();
-    }
+        async loadRemote() {
+            try {
+                const resp = await fetch(DEFAULT_CONF_URL);
+                const confData = await resp.json();
+                this.state.config = confData.config;
 
-    /* ================= 渲染 ================= */
-    function render(){
-        $('title').innerText=state.config.title||'导航站点';
-        $('footer').innerHTML=(state.config.footerText||'')
-            .replace('{CURRENT_YEAR}',new Date().getFullYear());
-
-        const box=$('groups'); box.innerHTML='';
-        state.categoryList.forEach(cat=>{
-            const items=state.data.filter(d=>d.categoryId===cat.id);
-
-            const g=document.createElement('div');
-            g.className='group';
-
-            g.innerHTML=`
-<div class="group-header" draggable="true" data-id="${cat.id}">
-  <div class="group-title">${cat.name} (${items.length})</div>
-  <button class="btn btn-outline" onclick="addItem(${cat.id})">+ 站点</button>
-</div>
-<div class="cards" data-id="${cat.id}"></div>
-`;
-            const header=g.querySelector('.group-header');
-            const cards=g.querySelector('.cards');
-
-            header.ondragstart=e=>{
-                header.classList.add('dragging');
-                e.dataTransfer.setData('group',cat.id);
-            };
-            header.ondragend=()=>{
-                header.classList.remove('dragging');
-                const ids=[...document.querySelectorAll('.group-header')]
-                    .map(h=>+h.dataset.id);
-                state.categoryList.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
-                save();
-            };
-            header.ondragover=e=>{
-                e.preventDefault();
-                const dragging=document.querySelector('.group-header.dragging');
-                if(dragging && dragging!==header){
-                    header.parentNode.before(dragging.parentNode);
+                if (confData.api && confData.api.homeUrl) {
+                    const dataResp = await fetch(confData.api.homeUrl);
+                    const initData = await dataResp.json();
+                    this.state.categoryList = initData.categoryList;
+                    this.state.data = initData.data;
+                    this.save();
                 }
-            };
+            } catch (e) { console.error("Load failed", e); }
+            this.finish();
+        },
 
-            items.forEach(i=>{
-                const c=document.createElement('div');
-                c.className='card';
-                c.draggable=true;
-                c.dataset.id=i.id;
-                c.innerHTML=`
-<div class="ico"><img src="${i.logoUrl||autoLogo(i.url)}"></div>
-<div class="info">
-  <h3>${i.name}</h3>
-  <p>${i.url}</p>
-</div>
-`;
-                c.ondragstart=()=>c.classList.add('dragging');
-                c.ondragend=()=>{
-                    c.classList.remove('dragging');
-                    document.querySelectorAll('.cards').forEach(box=>{
-                        const cid=+box.dataset.id;
-                        [...box.children].forEach((el,idx)=>{
-                            const item=state.data.find(d=>d.id==el.dataset.id);
-                            if(item){
-                                item.categoryId=cid;
-                                item.weight=idx+1;
-                            }
-                        });
-                    });
-                    save();
+        finish() {
+            document.getElementById('loading').style.display = 'none';
+            this.applyConfig();
+            this.render();
+            this.bindEvents();
+        },
+
+        applyConfig() {
+            const c = this.state.config;
+            document.title = c.title || "NavHub";
+            document.getElementById('site-title').innerText = c.title || "NavHub";
+            document.getElementById('site-subtitle').innerText = c.subTitle || "";
+            document.getElementById('favicon').href = c.icoUrl || "";
+
+            let footerHtml = c.footerText || "";
+            footerHtml = footerHtml.replace("{CURRENT_YEAR}", new Date().getFullYear());
+            document.getElementById('site-footer').innerHTML = footerHtml;
+        },
+
+        save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state)); },
+        render() { ui.renderAll(this.state); },
+        resetData() { if(confirm('确定重置？所有本地修改将丢失！')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+    };
+
+    const ui = {
+        renderAll(state) {
+            const container = document.getElementById('nav-content');
+            container.innerHTML = '';
+            [...state.categoryList].sort((a,b) => a.weight - b.weight).forEach(cat => {
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                section.dataset.id = cat.id;
+                const sites = state.data.filter(s => s.categoryId === cat.id).sort((a,b) => a.weight - b.weight);
+
+                section.innerHTML = `
+                <div class="category-header">
+                    <div class="category-info">
+                        <span>${cat.name}</span>
+                        <span class="category-count">${sites.length}</span>
+                    </div>
+                    <button class="expand-btn" id="exp-${cat.id}" onclick="ui.toggleExpand(${cat.id})">展开</button>
+                </div>
+                <div class="card-grid" id="grid-${cat.id}"></div>
+            `;
+                const grid = section.querySelector('.card-grid');
+                sites.forEach(s => grid.appendChild(this.createCard(s)));
+                container.appendChild(section);
+                this.checkOverflow(cat.id);
+                this.bindDrag(section, 'category');
+                section.oncontextmenu = (e) => this.showMenu(e, 'category', cat.id);
+            });
+        },
+
+        createCard(site) {
+            const card = document.createElement('a');
+            card.className = 'site-card'; card.href = site.url; card.target = '_blank'; card.dataset.id = site.id;
+            card.draggable = true;
+            const icon = `https://www.google.com/s2/favicons?domain=${new URL(site.url).hostname}&sz=64`;
+            card.innerHTML = `
+            <img class="site-logo" src="${icon}" onerror="this.src='https://via.placeholder.com/32'">
+            <div class="site-info">
+                <div class="site-name">${site.name}</div>
+                <div class="site-desc">${site.desc || site.url}</div>
+            </div>
+        `;
+            card.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); this.showMenu(e, 'site', site.id); };
+            this.bindDrag(card, 'site');
+            return card;
+        },
+
+        toggleSettings(e) {
+            e.stopPropagation();
+            document.getElementById('dropdown-menu').classList.toggle('show');
+        },
+
+        checkOverflow(catId) {
+            setTimeout(() => {
+                const grid = document.getElementById(`grid-${catId}`);
+                if (grid && grid.scrollHeight > 145) document.getElementById(`exp-${catId}`).style.display = 'block';
+            }, 50);
+        },
+
+        toggleExpand(id) {
+            const sec = document.querySelector(`.category-section[data-id="${id}"]`);
+            const btn = document.getElementById(`exp-${id}`);
+            const isExp = sec.classList.toggle('expanded');
+            btn.innerText = isExp ? '收起' : '展开';
+        },
+
+        showMenu(e, type, id) {
+            e.preventDefault();
+            const menu = document.getElementById('context-menu');
+            menu.style.display = 'block'; menu.style.left = e.clientX + 'px'; menu.style.top = e.clientY + 'px';
+            let items = type === 'category' ? [
+                { label: '➕ 新增站点', act: () => ui.showModal('site', { categoryId: id }) },
+                { label: '🗑 删除分组', act: () => actions.delCat(id) }
+            ] : [
+                { label: '✏️ 编辑', act: () => ui.showModal('site', { id }) },
+                { label: '🗑 删除', act: () => actions.delSite(id) }
+            ];
+            menu.innerHTML = items.map(i => `<div class="dropdown-item">${i.label}</div>`).join('');
+            menu.querySelectorAll('.dropdown-item').forEach((el, i) => el.onclick = items[i].act);
+        },
+
+        showModal(type, p = {}) {
+            const overlay = document.getElementById('modal-overlay');
+            const form = document.getElementById('modal-form');
+            overlay.style.display = 'flex';
+            if (type === 'category') {
+                form.innerHTML = `<div class="form-group"><label>分组名</label><input id="f-name"></div>`;
+                document.getElementById('modal-save').onclick = () => { actions.addCat(document.getElementById('f-name').value); ui.closeModal(); };
+            } else {
+                const s = p.id ? app.state.data.find(x => x.id == p.id) : null;
+                form.innerHTML = `<div class="form-group"><label>名称</label><input id="f-name" value="${s?s.name:''}"></div>
+                              <div class="form-group"><label>URL</label><input id="f-url" value="${s?s.url:'https://'}"></div>
+                              <div class="form-group"><label>描述</label><input id="f-desc" value="${s?s.desc:''}"></div>`;
+                document.getElementById('modal-save').onclick = () => {
+                    const d = { name: document.getElementById('f-name').value, url: document.getElementById('f-url').value, desc: document.getElementById('f-desc').value, categoryId: p.categoryId || s.categoryId };
+                    p.id ? actions.updSite(p.id, d) : actions.addSite(d);
+                    ui.closeModal();
                 };
-                cards.appendChild(c);
-            });
+            }
+        },
+        closeModal() { document.getElementById('modal-overlay').style.display = 'none'; },
 
-            cards.ondragover=e=>{
-                e.preventDefault();
-                const dragging=document.querySelector('.card.dragging');
-                if(dragging){
-                    const after=[...cards.children]
-                        .find(el=>e.clientY<el.getBoundingClientRect().top+el.offsetHeight/2);
-                    cards.insertBefore(dragging,after||null);
-                }
+        bindDrag(el, type) {
+            el.ondragstart = (e) => { e.stopPropagation(); this.dt = type; this.di = el.dataset.id; el.style.opacity = '0.4'; };
+            el.ondragend = () => el.style.opacity = '1';
+            el.ondragover = (e) => e.preventDefault();
+            el.ondrop = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                if (this.dt === 'site' && type === 'category') actions.moveSite(this.di, el.dataset.id);
+                if (this.dt === type) actions.reorder(type, this.di, el.dataset.id);
             };
-
-            box.appendChild(g);
-        });
-    }
-
-    /* ================= 新增站点（修复） ================= */
-    async function addItem(cid){
-        let url='';
-        try{
-            url=(await navigator.clipboard.readText()).trim();
-        }catch{}
-        if(!/^https?:\/\//.test(url)){
-            url=prompt('请输入站点 URL');
         }
-        if(!/^https?:\/\//.test(url)) return;
+    };
 
-        if(state.data.some(i=>i.url===url)) return;
+    const actions = {
+        addCat(name) { app.state.categoryList.push({id: Date.now(), name, weight: 99}); this.fin(); },
+        delCat(id) { if(confirm('确定删除分组？')) { app.state.categoryList = app.state.categoryList.filter(c => c.id != id); this.fin(); } },
+        addSite(d) { app.state.data.push({...d, id: Date.now(), weight: 99}); this.fin(); },
+        updSite(id, d) { const i = app.state.data.findIndex(x => x.id == id); app.state.data[i] = {...app.state.data[i], ...d}; this.fin(); },
+        delSite(id) { app.state.data = app.state.data.filter(x => x.id != id); this.fin(); },
+        moveSite(sid, cid) { const s = app.state.data.find(x => x.id == sid); if(s) { s.categoryId = parseInt(cid); this.fin(); } },
+        reorder(type, sid, tid) {
+            const list = type === 'category' ? app.state.categoryList : app.state.data;
+            const sIdx = list.findIndex(x => x.id == sid), tIdx = list.findIndex(x => x.id == tid);
+            const [m] = list.splice(sIdx, 1); list.splice(tIdx, 0, m);
+            list.forEach((x, i) => x.weight = i); this.fin();
+        },
+        fin() { app.save(); app.render(); }
+    };
 
-        const u=new URL(url);
-        state.data.push({
-            id:Date.now(),
-            categoryId:cid,
-            name:u.hostname.replace('www.',''),
-            desc:'',
-            url,
-            logoUrl:autoLogo(url),
-            weight:state.data.filter(i=>i.categoryId===cid).length+1,
-            date:new Date().toISOString()
-        });
-        save();render();
-    }
+    const io = {
+        exportData() {
+            const blob = new Blob([JSON.stringify(app.state, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nav-config.json'; a.click();
+        },
+        importData(e) {
+            const reader = new FileReader();
+            reader.onload = (f) => { app.state = JSON.parse(f.target.result); app.save(); location.reload(); };
+            reader.readAsText(e.target.files[0]);
+        }
+    };
 
-    /* ================= 搜索 ================= */
-    $('search').oninput=e=>{
-        const q=e.target.value.toLowerCase();
-        document.querySelectorAll('.group').forEach(g=>{
-            let hit=false;
-            g.querySelectorAll('.card').forEach(c=>{
-                const ok=c.innerText.toLowerCase().includes(q);
-                c.classList.toggle('hidden',!ok);
-                if(ok) hit=true;
+    app.bindEvents = () => {
+        window.onclick = () => {
+            document.getElementById('dropdown-menu').classList.remove('show');
+            document.getElementById('context-menu').style.display = 'none';
+        };
+
+        const searchInput = document.getElementById('search-input');
+        searchInput.oninput = (e) => {
+            const v = e.target.value.toLowerCase();
+            document.querySelectorAll('.site-card').forEach(c => {
+                c.style.display = c.innerText.toLowerCase().includes(v) ? 'flex' : 'none';
             });
-            g.classList.toggle('hidden',!hit);
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                searchInput.focus();
+            }
         });
     };
 
-    /* ================= 快捷键 ================= */
-    document.addEventListener('keydown',e=>{
-        if(e.key==='/'||((e.ctrlKey||e.metaKey)&&e.key==='k')){
-            e.preventDefault();$('search').focus();
-        }
-        if(e.key==='Escape'){
-            $('search').value='';
-            $('search').dispatchEvent(new Event('input'));
-        }
-    });
-
-    init();
+    app.init();
 </script>
 </body>
 </html>

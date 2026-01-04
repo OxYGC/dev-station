@@ -1,295 +1,413 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Nav-site</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NavHub | Web3第一导航站</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-            background:#f9fafb;color:#1e293b;padding:20px
-        }
-        .container{max-width:1100px;margin:auto}
-        .hidden{display:none}
-
-        /* Toolbar */
-        .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:20px}
-        .toolbar h1{font-size:22px}
-        .search{
-            flex:1;
-            max-width:260px;
-            padding:8px 12px;
-            border:1px solid #cbd5e1;
-            border-radius:8px
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --accent-color: #764ba2;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
         }
 
-        /* Buttons */
-        .btn{padding:6px 12px;border-radius:6px;border:none;cursor:pointer}
-        .btn-primary{background:#4f46e5;color:#fff}
-        .btn-outline{background:#fff;border:1px solid #cbd5e1}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Group */
-        .group{background:#fff;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
-        .group-header{
-            display:flex;align-items:center;justify-content:space-between;
-            padding:12px 16px;background:#f8fafc;
-            cursor:grab;user-select:none
-        }
-        .group-header.dragging{opacity:.5}
-        .group-title{font-weight:600}
-        .cards{
-            padding:14px;
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-            gap:10px;min-height:80px
-        }
-        .cards.drag-over{
-            background:#eef2ff;border-radius:10px
+        body {
+            font-family: 'PingFang SC', system-ui, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            padding: 40px 20px;
         }
 
-        /* Card */
-        .card{
-            display:flex;align-items:center;gap:10px;
-            padding:8px 10px;border-radius:10px;
-            background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);
-            cursor:grab
+        @keyframes gradientBG { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header { text-align: center; margin-bottom: 30px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        .search-bar { margin: 15px auto; max-width: 500px; }
+        .search-bar input {
+            width: 100%; padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border);
+            background: var(--glass-bg); backdrop-filter: blur(10px); outline: none; transition: 0.3s;
         }
-        .card.dragging{opacity:.5}
-        .ico{width:36px;height:36px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center}
-        .ico img{width:100%;height:100%;object-fit:contain}
-        .info{flex:1;min-width:0}
-        .info h3{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .info p{font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .search-bar input:focus { background: white; box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+
+        .toolbar { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .btn {
+            padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer;
+            background: var(--glass-bg); backdrop-filter: blur(5px); transition: 0.2s; font-size: 13px;
+        }
+        .btn:hover { background: white; transform: translateY(-1px); }
+        .btn-primary { background: var(--accent-color); color: white; }
+
+        /* Category Section */
+        .category-section {
+            margin-bottom: 25px; background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px; padding: 18px; backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); overflow: hidden;
+        }
+
+        .category-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; cursor: move;
+        }
+
+        .category-info { display: flex; align-items: center; gap: 10px; color: white; font-weight: bold; }
+        .category-count { font-size: 0.75rem; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; }
+
+        .expand-btn {
+            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white;
+            padding: 2px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; display: none;
+        }
+
+        /* Card Grid - Compact Mode */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            max-height: 140px; /* 约两行 */
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .category-section.expanded .card-grid { max-height: 2000px; }
+
+        .site-card {
+            background: var(--glass-bg); border-radius: 10px; padding: 8px 12px;
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+            color: inherit; border: 1px solid transparent; height: 60px; transition: 0.2s;
+        }
+        .site-card:hover { transform: scale(1.02); background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+        .site-logo { width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0; background: #eee; }
+        .site-info { flex: 1; min-width: 0; }
+        .site-name { font-weight: 600; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .site-desc { font-size: 0.7rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Overlay Systems */
+        #context-menu { position: fixed; background: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: none; z-index: 1000; padding: 5px 0; min-width: 130px; }
+        .menu-item { padding: 8px 16px; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .menu-item:hover { background: #f5f5f5; color: var(--accent-color); }
+
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(2px); }
+        .modal { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 12px; color: #667; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+        .form-group input:focus { border-color: var(--accent-color); }
+
+        .loading-mask { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; font-weight: bold; }
     </style>
 </head>
-
 <body>
+
+<div id="loading-mask" class="loading-mask">数据初始化中...</div>
+
 <div class="container">
+    <header>
+        <h1 id="site-title">Nav-site</h1>
+        <div class="search-bar"><input type="text" id="search-input" placeholder="搜索本地站点..."></div>
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="ui.showModal('category')">➕ 新增分组</button>
+            <button class="btn" onclick="io.exportData()">📤 导出 JSON</button>
+            <button class="btn" onclick="document.getElementById('import-file').click()">📥 导入 JSON</button>
+            <input type="file" id="import-file" hidden accept=".json" onchange="io.importData(event)">
+            <button class="btn" style="color:#d63031; font-weight: bold;" onclick="app.resetData()">🧹 清空重置</button>
+        </div>
+    </header>
+    <main id="nav-content"></main>
+</div>
 
-    <div class="toolbar">
-        <h1 id="title">导航站点</h1>
-        <input id="search" class="search" placeholder="搜索站点 / URL（/ 或 Ctrl+K）"/>
-        <button class="btn btn-outline" id="addGroup">+ 新建类型分组</button>
+<div id="context-menu"></div>
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <h3 id="modal-title" style="margin-bottom:15px">编辑内容</h3>
+        <div id="modal-form"></div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px">
+            <button class="btn" onclick="ui.closeModal()">取消</button>
+            <button class="btn btn-primary" id="modal-save">保存</button>
+        </div>
     </div>
-
-    <div id="groups"></div>
-
-    <footer id="footer" style="margin-top:40px;text-align:center;color:#64748b;font-size:13px"></footer>
-
 </div>
 
 <script>
-    /* ================= 配置 ================= */
-    const STORAGE_KEY='nav_site_data_v2';
-    const GROUP_ORDER_KEY='nav_group_order';
-    const DEFAULT_CONF='https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
+    const STORAGE_KEY = 'nav_site_data_v2';
+    const DEFAULT_CONF_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
 
-    let state={config:{},categoryList:[],data:[]};
+    const app = {
+        state: {
+            config: { title: 'Nav-site', subTitle: '' },
+            categoryList: [],
+            data: []
+        },
 
-    /* ================= 工具 ================= */
-    const $=id=>document.getElementById(id);
-    const save=()=>{
-        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-        localStorage.setItem(GROUP_ORDER_KEY,JSON.stringify(state.categoryList.map(c=>c.id)));
-    };
-    const autoLogo=url=>{
-        try{return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`}
-        catch{return ''}
-    };
-    const getGroupOrder=()=>{
-        try{return JSON.parse(localStorage.getItem(GROUP_ORDER_KEY))||[]}
-        catch{return []}
-    };
+        // 核心启动策略
+        async init() {
+            console.log("🚀 System init...");
+            const local = localStorage.getItem(STORAGE_KEY);
 
-    /* ================= 初始化 ================= */
-    async function init(){
-        const local=localStorage.getItem(STORAGE_KEY);
-        if(local){
-            state=JSON.parse(local);
-        }else{
-            const conf=await fetch(DEFAULT_CONF).then(r=>r.json());
-            state.config=conf.config;
-            const remote=await fetch(conf.api.homeUrl).then(r=>r.json());
-            state.categoryList=remote.categoryList||[];
-            state.data=remote.data||[];
-            save();
-        }
+            if (local) {
+                try {
+                    const parsed = JSON.parse(local);
+                    // 简单的结构合法性校验
+                    if (parsed.categoryList && parsed.data) {
+                        console.log("📦 Loading from LocalStorage");
+                        this.state = parsed;
+                        this.finishInit();
+                        return;
+                    }
+                } catch (e) { console.error("Local data corrupted", e); }
+            }
 
-        const order=getGroupOrder();
-        if(order.length){
-            state.categoryList.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));
-        }
-        render();
-    }
+            // 若不存在或校验失败，执行远程引导
+            await this.loadRemoteWorkflow();
+        },
 
-    /* ================= 渲染 ================= */
-    function render(){
-        $('title').innerText=state.config.title||'导航站点';
-        $('footer').innerHTML=(state.config.footerText||'')
-            .replace('{CURRENT_YEAR}',new Date().getFullYear());
+        async loadRemoteWorkflow() {
+            console.log("☁️ Fetching Remote Config...");
+            try {
+                // 1. 请求引导配置文件
+                const confResp = await fetch(DEFAULT_CONF_URL);
+                const confData = await confResp.json();
 
-        const box=$('groups'); box.innerHTML='';
-        state.categoryList.forEach(cat=>{
-            const items=state.data.filter(d=>d.categoryId===cat.id);
+                this.state.config = confData.config || this.state.config;
 
-            const g=document.createElement('div');
-            g.className='group';
+                // 2. 获取真实的 API 数据地址
+                const homeUrl = confData.api && confData.api.homeUrl;
+                if (homeUrl) {
+                    console.log("🔗 Fetching Real Data from:", homeUrl);
+                    const dataResp = await fetch(homeUrl);
+                    const realData = await dataResp.json();
 
-            g.innerHTML=`
-<div class="group-header" draggable="true" data-id="${cat.id}">
-  <div class="group-title">${cat.name} (${items.length})</div>
-  <button class="btn btn-outline" onclick="addItem(${cat.id})">+ 站点</button>
-</div>
-<div class="cards" data-id="${cat.id}"></div>
-`;
-            const header=g.querySelector('.group-header');
-            const cards=g.querySelector('.cards');
+                    // 3. 合并数据到全局 State
+                    this.state.categoryList = realData.categoryList || [];
+                    this.state.data = realData.data || [];
 
-            /* 分组拖拽 */
-            header.ondragstart=e=>{
-                header.classList.add('dragging');
-                e.dataTransfer.setData('text/plain',cat.id);
-            };
-            header.ondragend=e=>{
-                header.classList.remove('dragging');
-                const ids=[...document.querySelectorAll('.group-header')]
-                    .map(h=>+h.dataset.id);
-                state.categoryList.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
-                save();
-            };
-            header.ondragover=e=>{
-                e.preventDefault();
-                const dragging=document.querySelector('.group-header.dragging');
-                if(dragging && dragging!==header){
-                    header.parentNode.before(dragging.parentNode);
+                    // 4. 写入本地持久化
+                    this.save();
+                    console.log("✅ Remote Load Success & Saved to Local");
                 }
-            };
-
-            /* 卡片 */
-            items.sort((a,b)=>a.weight-b.weight).forEach(i=>{
-                const c=document.createElement('div');
-                c.className='card'; c.draggable=true; c.dataset.id=i.id;
-                c.innerHTML=`
-<div class="ico"><img src="${i.logoUrl||autoLogo(i.url)}"></div>
-<div class="info">
-  <h3>${i.name}</h3>
-  <p>${i.url}</p>
-</div>
-`;
-                /* 卡片拖拽 */
-                c.ondragstart=e=>{
-                    c.classList.add('dragging');
-                    e.dataTransfer.setData('text/plain',i.id);
-                };
-                c.ondragend=e=>{
-                    c.classList.remove('dragging');
-                    document.querySelectorAll('.cards').forEach(box=>{
-                        const cid=+box.dataset.id;
-                        [...box.children].forEach((el,idx)=>{
-                            const item=state.data.find(d=>d.id==el.dataset.id);
-                            if(item){
-                                item.categoryId=cid;
-                                item.weight=idx+1;
-                            }
-                        });
-                    });
-                    save();
-                };
-                cards.appendChild(c);
-            });
-
-            /* 跨组接收 */
-            cards.ondragover=e=>{
-                e.preventDefault();
-                cards.classList.add('drag-over');
-                const dragging=document.querySelector('.card.dragging');
-                if(dragging && dragging.parentNode===cards){
-                    const after=[...cards.children]
-                        .find(el=>e.clientY<el.getBoundingClientRect().top+el.offsetHeight/2);
-                    cards.insertBefore(dragging,after||null);
+            } catch (err) {
+                console.error("Critical: Remote workflow failed", err);
+                // 兜底：创建空结构防止崩溃
+                if(this.state.categoryList.length === 0) {
+                    this.state.categoryList = [{id: 1, name: '起始页', weight: 0}];
                 }
-            };
-            cards.ondragleave=()=>cards.classList.remove('drag-over');
-            cards.ondrop=()=>cards.classList.remove('drag-over');
+            }
+            this.finishInit();
+        },
 
-            box.appendChild(g);
-        });
-    }
+        finishInit() {
+            document.getElementById('loading-mask').style.display = 'none';
+            this.render();
+            this.bindGlobal();
+        },
 
-    /* ================= 新增 ================= */
-    $('addGroup').onclick=()=>{
-        const name=prompt('分组名称');
-        if(!name) return;
-        state.categoryList.push({id:Date.now(),name,desc:name,weight:state.categoryList.length});
-        save();render();
+        save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state)); },
+
+        render() { ui.renderAll(this.state); },
+
+        resetData() {
+            if(confirm('警告：此操作将清空本地所有配置并重新从远程引导！确定继续吗？')) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload(); // 刷新后将重新触发 init 走远程逻辑
+            }
+        }
     };
 
-    async function addItem(cid){
-        let url='';
-        try{url=await navigator.clipboard.readText()}catch{}
-        if(!url.startsWith('http')) url=prompt('站点 URL');
-        if(!url) return;
-        const name=new URL(url).hostname.replace('www.','');
-        state.data.push({
-            id:Date.now(),
-            categoryId:cid,
-            name,desc:name,url,
-            logoUrl:autoLogo(url),
-            weight:state.data.filter(i=>i.categoryId===cid).length+1,
-            date:new Date().toISOString()
-        });
-        save();render();
-    }
+    const ui = {
+        renderAll(state) {
+            document.getElementById('site-title').innerText = state.config.title;
+            const container = document.getElementById('nav-content');
+            container.innerHTML = '';
 
-    /* ================= 搜索 ================= */
-    $('search').oninput=e=>{
-        const q=e.target.value.toLowerCase();
-        document.querySelectorAll('.group').forEach(g=>{
-            let hit=false;
-            g.querySelectorAll('.card').forEach(c=>{
-                const ok=c.innerText.toLowerCase().includes(q);
-                c.classList.toggle('hidden',!ok);
-                if(ok) hit=true;
+            [...state.categoryList].sort((a,b) => a.weight - b.weight).forEach(cat => {
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                section.dataset.id = cat.id;
+                section.draggable = true;
+
+                const sites = state.data.filter(s => s.categoryId === cat.id).sort((a,b) => a.weight - b.weight);
+
+                section.innerHTML = `
+                <div class="category-header">
+                    <div class="category-info">
+                        <span>${cat.name}</span>
+                        <span class="category-count">${sites.length}</span>
+                    </div>
+                    <button class="expand-btn" id="btn-exp-${cat.id}" onclick="ui.toggleExpand(${cat.id})">展开全部</button>
+                </div>
+                <div class="card-grid" id="grid-${cat.id}"></div>
+            `;
+
+                const grid = section.querySelector('.card-grid');
+                sites.forEach(s => grid.appendChild(this.createCard(s)));
+
+                container.appendChild(section);
+                this.checkOverflow(cat.id);
+                this.bindDrag(section, 'category');
+                section.oncontextmenu = (e) => this.showMenu(e, 'category', cat.id);
             });
-            g.classList.toggle('hidden',!hit);
-        });
+        },
+
+        createCard(site) {
+            const card = document.createElement('a');
+            card.className = 'site-card';
+            card.href = site.url; card.target = '_blank'; card.draggable = true; card.dataset.id = site.id;
+
+            let domain = "";
+            try { domain = new URL(site.url).hostname; } catch(e) { domain = "link"; }
+            const icon = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+            card.innerHTML = `
+            <img class="site-logo" src="${icon}" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
+            <div class="site-info">
+                <div class="site-name">${site.name}</div>
+                <div class="site-desc">${site.desc || site.url}</div>
+            </div>
+        `;
+            card.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); this.showMenu(e, 'site', site.id); };
+            this.bindDrag(card, 'site');
+            return card;
+        },
+
+        checkOverflow(catId) {
+            setTimeout(() => {
+                const grid = document.getElementById(`grid-${catId}`);
+                if (grid && grid.scrollHeight > 145) { // 稍微大于140px即判定溢出
+                    const btn = document.getElementById(`btn-exp-${catId}`);
+                    if(btn) btn.style.display = 'block';
+                }
+            }, 50);
+        },
+
+        toggleExpand(catId) {
+            const section = document.querySelector(`.category-section[data-id="${catId}"]`);
+            const btn = document.getElementById(`btn-exp-${catId}`);
+            const isExpanded = section.classList.toggle('expanded');
+            btn.innerText = isExpanded ? '收起' : '展开全部';
+        },
+
+        showMenu(e, type, id) {
+            e.preventDefault();
+            const menu = document.getElementById('context-menu');
+            menu.style.display = 'block'; menu.style.left = e.clientX + 'px'; menu.style.top = e.clientY + 'px';
+
+            let items = type === 'category' ? [
+                { label: '➕ 新增站点', act: () => this.showModal('site', { categoryId: id }) },
+                { label: '🗑 删除分组', act: () => { if(confirm('确定删除此分组？')) actions.delCat(id) } }
+            ] : [
+                { label: '✏️ 编辑站点', act: () => this.showModal('site', { id }) },
+                { label: '🗑 删除站点', act: () => actions.delSite(id) }
+            ];
+
+            menu.innerHTML = items.map(i => `<div class="menu-item">${i.label}</div>`).join('');
+            menu.querySelectorAll('.menu-item').forEach((el, idx) => {
+                el.onclick = (ev) => { ev.stopPropagation(); items[idx].act(); menu.style.display = 'none'; };
+            });
+        },
+
+        showModal(type, p = {}) {
+            const overlay = document.getElementById('modal-overlay');
+            const form = document.getElementById('modal-form');
+            overlay.style.display = 'flex';
+            if (type === 'category') {
+                form.innerHTML = `<div class="form-group"><label>分组名称</label><input id="f-name" placeholder="输入分组名称..."></div>`;
+                document.getElementById('modal-save').onclick = () => { actions.addCat(document.getElementById('f-name').value); this.closeModal(); };
+            } else {
+                const s = p.id ? app.state.data.find(x => x.id == p.id) : null;
+                form.innerHTML = `
+                <div class="form-group"><label>显示名称</label><input id="f-name" value="${s?s.name:''}"></div>
+                <div class="form-group"><label>网址 URL</label><input id="f-url" value="${s?s.url:'https://'}"></div>
+                <div class="form-group"><label>描述内容</label><input id="f-desc" value="${s?s.desc:''}"></div>
+            `;
+                document.getElementById('modal-save').onclick = () => {
+                    const d = { name: document.getElementById('f-name').value, url: document.getElementById('f-url').value, desc: document.getElementById('f-desc').value, categoryId: p.categoryId || s.categoryId };
+                    p.id ? actions.updSite(p.id, d) : actions.addSite(d);
+                    this.closeModal();
+                };
+            }
+        },
+        closeModal() { document.getElementById('modal-overlay').style.display = 'none'; },
+
+        bindDrag(el, type) {
+            el.ondragstart = (e) => { e.stopPropagation(); this.dragType = type; this.dragId = el.dataset.id; el.classList.add('dragging'); };
+            el.ondragend = () => { el.classList.remove('dragging'); document.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over')); };
+            el.ondragover = (e) => { e.preventDefault(); e.stopPropagation(); el.classList.add('drag-over'); };
+            el.ondragleave = () => el.classList.remove('drag-over');
+            el.ondrop = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                if (this.dragType === 'site' && type === 'category') actions.moveSite(this.dragId, el.dataset.id);
+                if (this.dragType === type) actions.reorder(this.dragType, this.dragId, el.dataset.id);
+            };
+        }
     };
 
-    /* ================= 快捷键 ================= */
-    document.addEventListener('keydown',e=>{
-        if(e.key==='/'||((e.ctrlKey||e.metaKey)&&e.key==='k')){
-            e.preventDefault();$('search').focus();
-        }
-        if(e.key==='Escape'){
-            $('search').value='';
-            $('search').dispatchEvent(new Event('input'));
-        }
-    });
+    const actions = {
+        addCat(name) { if(!name) return; app.state.categoryList.push({id: Date.now(), name, weight: 99}); this.fin(); },
+        delCat(id) { app.state.categoryList = app.state.categoryList.filter(c => c.id != id); app.state.data = app.state.data.filter(d => d.categoryId != id); this.fin(); },
+        addSite(d) { if(!d.name || !d.url) return; app.state.data.push({...d, id: Date.now(), weight: 99}); this.fin(); },
+        updSite(id, d) { const i = app.state.data.findIndex(x => x.id == id); if(i>-1) app.state.data[i] = {...app.state.data[i], ...d}; this.fin(); },
+        delSite(id) { app.state.data = app.state.data.filter(x => x.id != id); this.fin(); },
+        moveSite(sid, cid) { const s = app.state.data.find(x => x.id == sid); if(s) { s.categoryId = parseInt(cid); this.fin(); } },
+        reorder(type, sid, tid) {
+            if(sid == tid) return;
+            const list = type === 'category' ? app.state.categoryList : app.state.data;
+            const sIdx = list.findIndex(x => x.id == sid), tIdx = list.findIndex(x => x.id == tid);
+            if(sIdx === -1 || tIdx === -1) return;
+            const [m] = list.splice(sIdx, 1); list.splice(tIdx, 0, m);
+            list.forEach((x, i) => x.weight = i); this.fin();
+        },
+        fin() { app.save(); app.render(); }
+    };
 
-    /* ================= 剪贴板一键建站 ================= */
-    document.addEventListener('paste',e=>{
-        const text=(e.clipboardData||window.clipboardData).getData('text');
-        if(!/^https?:\/\//.test(text)) return;
-        if(!state.categoryList.length) return;
-        const url=new URL(text);
-        const cat=state.categoryList[0];
-        state.data.push({
-            id:Date.now(),
-            categoryId:cat.id,
-            name:url.hostname.replace('www.',''),
-            desc:'',
-            url:text,
-            logoUrl:autoLogo(text),
-            weight:state.data.filter(i=>i.categoryId===cat.id).length+1,
-            date:new Date().toISOString()
-        });
-        save();render();
-    });
+    const io = {
+        exportData() {
+            const dataStr = JSON.stringify(app.state, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `nav-site-export.json`; a.click();
+        },
+        importData(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (f) => {
+                try {
+                    const imported = JSON.parse(f.target.result);
+                    if (imported.categoryList && imported.data) {
+                        app.state = imported; app.save(); location.reload();
+                    } else { alert('导入失败：无效的 JSON 结构'); }
+                } catch (err) { alert('导入失败：文件解析错误'); }
+            };
+            reader.readAsText(file);
+        }
+    };
 
-    /* ================= 启动 ================= */
-    init();
+    app.bindGlobal = () => {
+        window.onclick = () => document.getElementById('context-menu').style.display = 'none';
+        document.getElementById('search-input').oninput = (e) => {
+            const v = e.target.value.toLowerCase();
+            document.querySelectorAll('.site-card').forEach(c => {
+                const text = c.innerText.toLowerCase();
+                c.style.display = text.includes(v) ? 'flex' : 'none';
+            });
+            // 搜索时尝试暂时取消折叠以显示结果
+            document.querySelectorAll('.category-section').forEach(s => {
+                if(v) s.classList.add('expanded');
+                else s.classList.remove('expanded');
+            });
+        };
+    };
+
+    // 启动执行
+    app.init();
 </script>
 </body>
 </html>
