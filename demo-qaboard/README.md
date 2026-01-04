@@ -60,3 +60,19 @@
 2. 可直接添加/编辑/删除问题，操作即时生效。
 3. 如需重置，使用“清空”功能；如需新数据集，使用“初始化数据”导入。
 4. 所有数据仅保存在本地浏览器，不上传服务器。
+
+
+
+```html
+var now = new Date();
+var currentYear = now.getFullYear();
+$("#footer").html('<p>&copy; 2015-'+currentYear+' Cheney. All rights reserved | Design by <a href="http://www.baidu.com" target="_blank">Cheney</a></p>');
+
+<!-- 页脚 -->
+<script>
+ var now = new Date();
+ var currentYear = now.getFullYear();
+ $("#footer").html('<footer class="main-footer"><strong>Copyright &copy; 2015-'+currentYear+' <a href="http://iooiee.com">iooiee.com</a>.<a> All rights reserved.</a></strong>');
+</script>
+
+```

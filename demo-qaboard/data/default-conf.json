@@ -2,12 +2,9 @@
   "config": {
     "title": "我是标题",
     "subTitle": "我是副标题",
-    "footer": "我是页脚",
-    "footerLinkText": "建议/合作 联系方式 keygenee@gmail.com",
-    "footerLink": "https://github.com/OxYGC"
-
+    "footerText": "Copyright &copy; 2015-{CURRENT_YEAR} <a href=\"http://iooiee.com\">iooiee.com</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href=\"mailto:keygenee@gmail.com\">keygenee@gmail.com</a>"
   },
   "apiUrl":{
-    "default": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json"
+    "home": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-qaboard/data/couple-qa-init.json"
   }
 }
