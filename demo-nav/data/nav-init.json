@@ -46,6 +46,7 @@
       "name": "CoinMarketCap",
       "desc": "CoinMarketCap",
       "url": "https://coinmarketcap.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
       "weight": 1,
       "date": "2024-06-12 23:59:05"
     },
@@ -55,6 +56,7 @@
       "name": "RootData",
       "desc": "查看项目情况",
       "url": "https://www.rootdata.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
       "weight": 2,
       "date": "2024-06-12 23:59:05"
     },
@@ -65,6 +67,7 @@
       "name": "CoinGecko",
       "desc": "CoinGecko",
       "url": "https://www.coingecko.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
       "weight": 1,
       "date": "2024-06-12 23:59:05"
     },
@@ -75,31 +78,8 @@
       "name": "非小号",
       "desc": "feixiaohao",
       "url": "https://www.feixiaohao.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
       "weight": 1,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "groupNum":2,
-      "msg": "Question4",
-      "weight": 4,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "groupNum":3,
-      "msg": "Question1",
-      "weight": 1,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "groupNum":4,
-      "msg": "Question2",
-      "weight": 2,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "groupNum":2,
-      "msg": "Question3",
-      "weight": 3,
       "date": "2024-06-12 23:59:05"
     }
   ]
