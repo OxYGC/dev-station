@@ -1,582 +1,194 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>智能导航管理器</title>
+    <title>Nav-site</title>
+
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
+            background:#f9fafb;color:#1e293b;padding:20px
         }
-        body {
-            background-color: #f8fafc;
-            padding: 20px;
-            color: #1e293b;
+        .container{max-width:1100px;margin:auto}
+        .hidden{display:none}
+
+        /* Toolbar */
+        .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:20px}
+        .toolbar h1{font-size:22px}
+        .search{flex:1;padding:8px 12px;border:1px solid #cbd5e1;border-radius:8px}
+
+        /* Buttons */
+        .btn{padding:6px 12px;border-radius:6px;border:none;cursor:pointer}
+        .btn-primary{background:#4f46e5;color:#fff}
+        .btn-outline{background:#fff;border:1px solid #cbd5e1}
+
+        /* Group */
+        .group{background:#fff;border-radius:12px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+        .group-header{
+            display:flex;align-items:center;justify-content:space-between;
+            padding:12px 16px;background:#f8fafc;cursor:grab
         }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        .btn {
-            padding: 6px 12px;
-            border: 1px solid #cbd5e1;
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .btn:hover {
-            background: #f1f5f9;
-        }
-        .btn-success {
-            background: #0ea5e9;
-            color: white;
-            border-color: #0ea5e9;
-        }
-        .btn-success:hover {
-            background: #0284c7;
-        }
-        .category {
-            margin-bottom: 30px;
-            background: white;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .category-header {
-            font-weight: bold;
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-        .site-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-        }
-        .site-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 12px;
-            background: #fff;
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-        .site-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .site-logo {
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-            margin-right: 8px;
-            object-fit: contain;
-        }
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-top: 16px;
+        .group-title{font-weight:600}
+        .cards{
+            padding:14px;
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:10px;min-height:80px
         }
 
-        /* Logo 预览 */
-        .preview-logo {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            background-color: #f1f5f9;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 8px;
-            vertical-align: middle;
+        /* Card */
+        .card{
+            display:flex;align-items:center;gap:10px;
+            padding:8px 10px;border-radius:10px;
+            background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);
+            cursor:pointer
         }
-        .preview-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        .preview-logo.loading::after {
-            content: "…";
-            color: #94a3b8;
-            font-size: 14px;
-        }
-
-        /* 拖拽提示 */
-        body.dragging-over {
-            background-color: #e0f2fe !important;
-            outline: 3px dashed #38bdf8;
-            outline-offset: -10px;
-        }
-        .drag-hint {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .drag-hint.active {
-            opacity: 1;
-            pointer-events: all;
-            background: rgba(255,255,255,0.9);
-        }
-        .drag-hint .content {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            text-align: center;
-            font-size: 18px;
-            color: #0c4a6e;
-        }
-        code {
-            background: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
+        .card.dragging{opacity:.5}
+        .ico{width:36px;height:36px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center}
+        .ico img{width:100%;height:100%;object-fit:contain}
+        .info{flex:1;min-width:0}
+        .info h3{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .info p{font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     </style>
 </head>
+
 <body>
+<div class="container">
 
-<h1>智能导航管理器</h1>
+    <div class="toolbar">
+        <h1 id="title">导航站点</h1>
+        <input id="search" class="search" placeholder="搜索站点 / URL（/ 或 Ctrl+K）"/>
+        <button class="btn btn-outline" id="addGroup">+ 新建类型分组</button>
+    </div>
 
-<div class="toolbar">
-    <button class="btn btn-success" onclick="openAddModal('default')">+ 添加站点</button>
-    <button class="btn" onclick="exportData()">导出 JSON</button>
-</div>
+    <div id="groups"></div>
 
-<div id="app"></div>
+    <footer id="footer" style="margin-top:40px;text-align:center;color:#64748b;font-size:13px"></footer>
 
-<!-- 拖拽提示层 -->
-<div class="drag-hint" id="dragHint">
-    <div class="content">📁 拖入 JSON 文件即可导入导航数据</div>
 </div>
 
 <script>
-    // ======================
-    // 状态管理
-    // ======================
-    let state = {
-        config: { version: '1.0' },
-        categoryList: [{ id: 'default', name: '常用网站' }],
-        data: []
+    /* ================= 配置 ================= */
+    const STORAGE_KEY='nav_site_data_v2';
+    const GROUP_ORDER_KEY='nav_group_order';
+    const DEFAULT_CONF='https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
+
+    let state={config:{},categoryList:[],data:[]};
+
+    /* ================= 工具 ================= */
+    const $=id=>document.getElementById(id);
+    const save=()=>{
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+        localStorage.setItem(GROUP_ORDER_KEY,JSON.stringify(state.categoryList.map(c=>c.id)));
+    };
+    const autoLogo=url=>{
+        try{return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`}
+        catch{return ''}
     };
 
-    // ======================
-    // 工具函数
-    // ======================
-    function extractDomain(url) {
-        try {
-            const u = new URL(url);
-            return u.hostname.replace(/^www\./, '');
-        } catch {
-            return '';
+    /* ================= 初始化 ================= */
+    async function init(){
+        const local=localStorage.getItem(STORAGE_KEY);
+        if(local){
+            state=JSON.parse(local);
+        }else{
+            const conf=await fetch(DEFAULT_CONF).then(r=>r.json());
+            state.config=conf.config;
+            const remote=await fetch(conf.api.homeUrl).then(r=>r.json());
+            state.categoryList=remote.categoryList||[];
+            state.data=remote.data||[];
+            save();
         }
+        render();
     }
 
-    async function getFaviconUrl(targetUrl) {
-        const domain = extractDomain(targetUrl);
-        if (!domain) return '';
+    /* ================= 渲染 ================= */
+    function render(){
+        $('title').innerText=state.config.title||'导航站点';
+        $('footer').innerHTML=(state.config.footerText||'').replace('{CURRENT_YEAR}',new Date().getFullYear());
 
-        // 尝试原站 favicon.ico
-        const directFavicon = `${new URL(targetUrl).origin}/favicon.ico`;
-        try {
-            const res = await fetch(directFavicon, { method: 'HEAD' });
-            if (res.ok) return directFavicon;
-        } catch {}
-
-        // 回退到 Google S2
-        return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-    }
-
-    function updateLogoPreview(inputId, previewId) {
-        const url = document.getElementById(inputId)?.value?.trim();
-        const preview = document.getElementById(previewId);
-        if (!url || !preview) {
-            if (preview) preview.innerHTML = '';
-            return;
-        }
-
-        preview.className = 'preview-logo loading';
-        preview.innerHTML = '';
-
-        getFaviconUrl(url).then(favUrl => {
-            if (!favUrl) {
-                preview.className = 'preview-logo';
-                preview.innerHTML = '';
-                return;
-            }
-            const img = document.createElement('img');
-            img.src = favUrl;
-            img.onerror = () => { preview.innerHTML = ''; };
-            preview.className = 'preview-logo';
-            preview.appendChild(img);
-        });
-    }
-
-    async function fetchPageTitle(url) {
-        if (!url) return null;
-        try {
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-            const response = await fetch(proxyUrl, { mode: 'cors' });
-            const html = await response.text();
-            const match = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-            return match ? match[1].trim() : null;
-        } catch (err) {
-            console.warn('Failed to fetch title:', err);
-            return null;
-        }
-    }
-
-    async function autoFetchTitle(urlInputId, descTextareaId) {
-        const url = document.getElementById(urlInputId)?.value?.trim();
-        if (!url) {
-            alert('请先填写有效的 URL');
-            return;
-        }
-        const btn = event.target;
-        btn.disabled = true;
-        btn.textContent = '获取中…';
-
-        const title = await fetchPageTitle(url);
-        const descEl = document.getElementById(descTextareaId);
-        if (title && descEl) {
-            descEl.value = title;
-            alert(`✅ 已获取标题：${title.substring(0, 30)}...`);
-        } else {
-            alert('⚠️ 无法获取网页标题（可能被屏蔽或无标题）');
-        }
-
-        btn.disabled = false;
-        btn.textContent = '自动获取标题';
-    }
-
-    function saveToStorage() {
-        localStorage.setItem('nav-manager-data', JSON.stringify(state));
-    }
-
-    function loadFromStorage() {
-        const saved = localStorage.getItem('nav-manager-data');
-        if (saved) {
-            try {
-                Object.assign(state, JSON.parse(saved));
-                return true;
-            } catch (e) {
-                console.error('Load failed', e);
-            }
-        }
-        return false;
-    }
-
-    function exportData() {
-        const dataStr = JSON.stringify(state, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'nav-data.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    // ======================
-    // 渲染
-    // ======================
-    function renderAll() {
-        const app = document.getElementById('app');
-        let html = '';
-
-        state.categoryList.forEach(cat => {
-            const items = state.data.filter(i => i.categoryId === cat.id);
-            if (items.length === 0) return;
-
-            html += `<div class="category">
-      <div class="category-header">${cat.name}</div>
-      <div class="site-grid">`;
-
-            items.sort((a, b) => a.weight - b.weight).forEach(item => {
-                const logo = item.logoUrl
-                    ? `<img src="${item.logoUrl}" class="site-logo" onerror="this.style.display='none'">`
-                    : `<span style="display:inline-block;width:24px;text-align:center;color:#94a3b8;">${item.name.charAt(0).toUpperCase()}</span>`;
-                html += `
-        <div class="site-card" onclick="window.open('${item.url}', '_blank')">
-          ${logo}
-          <strong>${item.name}</strong><br>
-          <small style="color:#64748b;">${item.desc || ''}</small>
-        </div>`;
-            });
-
-            html += `</div></div>`;
-        });
-
-        app.innerHTML = html;
-    }
-
-    // ======================
-    // 表单 & 批量
-    // ======================
-    function openAddModal(categoryId) {
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `
-    <div class="modal-content">
-      <h2>添加新站点</h2>
-      <form id="addItemForm">
-        <input type="hidden" id="addItemCategoryId" value="${categoryId}">
-        <div class="form-group">
-          <label for="addItemName">名称 *</label>
-          <input type="text" id="addItemName" required>
-        </div>
-        <div class="form-group">
-          <label for="addItemUrl">网址 (URL) *
-            <span id="addItemLogoPreview" class="preview-logo"></span>
-          </label>
-          <input type="url" id="addItemUrl" required placeholder="https://example.com"
-                 oninput="updateLogoPreview('addItemUrl', 'addItemLogoPreview')">
-        </div>
-        <div class="form-group">
-          <label for="addItemDesc">
-            描述
-            <button type="button" class="btn btn-outline" style="padding:2px 6px;font-size:12px;margin-left:6px;"
-                    onclick="autoFetchTitle('addItemUrl', 'addItemDesc')">自动获取标题</button>
-          </label>
-          <textarea id="addItemDesc"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="addItemLogoUrl">Logo URL（可选）</label>
-          <input type="url" id="addItemLogoUrl" placeholder="https://example.com/favicon.ico">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" onclick="openBatchImportModal('${categoryId}')">批量导入</button>
-          <button type="button" class="btn btn-outline" onclick="document.body.removeChild(this.closest('.modal'))">取消</button>
-          <button type="submit" class="btn btn-success">添加</button>
-        </div>
-      </form>
-    </div>
-  `;
-        document.body.appendChild(modal);
-
-        document.getElementById('addItemForm').onsubmit = (e) => {
-            e.preventDefault();
-            const name = document.getElementById('addItemName').value.trim();
-            const url = document.getElementById('addItemUrl').value.trim();
-            const desc = document.getElementById('addItemDesc').value.trim();
-            const logoUrl = document.getElementById('addItemLogoUrl').value.trim() ||
-                document.getElementById('addItemLogoPreview').querySelector('img')?.src || '';
-
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-            state.data.push({
-                id: Date.now(),
-                categoryId,
-                name,
-                desc,
-                url,
-                logoUrl,
-                weight: state.data.filter(i => i.categoryId === categoryId).length + 1,
-                date: dateStr
-            });
-
-            saveToStorage();
-            renderAll();
-            document.body.removeChild(modal);
-        };
-    }
-
-    function openBatchImportModal(categoryId) {
-        const modal = document.createElement('div');
-        modal.className = 'modal active';
-        modal.innerHTML = `
-    <div class="modal-content">
-      <h2>批量导入站点</h2>
-      <p>每行一个 URL，例如：<br><code>https://coinmarketcap.com</code></p>
-      <div class="form-group">
-        <textarea class="url-list" placeholder="https://coinmarketcap.com\nhttps://coingecko.com" required></textarea>
+        const box=$('groups'); box.innerHTML='';
+        state.categoryList.forEach(cat=>{
+            const items=state.data.filter(d=>d.categoryId===cat.id);
+            const g=document.createElement('div');
+            g.className='group';
+            g.innerHTML=`
+      <div class="group-header" draggable="true" data-id="${cat.id}">
+        <div class="group-title">${cat.name} (${items.length})</div>
+        <button class="btn btn-outline" onclick="addItem(${cat.id})">+ 站点</button>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline">取消</button>
-        <button type="button" class="btn btn-success">导入</button>
-      </div>
-    </div>
-  `;
-        document.body.appendChild(modal);
-
-        const textarea = modal.querySelector('textarea');
-        const cancelBtn = modal.querySelector('.btn-outline');
-        const importBtn = modal.querySelector('.btn-success');
-
-        cancelBtn.onclick = () => document.body.removeChild(modal);
-        importBtn.onclick = async () => {
-            const urls = textarea.value
-                .split('\n')
-                .map(line => line.trim())
-                .filter(line => line && /^https?:\/\//.test(line));
-
-            if (urls.length === 0) {
-                alert('请输入至少一个有效的 URL');
-                return;
-            }
-
-            const uniqueUrls = [...new Set(urls)];
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-            for (const url of uniqueUrls) {
-                const domain = extractDomain(url) || '站点';
-                const logoUrl = await getFaviconUrl(url);
-                const title = await fetchPageTitle(url); // 可选：也可跳过以加快速度
-
-                state.data.push({
-                    id: Date.now() + Math.random(),
-                    categoryId,
-                    name: domain,
-                    desc: title || url,
-                    url,
-                    logoUrl,
-                    weight: state.data.filter(i => i.categoryId === categoryId).length + 1,
-                    date: dateStr
-                });
-            }
-
-            saveToStorage();
-            renderAll();
-            document.body.removeChild(modal);
-            alert(`✅ 成功导入 ${uniqueUrls.length} 个站点！`);
-        };
+      <div class="cards" data-id="${cat.id}"></div>
+    `;
+            const cards=g.querySelector('.cards');
+            items.sort((a,b)=>a.weight-b.weight).forEach(i=>{
+                const c=document.createElement('div');
+                c.className='card'; c.draggable=true; c.dataset.id=i.id;
+                c.innerHTML=`
+        <div class="ico"><img src="${i.logoUrl||autoLogo(i.url)}"></div>
+        <div class="info">
+          <h3>${i.name}</h3>
+          <p>${i.url}</p>
+        </div>
+      `;
+                cards.appendChild(c);
+            });
+            box.appendChild(g);
+        });
     }
 
-    // ======================
-    // 拖拽导入
-    // ======================
-    function setupDragImport() {
-        const dragHint = document.getElementById('dragHint');
-        const body = document.body;
+    /* ================= 新增 ================= */
+    $('addGroup').onclick=()=>{
+        const name=prompt('分组名称');
+        if(!name) return;
+        state.categoryList.push({id:Date.now(),name,desc:name,weight:state.categoryList.length});
+        save();render();
+    };
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            document.addEventListener(eventName, preventDefaults, false);
+    async function addItem(cid){
+        let url='';
+        try{url=await navigator.clipboard.readText()}catch{}
+        if(!url.startsWith('http')) url=prompt('站点 URL');
+        if(!url) return;
+        const name=new URL(url).hostname.replace('www.','');
+        state.data.push({
+            id:Date.now(),
+            categoryId:cid,
+            name,desc:name,url,
+            logoUrl:autoLogo(url),
+            weight:state.data.filter(i=>i.categoryId===cid).length+1,
+            date:new Date().toISOString()
         });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            document.addEventListener(eventName, () => {
-                body.classList.add('dragging-over');
-                dragHint.classList.add('active');
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            document.addEventListener(eventName, () => {
-                body.classList.remove('dragging-over');
-                dragHint.classList.remove('active');
-            }, false);
-        });
-
-        document.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length && files[0].name.endsWith('.json')) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const imported = JSON.parse(event.target.result);
-                        if (imported.categoryList && imported.data) {
-                            if (confirm(`确定导入 ${files[0].name} 并覆盖当前数据？`)) {
-                                state = imported;
-                                saveToStorage();
-                                renderAll();
-                                alert('✅ 导入成功！');
-                            }
-                        } else {
-                            alert('❌ 文件格式无效');
-                        }
-                    } catch (err) {
-                        alert('❌ 解析失败：' + err.message);
-                    }
-                };
-                reader.readAsText(files[0]);
-            }
-        }, false);
+        save();render();
     }
 
-    // ======================
-    // 初始化
-    // ======================
-    (async () => {
-        if (!loadFromStorage()) {
-            // 默认示例数据
-            state.data = [
-                { id: 1, categoryId: 'default', name: 'GitHub', url: 'https://github.com', desc: '代码托管平台', logoUrl: 'https://www.google.com/s2/favicons?domain=github.com&sz=64', weight: 1, date: '2026-01-04 12:00:00' },
-                { id: 2, categoryId: 'default', name: '知乎', url: 'https://zhihu.com', desc: '中文问答社区', logoUrl: 'https://www.google.com/s2/favicons?domain=zhihu.com&sz=64', weight: 2, date: '2026-01-04 12:00:00' }
-            ];
-            saveToStorage();
+    /* ================= 搜索 ================= */
+    $('search').oninput=e=>{
+        const q=e.target.value.toLowerCase();
+        document.querySelectorAll('.group').forEach(g=>{
+            let hit=false;
+            g.querySelectorAll('.card').forEach(c=>{
+                const ok=c.innerText.toLowerCase().includes(q);
+                c.classList.toggle('hidden',!ok);
+                if(ok) hit=true;
+            });
+            g.classList.toggle('hidden',!hit);
+        });
+    };
+
+    /* ================= 快捷键 ================= */
+    document.addEventListener('keydown',e=>{
+        if(e.key==='/'||((e.ctrlKey||e.metaKey)&&e.key==='k')){
+            e.preventDefault();$('search').focus();
         }
-        renderAll();
-        setupDragImport();
-    })();
+        if(e.key==='Escape'){
+            $('search').value='';$('search').dispatchEvent(new Event('input'));
+        }
+    });
+
+    /* ================= 启动 ================= */
+    init();
 </script>
-
 </body>
 </html>
