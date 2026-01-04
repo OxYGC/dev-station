@@ -7,8 +7,8 @@
     <link id="favicon" rel="icon" href="">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
             --accent-color: #6366f1;
             --text-main: #1e293b;
             --text-sub: #64748b;
@@ -19,8 +19,7 @@
         body {
             font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
-            /* 恢复流动渐变背景 */
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #f3f4f6, #e5e7eb, #d1d5db, #f3f4f6);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: var(--text-main);
@@ -29,125 +28,106 @@
             flex-direction: column;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes gradientBG { 0% {background-position:0% 50%} 50% {background-position:100% 50%} 100% {background-position:0% 50%} }
 
         .container { max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
-        /* 顶部导航毛玻璃 */
+        /* Header Layout Optimization */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
-            padding: 12px 20px;
+            padding: 10px 15px;
             background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
-        .header-left h1 { font-size: 1.3rem; font-weight: 800; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-left p { font-size: 0.75rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-left h1 { font-size: 1.2rem; font-weight: 800; background: linear-gradient(to right, #4f46e5, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-left p { font-size: 0.75rem; color: var(--text-sub); border-left: 1px solid #ccc; padding-left: 10px; }
 
-        .header-right { display: flex; align-items: center; gap: 15px; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
 
-        /* 搜索框适配 */
+        /* Search Box Animation */
         .search-wrapper { position: relative; display: flex; align-items: center; }
         .search-bar {
-            width: 140px;
-            padding: 8px 12px 8px 32px;
-            border-radius: 10px;
+            width: 150px;
+            padding: 6px 12px 6px 30px;
+            border-radius: 8px;
             border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(5px);
+            background: rgba(255,255,255,0.5);
             outline: none;
             font-size: 13px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .search-bar:focus { width: 280px; background: white; border-color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .search-icon { position: absolute; left: 10px; font-size: 14px; opacity: 0.6; }
-        .search-hint { position: absolute; right: 10px; font-size: 10px; background: rgba(0,0,0,0.1); padding: 0 5px; border-radius: 4px; color: #fff; }
+        .search-bar:focus { width: 300px; background: white; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        .search-icon { position: absolute; left: 10px; font-size: 12px; color: var(--text-sub); pointer-events: none; }
+        .search-hint { position: absolute; right: 10px; font-size: 10px; color: #999; border: 1px solid #ddd; padding: 0 4px; border-radius: 3px; pointer-events: none; }
 
-        /* 齿轮菜单 */
+        /* Gear Menu */
         .settings-container { position: relative; }
         .gear-btn {
-            background: rgba(255,255,255,0.2); border: 1px solid var(--glass-border);
-            font-size: 20px; cursor: pointer; border-radius: 10px; width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+            background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-sub);
+            padding: 5px; border-radius: 50%; transition: 0.3s; display: flex;
         }
-        .gear-btn:hover { background: white; transform: rotate(90deg); }
+        .gear-btn:hover { background: rgba(0,0,0,0.05); transform: rotate(45deg); }
 
         .dropdown-menu {
-            position: absolute; right: 0; top: 45px; background: white;
-            border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            display: none; flex-direction: column; min-width: 180px; z-index: 1100; overflow: hidden;
+            position: absolute; right: 0; top: 35px; background: white;
+            border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none; flex-direction: column; min-width: 160px; z-index: 1100; overflow: hidden;
+            border: 1px solid #eee;
         }
         .dropdown-menu.show { display: flex; }
-        .dropdown-item { padding: 12px 16px; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-        .dropdown-item:hover { background: #f1f5f9; color: var(--accent-color); }
+        .dropdown-item {
+            padding: 10px 15px; font-size: 13px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 8px; color: var(--text-main);
+        }
+        .dropdown-item:hover { background: #f8fafc; color: var(--accent-color); }
         .dropdown-item.danger { color: #ef4444; border-top: 1px solid #f1f5f9; }
 
-        /* 分组毛玻璃卡片 */
-        .category-section {
-            margin-bottom: 25px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 18px;
-            padding: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-        .category-section.drag-over { border: 2px dashed var(--accent-color); transform: scale(1.01); }
+        /* Content Grid */
+        .category-section { margin-bottom: 20px; background: rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 15px; border: 1px solid var(--glass-border); }
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .category-info { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
+        .category-count { font-size: 0.7rem; color: #777; background: rgba(0,0,0,0.05); padding: 1px 6px; border-radius: 8px; }
+        .expand-btn { background: none; border: 1px solid #ccc; font-size: 11px; padding: 2px 8px; border-radius: 4px; cursor: pointer; color: var(--text-sub); display: none; }
 
-        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: move; }
-        .category-info { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1rem; color: var(--text-main); }
-        .category-count { font-size: 0.75rem; background: rgba(99, 102, 241, 0.1); color: var(--accent-color); padding: 2px 8px; border-radius: 10px; }
-        .expand-btn { background: white; border: 1px solid #e2e8f0; font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: none; }
-
-        /* 站点卡片 Grid */
         .card-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;
-            max-height: 145px; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;
+            max-height: 140px; overflow: hidden; transition: max-height 0.4s ease;
         }
         .category-section.expanded .card-grid { max-height: 2000px; }
 
         .site-card {
-            background: rgba(255,255,255,0.8); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 12px;
-            text-decoration: none; color: inherit; border: 1px solid transparent; height: 62px; transition: 0.3s ease;
+            background: white; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: inherit; border: 1px solid #f1f5f9; height: 56px; transition: 0.2s;
         }
-        .site-card:hover { transform: translateY(-3px); background: white; box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: var(--accent-color); }
-        .site-card.dragging { opacity: 0.3; }
-
-        .site-logo { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .site-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: var(--accent-color); }
+        .site-logo { width: 28px; height: 28px; border-radius: 4px; flex-shrink: 0; }
         .site-info { flex: 1; min-width: 0; }
-        .site-name { font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .site-desc { font-size: 0.7rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .site-name { font-weight: 600; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .site-desc { font-size: 0.65rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        footer { text-align: center; padding: 30px; font-size: 12px; color: rgba(255,255,255,0.8); text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        footer a { color: #fff; font-weight: bold; text-decoration: underline; }
+        footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-sub); border-top: 1px solid rgba(0,0,0,0.05); margin-top: 20px; }
+        footer a { color: var(--accent-color); text-decoration: none; }
 
-        /* 弹窗样式 */
-        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(5px); }
-        .modal { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
-        .form-group input:focus { border-color: var(--accent-color); }
-
-        #context-menu { position: fixed; background: white; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; z-index: 2000; padding: 6px 0; min-width: 140px; border: 1px solid #f1f5f9; }
+        /* Overlays */
+        #context-menu { position: fixed; background: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; z-index: 2000; padding: 5px 0; min-width: 120px; border: 1px solid #eee; }
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.3); display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(2px); }
+        .modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 12px; }
+        .form-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+        .loading { position: fixed; inset:0; background: #f8fafc; z-index: 9999; display: flex; align-items: center; justify-content: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="loading" style="position:fixed; inset:0; background:#fff; z-index:9999; display:flex; align-items:center; justify-content:center;">页面加载中...</div>
+<div id="loading" class="loading">正在同步配置...</div>
 
 <div class="container">
     <header>
@@ -158,16 +138,16 @@
         <div class="header-right">
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" class="search-bar" placeholder="搜索站点...">
+                <input type="text" id="search-input" class="search-bar" placeholder="搜索...">
                 <span class="search-hint">/</span>
             </div>
             <div class="settings-container">
                 <button class="gear-btn" onclick="ui.toggleSettings(event)">⚙️</button>
                 <div id="dropdown-menu" class="dropdown-menu">
                     <div class="dropdown-item" onclick="ui.showModal('category')">📁 新增分组</div>
-                    <div class="dropdown-item" onclick="io.exportData()">📤 导出配置 (JSON)</div>
-                    <div class="dropdown-item" onclick="document.getElementById('import-file').click()">📥 导入配置 (JSON)</div>
-                    <div class="dropdown-item danger" onclick="app.resetData()">🧹 恢复初始设置</div>
+                    <div class="dropdown-item" onclick="io.exportData()">📤 导出 JSON</div>
+                    <div class="dropdown-item" onclick="document.getElementById('import-file').click()">📥 导入 JSON</div>
+                    <div class="dropdown-item danger" onclick="app.resetData()">🧹 清空并重置</div>
                 </div>
                 <input type="file" id="import-file" hidden accept=".json" onchange="io.importData(event)">
             </div>
@@ -180,14 +160,13 @@
 <footer id="site-footer"></footer>
 
 <div id="context-menu"></div>
-
 <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
-        <h3 id="modal-title" style="margin-bottom:20px; color: var(--text-main);">管理项目</h3>
+        <h3 id="modal-title" style="margin-bottom:15px; font-size: 1rem;">管理</h3>
         <div id="modal-form"></div>
-        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px">
-            <button style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; cursor:pointer;" onclick="ui.closeModal()">取消</button>
-            <button style="padding: 8px 16px; border-radius: 8px; border: none; background: var(--accent-color); color:white; cursor:pointer; font-weight:600;" id="modal-save">保存</button>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px">
+            <button style="padding: 5px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor:pointer;" onclick="ui.closeModal()">取消</button>
+            <button style="padding: 5px 12px; border-radius: 6px; border: none; background: var(--accent-color); color:white; cursor:pointer;" id="modal-save">保存</button>
         </div>
     </div>
 </div>
@@ -202,10 +181,8 @@
         async init() {
             const local = localStorage.getItem(STORAGE_KEY);
             if (local) {
-                try {
-                    this.state = JSON.parse(local);
-                    this.finish();
-                } catch(e) { this.loadRemote(); }
+                this.state = JSON.parse(local);
+                this.finish();
             } else {
                 await this.loadRemote();
             }
@@ -220,11 +197,11 @@
                 if (confData.api && confData.api.homeUrl) {
                     const dataResp = await fetch(confData.api.homeUrl);
                     const initData = await dataResp.json();
-                    this.state.categoryList = initData.categoryList || [];
-                    this.state.data = initData.data || [];
+                    this.state.categoryList = initData.categoryList;
+                    this.state.data = initData.data;
                     this.save();
                 }
-            } catch (e) { console.error("Sync failed", e); }
+            } catch (e) { console.error("Load failed", e); }
             this.finish();
         },
 
@@ -249,20 +226,18 @@
 
         save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state)); },
         render() { ui.renderAll(this.state); },
-        resetData() { if(confirm('确定重置吗？这会清除所有本地保存的修改并重新从服务器拉取。')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+        resetData() { if(confirm('确定重置？所有本地修改将丢失！')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
     };
 
     const ui = {
         renderAll(state) {
             const container = document.getElementById('nav-content');
             container.innerHTML = '';
-            [...state.categoryList].sort((a,b) => (a.weight||0) - (b.weight||0)).forEach(cat => {
+            [...state.categoryList].sort((a,b) => a.weight - b.weight).forEach(cat => {
                 const section = document.createElement('section');
                 section.className = 'category-section';
                 section.dataset.id = cat.id;
-                section.draggable = true; // 开启分组拖拽
-
-                const sites = state.data.filter(s => s.categoryId === cat.id).sort((a,b) => (a.weight||0) - (b.weight||0));
+                const sites = state.data.filter(s => s.categoryId === cat.id).sort((a,b) => a.weight - b.weight);
 
                 section.innerHTML = `
                 <div class="category-header">
@@ -270,7 +245,7 @@
                         <span>${cat.name}</span>
                         <span class="category-count">${sites.length}</span>
                     </div>
-                    <button class="expand-btn" id="exp-${cat.id}" onclick="ui.toggleExpand(${cat.id})">展开全部</button>
+                    <button class="expand-btn" id="exp-${cat.id}" onclick="ui.toggleExpand(${cat.id})">展开</button>
                 </div>
                 <div class="card-grid" id="grid-${cat.id}"></div>
             `;
@@ -278,7 +253,7 @@
                 sites.forEach(s => grid.appendChild(this.createCard(s)));
                 container.appendChild(section);
                 this.checkOverflow(cat.id);
-                this.bindDrag(section, 'category'); // 绑定分组拖拽
+                this.bindDrag(section, 'category');
                 section.oncontextmenu = (e) => this.showMenu(e, 'category', cat.id);
             });
         },
@@ -296,27 +271,27 @@
             </div>
         `;
             card.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); this.showMenu(e, 'site', site.id); };
-            this.bindDrag(card, 'site'); // 绑定卡片拖拽
+            this.bindDrag(card, 'site');
             return card;
+        },
+
+        toggleSettings(e) {
+            e.stopPropagation();
+            document.getElementById('dropdown-menu').classList.toggle('show');
         },
 
         checkOverflow(catId) {
             setTimeout(() => {
                 const grid = document.getElementById(`grid-${catId}`);
-                if (grid && grid.scrollHeight > 150) document.getElementById(`exp-${catId}`).style.display = 'block';
-            }, 100);
+                if (grid && grid.scrollHeight > 145) document.getElementById(`exp-${catId}`).style.display = 'block';
+            }, 50);
         },
 
         toggleExpand(id) {
             const sec = document.querySelector(`.category-section[data-id="${id}"]`);
             const btn = document.getElementById(`exp-${id}`);
             const isExp = sec.classList.toggle('expanded');
-            btn.innerText = isExp ? '收起' : '展开全部';
-        },
-
-        toggleSettings(e) {
-            e.stopPropagation();
-            document.getElementById('dropdown-menu').classList.toggle('show');
+            btn.innerText = isExp ? '收起' : '展开';
         },
 
         showMenu(e, type, id) {
@@ -327,13 +302,11 @@
                 { label: '➕ 新增站点', act: () => ui.showModal('site', { categoryId: id }) },
                 { label: '🗑 删除分组', act: () => actions.delCat(id) }
             ] : [
-                { label: '✏️ 编辑站点', act: () => ui.showModal('site', { id }) },
-                { label: '🗑 删除站点', act: () => actions.delSite(id) }
+                { label: '✏️ 编辑', act: () => ui.showModal('site', { id }) },
+                { label: '🗑 删除', act: () => actions.delSite(id) }
             ];
             menu.innerHTML = items.map(i => `<div class="dropdown-item">${i.label}</div>`).join('');
-            menu.querySelectorAll('.dropdown-item').forEach((el, i) => {
-                el.onclick = (ev) => { ev.stopPropagation(); items[i].act(); menu.style.display = 'none'; };
-            });
+            menu.querySelectorAll('.dropdown-item').forEach((el, i) => el.onclick = items[i].act);
         },
 
         showModal(type, p = {}) {
@@ -341,13 +314,13 @@
             const form = document.getElementById('modal-form');
             overlay.style.display = 'flex';
             if (type === 'category') {
-                form.innerHTML = `<div class="form-group"><label>分组名称</label><input id="f-name" placeholder="请输入分组名"></div>`;
+                form.innerHTML = `<div class="form-group"><label>分组名</label><input id="f-name"></div>`;
                 document.getElementById('modal-save').onclick = () => { actions.addCat(document.getElementById('f-name').value); ui.closeModal(); };
             } else {
                 const s = p.id ? app.state.data.find(x => x.id == p.id) : null;
-                form.innerHTML = `<div class="form-group"><label>站点名称</label><input id="f-name" value="${s?s.name:''}"></div>
-                              <div class="form-group"><label>站点 URL</label><input id="f-url" value="${s?s.url:'https://'}"></div>
-                              <div class="form-group"><label>站点描述</label><input id="f-desc" value="${s?s.desc:''}"></div>`;
+                form.innerHTML = `<div class="form-group"><label>名称</label><input id="f-name" value="${s?s.name:''}"></div>
+                              <div class="form-group"><label>URL</label><input id="f-url" value="${s?s.url:'https://'}"></div>
+                              <div class="form-group"><label>描述</label><input id="f-desc" value="${s?s.desc:''}"></div>`;
                 document.getElementById('modal-save').onclick = () => {
                     const d = { name: document.getElementById('f-name').value, url: document.getElementById('f-url').value, desc: document.getElementById('f-desc').value, categoryId: p.categoryId || s.categoryId };
                     p.id ? actions.updSite(p.id, d) : actions.addSite(d);
@@ -357,24 +330,10 @@
         },
         closeModal() { document.getElementById('modal-overlay').style.display = 'none'; },
 
-        // 拖拽修复核心：必须阻止 DragOver 的默认行为
         bindDrag(el, type) {
-            el.ondragstart = (e) => {
-                e.stopPropagation();
-                this.dt = type;
-                this.di = el.dataset.id;
-                el.classList.add('dragging');
-            };
-            el.ondragend = () => {
-                el.classList.remove('dragging');
-                document.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over'));
-            };
-            el.ondragover = (e) => {
-                e.preventDefault(); // 关键：允许放置
-                e.stopPropagation();
-                if(type === 'category') el.classList.add('drag-over');
-            };
-            el.ondragleave = () => el.classList.remove('drag-over');
+            el.ondragstart = (e) => { e.stopPropagation(); this.dt = type; this.di = el.dataset.id; el.style.opacity = '0.4'; };
+            el.ondragend = () => el.style.opacity = '1';
+            el.ondragover = (e) => e.preventDefault();
             el.ondrop = (e) => {
                 e.preventDefault(); e.stopPropagation();
                 if (this.dt === 'site' && type === 'category') actions.moveSite(this.di, el.dataset.id);
@@ -384,17 +343,15 @@
     };
 
     const actions = {
-        addCat(name) { if(!name) return; app.state.categoryList.push({id: Date.now(), name, weight: 99}); this.fin(); },
-        delCat(id) { if(confirm('确定删除分组及其下所有站点吗？')) { app.state.categoryList = app.state.categoryList.filter(c => c.id != id); app.state.data = app.state.data.filter(s => s.categoryId != id); this.fin(); } },
+        addCat(name) { app.state.categoryList.push({id: Date.now(), name, weight: 99}); this.fin(); },
+        delCat(id) { if(confirm('确定删除分组？')) { app.state.categoryList = app.state.categoryList.filter(c => c.id != id); this.fin(); } },
         addSite(d) { app.state.data.push({...d, id: Date.now(), weight: 99}); this.fin(); },
-        updSite(id, d) { const i = app.state.data.findIndex(x => x.id == id); if(i>-1) app.state.data[i] = {...app.state.data[i], ...d}; this.fin(); },
+        updSite(id, d) { const i = app.state.data.findIndex(x => x.id == id); app.state.data[i] = {...app.state.data[i], ...d}; this.fin(); },
         delSite(id) { app.state.data = app.state.data.filter(x => x.id != id); this.fin(); },
         moveSite(sid, cid) { const s = app.state.data.find(x => x.id == sid); if(s) { s.categoryId = parseInt(cid); this.fin(); } },
         reorder(type, sid, tid) {
-            if(sid == tid) return;
             const list = type === 'category' ? app.state.categoryList : app.state.data;
             const sIdx = list.findIndex(x => x.id == sid), tIdx = list.findIndex(x => x.id == tid);
-            if(sIdx === -1 || tIdx === -1) return;
             const [m] = list.splice(sIdx, 1); list.splice(tIdx, 0, m);
             list.forEach((x, i) => x.weight = i); this.fin();
         },
@@ -404,11 +361,11 @@
     const io = {
         exportData() {
             const blob = new Blob([JSON.stringify(app.state, null, 2)], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nav-config-backup.json'; a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nav-config.json'; a.click();
         },
         importData(e) {
             const reader = new FileReader();
-            reader.onload = (f) => { try { app.state = JSON.parse(f.target.result); app.save(); location.reload(); } catch(e){alert('无效的文件格式');} };
+            reader.onload = (f) => { app.state = JSON.parse(f.target.result); app.save(); location.reload(); };
             reader.readAsText(e.target.files[0]);
         }
     };
@@ -423,11 +380,8 @@
         searchInput.oninput = (e) => {
             const v = e.target.value.toLowerCase();
             document.querySelectorAll('.site-card').forEach(c => {
-                const match = c.innerText.toLowerCase().includes(v);
-                c.style.display = match ? 'flex' : 'none';
+                c.style.display = c.innerText.toLowerCase().includes(v) ? 'flex' : 'none';
             });
-            // 搜索时自动展开有匹配项的分组
-            if(v) document.querySelectorAll('.category-section').forEach(s => s.classList.add('expanded'));
         };
 
         window.addEventListener('keydown', (e) => {
