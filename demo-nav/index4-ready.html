@@ -2,335 +2,571 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Nav-site</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Nav-site | 个人导航管理</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;
-            min-height:100vh;
-            padding:20px;
-            color:#0f172a;
-        }
-        body::before{
-            content:"";
-            position:fixed;
-            inset:0;
-            z-index:-1;
-            background:linear-gradient(120deg,#6366f1,#22d3ee,#a78bfa,#6366f1);
-            background-size:300% 300%;
-            animation:gradient 18s ease infinite;
-        }
-        @keyframes gradient{
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-color: #764ba2;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
         }
 
-        .container{max-width:1200px;margin:auto}
-        .hidden{display:none}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .toolbar{
-            display:flex;
-            gap:10px;
-            align-items:center;
-            padding:14px;
-            margin-bottom:20px;
-            border-radius:16px;
-            background:rgba(255,255,255,.75);
-            backdrop-filter:blur(16px);
-        }
-        .toolbar h1{font-size:22px}
-        .search{
-            flex:1;
-            max-width:220px;
-            padding:6px 10px;
-            border-radius:8px;
-            border:1px solid #cbd5e1;
-        }
-        .btn{
-            padding:6px 10px;
-            border-radius:8px;
-            border:1px solid #cbd5e1;
-            background:#fff;
-            cursor:pointer;
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            padding: 40px 20px;
         }
 
-        .group{
-            margin-bottom:18px;
-            border-radius:16px;
-            background:rgba(255,255,255,.78);
-            backdrop-filter:blur(14px);
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .group.dragging{opacity:.4}
-        .group-header{
-            padding:14px 16px;
-            font-weight:600;
-            cursor:grab;
-            display:flex;
-            justify-content:space-between;
-        }
-        .cards{
-            padding:12px;
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-            gap:10px;
-            min-height:40px;
-        }
-        .card{
-            display:flex;
-            gap:10px;
-            padding:10px;
-            border-radius:12px;
-            background:#fff;
-            cursor:pointer;
-        }
-        .card.dragging{opacity:.5}
-        .card:hover{background:#f1f5f9}
-        .ico{width:36px;height:36px;border-radius:8px;background:#eef2ff}
-        .ico img{width:100%;height:100%;object-fit:contain}
 
-        .context{
-            position:fixed;
-            background:#fff;
-            border-radius:10px;
-            box-shadow:0 10px 30px rgba(0,0,0,.15);
-            padding:6px;
-            z-index:9999;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .context div{
-            padding:6px 14px;
-            cursor:pointer;
-            border-radius:6px;
-        }
-        .context div:hover{background:#f1f5f9}
 
-        .modal-mask{
-            position:fixed;
-            inset:0;
-            background:rgba(0,0,0,.4);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            z-index:10000;
+        /* Header & Search */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-        .modal{
-            width:320px;
-            background:#fff;
-            border-radius:12px;
-            padding:16px;
+
+        .search-bar {
+            margin: 20px auto;
+            max-width: 500px;
+            position: relative;
         }
-        .modal input,.modal textarea{
-            width:100%;
-            margin-bottom:10px;
-            padding:6px;
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            outline: none;
+            font-size: 16px;
+            transition: all 0.3s;
         }
-        .modal-actions{
-            text-align:right;
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
         }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: white; transform: translateY(-2px); }
+        .btn-danger { color: #d63031; }
+
+        /* Category System */
+        .category-section {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            cursor: move;
+        }
+
+        .category-title { font-size: 1.2rem; font-weight: bold; color: white; }
+        .category-count { font-size: 0.8rem; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .site-card {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+            border: 1px solid transparent;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .site-card:hover {
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .site-card.dragging { opacity: 0.5; }
+
+        .site-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #f1f2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .site-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .site-info { flex: 1; overflow: hidden; }
+        .site-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .site-desc { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Context Menu */
+        #context-menu {
+            position: fixed;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            padding: 5px 0;
+            min-width: 120px;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover { background: #f1f2f6; color: var(--accent-color); }
+        .menu-item.danger { color: #d63031; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal h3 { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        [draggable="true"] { cursor: grab; }
+        .drag-over { border: 2px dashed var(--accent-color) !important; }
     </style>
 </head>
-
 <body>
+
 <div class="container">
+    <header>
+        <h1 id="site-title">Nav-site</h1>
+        <p id="site-subtitle">我的极简导航</p>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="搜索站点...">
+        </div>
+        <div class="toolbar">
+            <button class="btn" onclick="ui.showModal('category')">➕ 新增分组</button>
+            <button class="btn btn-danger" onclick="app.resetData()">🧹 清空配置</button>
+        </div>
+    </header>
 
-    <div class="toolbar">
-        <h1 id="title">Nav-site</h1>
-        <input id="search" class="search" placeholder="搜索站点 / URL">
-        <button class="btn" id="addGroup">+ 分组</button>
-        <button class="btn" id="clear">🧹 清空</button>
+    <main id="nav-content"></main>
+</div>
+
+<div id="context-menu"></div>
+
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <h3 id="modal-title">编辑信息</h3>
+        <div id="modal-form"></div>
+        <div class="modal-btns">
+            <button class="btn" onclick="ui.closeModal()">取消</button>
+            <button class="btn" style="background: var(--accent-color); color: white;" id="modal-save">保存</button>
+        </div>
     </div>
-
-    <div id="groups"></div>
-    <footer id="footer" style="margin:40px 0;text-align:center;opacity:.7"></footer>
-
-    <div id="context" class="context hidden"></div>
-    <div id="modalMask" class="modal-mask hidden"></div>
-
 </div>
 
 <script>
-    /* ================= 数据层 ================= */
-    const STORAGE_KEY='nav_site_data_v2';
-    let state={
-        config:{title:'Nav-site'},
-        categoryList:[],
-        data:[]
-    };
+    /**
+     * 核心逻辑模块
+     */
+    const STORAGE_KEY = 'nav_site_data_v2';
+    const DEFAULT_CONF_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
 
-    function persist(){
-        localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    }
+    const app = {
+        state: {
+            config: { title: 'Nav-site', subTitle: '本地优先导航站' },
+            categoryList: [],
+            data: []
+        },
 
-    function load(){
-        const local=localStorage.getItem(STORAGE_KEY);
-        if(local){
-            state=JSON.parse(local);
-        }else{
-            state.categoryList=[{id:1,name:'默认分组'}];
-        }
-    }
-
-    function autoLogo(url){
-        try{
-            return 'https://www.google.com/s2/favicons?sz=64&domain='+new URL(url).hostname
-        }catch{
-            return '';
-        }
-    }
-
-    /* ================= 渲染 ================= */
-    const $=id=>document.getElementById(id);
-    let draggingCard=null,draggingGroup=null;
-
-    function render(){
-        $('groups').innerHTML='';
-        state.categoryList.forEach(cat=>{
-            const group=document.createElement('div');
-            group.className='group';
-            group.draggable=true;
-
-            const header=document.createElement('div');
-            header.className='group-header';
-            header.innerHTML=`<span>${cat.name}</span><span>(${count(cat.id)})</span>`;
-
-            header.oncontextmenu=e=>{
-                e.preventDefault();
-                showMenu(e.clientX,e.clientY,[
-                    {text:'➕ 新增站点',fn:()=>openModal(null,cat.id)},
-                    {text:'🗑 删除分组',fn:()=>{
-                            state.categoryList=state.categoryList.filter(g=>g.id!==cat.id);
-                            state.data=state.data.filter(d=>d.categoryId!==cat.id);
-                            persist();render();
-                        }}
-                ]);
-            };
-
-            header.ondragstart=()=>{draggingGroup=cat;group.classList.add('dragging')}
-            header.ondragend=()=>{draggingGroup=null;group.classList.remove('dragging')}
-
-            const cards=document.createElement('div');
-            cards.className='cards';
-
-            cards.ondragover=e=>e.preventDefault();
-            cards.ondrop=()=>{
-                if(draggingCard){
-                    draggingCard.categoryId=cat.id;
-                    persist();render();
+        async init() {
+            const localData = localStorage.getItem(STORAGE_KEY);
+            if (localData) {
+                try {
+                    this.state = JSON.parse(localData);
+                    this.render();
+                } catch (e) {
+                    console.error("Local storage error", e);
+                    this.loadRemoteData();
                 }
+            } else {
+                this.loadRemoteData();
+            }
+            this.bindGlobalEvents();
+        },
+
+        async loadRemoteData() {
+            try {
+                const resp = await fetch(DEFAULT_CONF_URL);
+                const conf = await resp.json();
+                if (conf.api && conf.api.homeUrl) {
+                    const dataResp = await fetch(conf.api.homeUrl);
+                    const realData = await dataResp.json();
+                    this.state.categoryList = realData.categoryList || [];
+                    this.state.data = realData.data || [];
+                    this.state.config = conf.config || this.state.config;
+                    this.save();
+                    this.render();
+                }
+            } catch (e) {
+                console.warn("远程加载失败，使用空白配置", e);
+                this.render();
+            }
+        },
+
+        save() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+        },
+
+        render() {
+            ui.renderAll(this.state);
+        },
+
+        resetData() {
+            if(confirm('确定要清空所有数据吗？此操作不可撤销。')) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
+            }
+        }
+    };
+
+    /**
+     * UI 渲染引擎
+     */
+    const ui = {
+        renderAll(state) {
+            document.getElementById('site-title').innerText = state.config.title;
+            document.getElementById('site-subtitle').innerText = state.config.subTitle || '';
+
+            const container = document.getElementById('nav-content');
+            container.innerHTML = '';
+
+            // 按权重排序分组
+            const sortedCats = [...state.categoryList].sort((a,b) => (a.weight || 0) - (b.weight || 0));
+
+            sortedCats.forEach(cat => {
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                section.dataset.id = cat.id;
+                section.draggable = true;
+
+                const catSites = state.data.filter(s => s.categoryId === cat.id);
+
+                section.innerHTML = `
+                <div class="category-header">
+                    <div class="category-title">
+                        ${cat.name} <span class="category-count">${catSites.length}</span>
+                    </div>
+                </div>
+                <div class="card-grid" data-cat-id="${cat.id}"></div>
+            `;
+
+                const grid = section.querySelector('.card-grid');
+                catSites.sort((a,b) => (a.weight || 0) - (b.weight || 0)).forEach(site => {
+                    grid.appendChild(this.createCard(site));
+                });
+
+                // 绑定右键和拖拽
+                section.oncontextmenu = (e) => this.showContextMenu(e, 'category', cat.id);
+                this.bindDragEvents(section, 'category');
+
+                container.appendChild(section);
+            });
+        },
+
+        createCard(site) {
+            const card = document.createElement('a');
+            card.className = 'site-card';
+            card.href = site.url;
+            card.target = '_blank';
+            card.draggable = true;
+            card.dataset.id = site.id;
+
+            const domain = new URL(site.url).hostname;
+            const icon = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+            card.innerHTML = `
+            <div class="site-logo"><img src="${icon}" alt="logo"></div>
+            <div class="site-info">
+                <div class="site-name">${site.name}</div>
+                <div class="site-desc">${site.desc || site.url}</div>
+            </div>
+        `;
+
+            card.oncontextmenu = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showContextMenu(e, 'site', site.id);
             };
 
-            state.data.filter(d=>d.categoryId===cat.id).forEach(item=>{
-                const c=document.createElement('div');
-                c.className='card';
-                c.draggable=true;
-                c.innerHTML=`
-        <div class="ico"><img src="${item.logoUrl}"></div>
-        <div>
-          <strong>${item.name}</strong>
-          <div style="font-size:12px;opacity:.7">${item.desc||''}</div>
-        </div>
-      `;
-                c.onclick=()=>window.open(item.url,'_blank');
-                c.ondragstart=()=>{draggingCard=item;c.classList.add('dragging')}
-                c.ondragend=()=>{draggingCard=null;c.classList.remove('dragging')}
-                c.oncontextmenu=e=>{
-                    e.preventDefault();
-                    showMenu(e.clientX,e.clientY,[
-                        {text:'✏️ 编辑',fn:()=>openModal(item,cat.id)},
-                        {text:'🗑 删除',fn:()=>{
-                                state.data=state.data.filter(i=>i.id!==item.id);
-                                persist();render();
-                            }}
-                    ]);
+            this.bindDragEvents(card, 'site');
+            return card;
+        },
+
+        // 交互逻辑
+        showContextMenu(e, type, id) {
+            e.preventDefault();
+            const menu = document.getElementById('context-menu');
+            menu.style.display = 'block';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+
+            let items = [];
+            if (type === 'category') {
+                items = [
+                    { label: '➕ 新增站点', action: () => ui.showModal('site', { categoryId: id }) },
+                    { label: '🗑 删除分组', danger: true, action: () => actions.deleteCategory(id) }
+                ];
+            } else {
+                items = [
+                    { label: '✏️ 编辑站点', action: () => ui.showModal('site', { id: id }) },
+                    { label: '🗑 删除站点', danger: true, action: () => actions.deleteSite(id) }
+                ];
+            }
+
+            menu.innerHTML = items.map(item => `
+            <div class="menu-item ${item.danger ? 'danger' : ''}" onclick="this.dataset.clicked=true">${item.label}</div>
+        `).join('');
+
+            menu.querySelectorAll('.menu-item').forEach((el, idx) => {
+                el.onclick = (ev) => {
+                    ev.stopPropagation();
+                    items[idx].action();
+                    menu.style.display = 'none';
                 };
-                cards.appendChild(c);
+            });
+        },
+
+        showModal(type, params = {}) {
+            const overlay = document.getElementById('modal-overlay');
+            const form = document.getElementById('modal-form');
+            const saveBtn = document.getElementById('modal-save');
+            overlay.style.display = 'flex';
+
+            if (type === 'category') {
+                document.getElementById('modal-title').innerText = '新增分组';
+                form.innerHTML = `<div class="form-group"><label>名称</label><input id="f-name" type="text"></div>`;
+                saveBtn.onclick = () => {
+                    actions.addCategory(document.getElementById('f-name').value);
+                    this.closeModal();
+                };
+            } else {
+                const isEdit = !!params.id;
+                const site = isEdit ? app.state.data.find(s => s.id === params.id) : null;
+                document.getElementById('modal-title').innerText = isEdit ? '编辑站点' : '新增站点';
+                form.innerHTML = `
+                <div class="form-group"><label>名称</label><input id="f-name" value="${site ? site.name : ''}"></div>
+                <div class="form-group"><label>描述</label><input id="f-desc" value="${site ? site.desc : ''}"></div>
+                <div class="form-group"><label>URL</label><input id="f-url" value="${site ? site.url : 'https://'}"></div>
+            `;
+                saveBtn.onclick = () => {
+                    const data = {
+                        name: document.getElementById('f-name').value,
+                        desc: document.getElementById('f-desc').value,
+                        url: document.getElementById('f-url').value,
+                        categoryId: params.categoryId || site.categoryId
+                    };
+                    isEdit ? actions.updateSite(params.id, data) : actions.addSite(data);
+                    this.closeModal();
+                };
+            }
+        },
+
+        closeModal() { document.getElementById('modal-overlay').style.display = 'none'; },
+
+        /**
+         * 拖拽核心实现
+         */
+        draggingType: null,
+        draggingId: null,
+
+        bindDragEvents(el, type) {
+            el.addEventListener('dragstart', (e) => {
+                e.stopPropagation();
+                this.draggingType = type;
+                this.draggingId = el.dataset.id;
+                el.classList.add('dragging');
             });
 
-            group.appendChild(header);
-            group.appendChild(cards);
-            $('groups').appendChild(group);
-        });
-    }
+            el.addEventListener('dragend', () => {
+                el.classList.remove('dragging');
+                document.querySelectorAll('.drag-over').forEach(n => n.classList.remove('drag-over'));
+            });
 
-    function count(cid){
-        return state.data.filter(d=>d.categoryId===cid).length;
-    }
+            el.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                el.classList.add('drag-over');
+            });
 
-    /* ================= UI ================= */
-    function showMenu(x,y,items){
-        const m=$('context');
-        m.innerHTML='';
-        items.forEach(it=>{
-            const d=document.createElement('div');
-            d.innerText=it.text;
-            d.onclick=()=>{it.fn();m.classList.add('hidden')}
-            m.appendChild(d);
-        });
-        m.style.left=x+'px';
-        m.style.top=y+'px';
-        m.classList.remove('hidden');
-    }
-    document.onclick=()=>$('context').classList.add('hidden');
+            el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
 
-    function openModal(item,categoryId){
-        const mask=$('modalMask');
-        mask.innerHTML=`
-    <div class="modal">
-      <h3>${item?'编辑':'新增'}站点</h3>
-      <input id="m_name" placeholder="名称" value="${item?.name||''}">
-      <input id="m_url" placeholder="URL" value="${item?.url||''}">
-      <textarea id="m_desc" placeholder="描述">${item?.desc||''}</textarea>
-      <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">取消</button>
-        <button class="btn" onclick="saveSite(${item?.id||'null'},${categoryId})">保存</button>
-      </div>
-    </div>`;
-        mask.classList.remove('hidden');
-    }
-    function closeModal(){ $('modalMask').classList.add('hidden') }
+            el.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const targetId = el.dataset.id;
 
-    function saveSite(id,cid){
-        const name=$('m_name').value;
-        const url=$('m_url').value;
-        const desc=$('m_desc').value;
-        if(!url)return alert('URL 必填');
-        if(id){
-            Object.assign(state.data.find(i=>i.id===id),{name,url,desc,logoUrl:autoLogo(url)});
-        }else{
-            state.data.push({
-                id:Date.now(),
-                categoryId:cid,
-                name,desc,url,
-                logoUrl:autoLogo(url)
+                if (this.draggingType === 'site' && type === 'site') {
+                    actions.reorderSite(this.draggingId, targetId);
+                } else if (this.draggingType === 'category' && type === 'category') {
+                    actions.reorderCategory(this.draggingId, targetId);
+                } else if (this.draggingType === 'site' && type === 'category') {
+                    actions.moveSiteToCategory(this.draggingId, targetId);
+                }
             });
         }
-        persist();closeModal();render();
-    }
-
-    /* ================= 启动 ================= */
-    $('addGroup').onclick=()=>{
-        const name=prompt('分组名');
-        if(!name)return;
-        state.categoryList.push({id:Date.now(),name});
-        persist();render();
     };
-    $('clear').onclick=()=>{
-        if(confirm('清空所有数据？')){
-            localStorage.removeItem(STORAGE_KEY);
-            load();render();
+
+    /**
+     * 数据操作模块
+     */
+    const actions = {
+        addCategory(name) {
+            if (!name) return;
+            app.state.categoryList.push({ id: Date.now(), name, weight: app.state.categoryList.length });
+            this.finish();
+        },
+        deleteCategory(id) {
+            if (!confirm('确定删除分组及其下所有站点吗？')) return;
+            app.state.categoryList = app.state.categoryList.filter(c => c.id != id);
+            app.state.data = app.state.data.filter(s => s.categoryId != id);
+            this.finish();
+        },
+        addSite(data) {
+            app.state.data.push({ ...data, id: Date.now(), weight: 999 });
+            this.finish();
+        },
+        updateSite(id, data) {
+            const idx = app.state.data.findIndex(s => s.id == id);
+            app.state.data[idx] = { ...app.state.data[idx], ...data };
+            this.finish();
+        },
+        deleteSite(id) {
+            app.state.data = app.state.data.filter(s => s.id != id);
+            this.finish();
+        },
+        moveSiteToCategory(siteId, catId) {
+            const site = app.state.data.find(s => s.id == siteId);
+            if (site) {
+                site.categoryId = parseInt(catId);
+                this.finish();
+            }
+        },
+        reorderCategory(srcId, targetId) {
+            const list = app.state.categoryList;
+            const srcIdx = list.findIndex(c => c.id == srcId);
+            const targetIdx = list.findIndex(c => c.id == targetId);
+            const [moved] = list.splice(srcIdx, 1);
+            list.splice(targetIdx, 0, moved);
+            list.forEach((c, i) => c.weight = i);
+            this.finish();
+        },
+        reorderSite(srcId, targetId) {
+            const list = app.state.data;
+            const srcIdx = list.findIndex(s => s.id == srcId);
+            const targetIdx = list.findIndex(s => s.id == targetId);
+            const targetCatId = list[targetIdx].categoryId;
+            const [moved] = list.splice(srcIdx, 1);
+            moved.categoryId = targetCatId; // 允许在拖拽排序时改变分组
+            list.splice(targetIdx, 0, moved);
+            list.forEach((s, i) => s.weight = i);
+            this.finish();
+        },
+        finish() {
+            app.save();
+            app.render();
         }
     };
-    $('search').oninput=e=>{
-        const q=e.target.value.toLowerCase();
-        document.querySelectorAll('.card').forEach(c=>{
-            c.classList.toggle('hidden',!c.innerText.toLowerCase().includes(q));
-        });
+
+    // 全局事件：点击关闭菜单 & 搜索
+    app.bindGlobalEvents = () => {
+        window.onclick = () => {
+            document.getElementById('context-menu').style.display = 'none';
+        };
+
+        document.getElementById('search-input').oninput = (e) => {
+            const val = e.target.value.toLowerCase();
+            document.querySelectorAll('.site-card').forEach(card => {
+                const name = card.querySelector('.site-name').innerText.toLowerCase();
+                const desc = card.querySelector('.site-desc').innerText.toLowerCase();
+                card.style.display = (name.includes(val) || desc.includes(val)) ? 'flex' : 'none';
+            });
+        };
     };
 
-    load();
-    render();
+    // 启动
+    app.init();
 </script>
+
 </body>
 </html>

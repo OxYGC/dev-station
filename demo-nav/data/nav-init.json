@@ -1,178 +1,253 @@
 {
   "categoryList": [
-    {
-      "id": 1,
-      "name": "行情与数据",
-      "desc": "加密市场行情与数据平台",
-      "weight": 1
-    },
-    {
-      "id": 2,
-      "name": "区块链浏览器",
-      "desc": "主流区块链浏览器",
-      "weight": 2
-    },
-    {
-      "id": 3,
-      "name": "研究与分析",
-      "desc": "投研、链上分析与报告",
-      "weight": 3
-    },
-    {
-      "id": 4,
-      "name": "DeFi 工具",
-      "desc": "DeFi 数据、协议与工具",
-      "weight": 4
-    },
-    {
-      "id": 5,
-      "name": "空投与任务",
-      "desc": "空投追踪与 Web3 任务平台",
-      "weight": 5
-    },
-    {
-      "id": 6,
-      "name": "开发者资源",
-      "desc": "Web3 开发与技术文档",
-      "weight": 6
-    }
+    { "id": 1, "name": "行情与数据", "desc": "市场行情与聚合数据", "weight": 0 },
+    { "id": 2, "name": "区块链浏览器", "desc": "主流链浏览器", "weight": 1 },
+    { "id": 3, "name": "研究与分析", "desc": "投研、链上分析", "weight": 2 },
+    { "id": 4, "name": "DeFi 协议", "desc": "DeFi 协议与工具", "weight": 3 },
+    { "id": 5, "name": "空投与任务", "desc": "空投与任务平台", "weight": 4 },
+    { "id": 6, "name": "Layer2 / Rollup", "desc": "L2 与扩容方案", "weight": 5 },
+    { "id": 7, "name": "NFT 平台", "desc": "NFT 市场与工具", "weight": 6 },
+    { "id": 8, "name": "开发者资源", "desc": "Web3 开发工具与文档", "weight": 7 },
+    { "id": 9, "name": "基础设施", "desc": "RPC / 节点 / Infra", "weight": 8 },
+    { "id": 10, "name": "安全与审计", "desc": "安全工具与审计机构", "weight": 9 }
   ],
-
   "data": [
-    {
-      "id": 1,
-      "categoryId": 1,
-      "name": "CoinMarketCap",
-      "desc": "加密货币行情与市值数据",
-      "url": "https://coinmarketcap.com/",
-      "logoUrl": "https://coinmarketcap.com/favicon.ico",
-      "weight": 1,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "id": 2,
-      "categoryId": 1,
-      "name": "CoinGecko",
-      "desc": "全球加密资产数据平台",
-      "url": "https://www.coingecko.com/",
-      "logoUrl": "https://www.coingecko.com/favicon.ico",
-      "weight": 2,
-      "date": "2024-06-12 23:59:05"
-    },
+    { "id": 2001, "categoryId": 1, "name": "CoinMarketCap", "desc": "全球主流加密资产市值与行情数据平台", "url": "https://coinmarketcap.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinmarketcap.com", "weight": 0, "date": "2024-06-12" },
+    { "id": 2002, "categoryId": 1, "name": "CoinGecko", "desc": "加密货币价格、交易量与市场数据聚合", "url": "https://www.coingecko.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coingecko.com", "weight": 1, "date": "2024-06-12" },
+    { "id": 2003, "categoryId": 1, "name": "TradingView", "desc": "金融与加密资产行情图表与技术分析", "url": "https://www.tradingview.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=tradingview.com", "weight": 2, "date": "2024-06-12" },
+    { "id": 2004, "categoryId": 1, "name": "DefiLlama", "desc": "DeFi 协议与多链 TVL 数据聚合", "url": "https://defillama.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=defillama.com", "weight": 3, "date": "2024-06-12" },
+    { "id": 2005, "categoryId": 1, "name": "CoinGlass", "desc": "加密衍生品爆仓、持仓与资金费率数据", "url": "https://www.coinglass.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinglass.com", "weight": 4, "date": "2024-06-12" },
+    { "id": 2006, "categoryId": 1, "name": "CryptoQuant", "desc": "交易所与链上资金流向数据分析", "url": "https://cryptoquant.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=cryptoquant.com", "weight": 5, "date": "2024-06-12" },
+    { "id": 2007, "categoryId": 1, "name": "Glassnode", "desc": "比特币与以太坊链上数据分析", "url": "https://glassnode.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=glassnode.com", "weight": 6, "date": "2024-06-12" },
+    { "id": 2008, "categoryId": 1, "name": "Santiment", "desc": "链上数据与社交情绪分析平台", "url": "https://santiment.net", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=santiment.net", "weight": 7, "date": "2024-06-12" },
+    { "id": 2009, "categoryId": 1, "name": "Messari", "desc": "加密资产研究、指标与行业报告", "url": "https://messari.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=messari.io", "weight": 8, "date": "2024-06-12" },
+    { "id": 2010, "categoryId": 1, "name": "Token Terminal", "desc": "基于协议收入的加密项目分析", "url": "https://tokenterminal.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=tokenterminal.com", "weight": 9, "date": "2024-06-12" },
+
+    { "id": 2011, "categoryId": 1, "name": "IntoTheBlock", "desc": "链上指标与市场情绪分析", "url": "https://intotheblock.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=intotheblock.com", "weight": 10, "date": "2024-06-12" },
+    { "id": 2012, "categoryId": 1, "name": "Nansen", "desc": "钱包标签化与智能资金追踪平台", "url": "https://www.nansen.ai", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=nansen.ai", "weight": 11, "date": "2024-06-12" },
+    { "id": 2013, "categoryId": 1, "name": "Dune", "desc": "基于 SQL 的链上数据可视化分析", "url": "https://dune.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=dune.com", "weight": 12, "date": "2024-06-12" },
+    { "id": 2014, "categoryId": 1, "name": "Arkham", "desc": "链上实体与地址追踪分析平台", "url": "https://arkhamintelligence.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=arkhamintelligence.com", "weight": 13, "date": "2024-06-12" },
+    { "id": 2015, "categoryId": 1, "name": "LunarCrush", "desc": "加密资产社交媒体热度与情绪分析", "url": "https://lunarcrush.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=lunarcrush.com", "weight": 14, "date": "2024-06-12" },
+    { "id": 2016, "categoryId": 1, "name": "CoinCodex", "desc": "加密货币价格预测与历史数据", "url": "https://coincodex.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coincodex.com", "weight": 15, "date": "2024-06-12" },
+    { "id": 2017, "categoryId": 1, "name": "LiveCoinWatch", "desc": "实时加密货币价格与市场数据", "url": "https://www.livecoinwatch.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=livecoinwatch.com", "weight": 16, "date": "2024-06-12" },
+    { "id": 2018, "categoryId": 1, "name": "CoinCheckup", "desc": "加密资产评级与基本面分析", "url": "https://coincheckup.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coincheckup.com", "weight": 17, "date": "2024-06-12" },
+    { "id": 2019, "categoryId": 1, "name": "CryptoCompare", "desc": "数字资产行情与指数数据", "url": "https://www.cryptocompare.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=cryptocompare.com", "weight": 18, "date": "2024-06-12" },
+    { "id": 2020, "categoryId": 1, "name": "Kaiko", "desc": "机构级加密市场与交易数据", "url": "https://www.kaiko.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=kaiko.com", "weight": 19, "date": "2024-06-12" },
+
+    { "id": 2021, "categoryId": 1, "name": "CoinMetrics", "desc": "加密资产网络与市场数据研究", "url": "https://coinmetrics.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinmetrics.io", "weight": 20, "date": "2024-06-12" },
+    { "id": 2022, "categoryId": 1, "name": "OnChainFX", "desc": "加密资产表现与风险指标对比", "url": "https://onchainfx.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=onchainfx.com", "weight": 21, "date": "2024-06-12" },
+    { "id": 2023, "categoryId": 1, "name": "BitInfoCharts", "desc": "区块链网络统计与指标数据", "url": "https://bitinfocharts.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=bitinfocharts.com", "weight": 22, "date": "2024-06-12" },
+    { "id": 2024, "categoryId": 1, "name": "Skew", "desc": "加密衍生品与期权市场数据", "url": "https://skew.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=skew.com", "weight": 23, "date": "2024-06-12" },
+    { "id": 2025, "categoryId": 1, "name": "Bybt", "desc": "加密合约与爆仓数据分析平台", "url": "https://www.bybt.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=bybt.com", "weight": 24, "date": "2024-06-12" },
+    { "id": 2026, "categoryId": 1, "name": "CoinTrendz", "desc": "基于推特的加密趋势分析", "url": "https://cointrendz.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=cointrendz.com", "weight": 25, "date": "2024-06-12" },
+    { "id": 2027, "categoryId": 1, "name": "Alphaday", "desc": "加密市场情报与数据仪表盘", "url": "https://alphaday.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=alphaday.com", "weight": 26, "date": "2024-06-12" },
+    { "id": 2028, "categoryId": 1, "name": "CoinPaprika", "desc": "加密资产价格与基本信息聚合", "url": "https://coinpaprika.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinpaprika.com", "weight": 27, "date": "2024-06-12" },
+    { "id": 2029, "categoryId": 1, "name": "CryptoBubbles", "desc": "加密市场涨跌可视化气泡图", "url": "https://cryptobubbles.net", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=cryptobubbles.net", "weight": 28, "date": "2024-06-12" },
+    { "id": 2030, "categoryId": 1, "name": "Coin360", "desc": "加密市场热力图与行情数据", "url": "https://coin360.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coin360.com", "weight": 29, "date": "2024-06-12" },
+
+
+
+    { "id": 2101, "categoryId": 2, "name": "Etherscan", "desc": "以太坊区块链浏览器", "url": "https://etherscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=etherscan.io", "weight": 0, "date": "2024-06-12" },
+    { "id": 2102, "categoryId": 2, "name": "BscScan", "desc": "BNB Chain 区块链浏览器", "url": "https://bscscan.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=bscscan.com", "weight": 1, "date": "2024-06-12" },
+    { "id": 2103, "categoryId": 2, "name": "Polygonscan", "desc": "Polygon 网络区块浏览器", "url": "https://polygonscan.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=polygonscan.com", "weight": 2, "date": "2024-06-12" },
+    { "id": 2104, "categoryId": 2, "name": "Arbiscan", "desc": "Arbitrum 网络区块浏览器", "url": "https://arbiscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=arbiscan.io", "weight": 3, "date": "2024-06-12" },
+    { "id": 2105, "categoryId": 2, "name": "Optimistic Etherscan", "desc": "Optimism 网络区块浏览器", "url": "https://optimistic.etherscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=etherscan.io", "weight": 4, "date": "2024-06-12" },
+    { "id": 2106, "categoryId": 2, "name": "SnowTrace", "desc": "Avalanche C-Chain 区块浏览器", "url": "https://snowtrace.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=snowtrace.io", "weight": 5, "date": "2024-06-12" },
+    { "id": 2107, "categoryId": 2, "name": "FTMScan", "desc": "Fantom 网络区块浏览器", "url": "https://ftmscan.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=ftmscan.com", "weight": 6, "date": "2024-06-12" },
+    { "id": 2108, "categoryId": 2, "name": "Tronscan", "desc": "TRON 官方区块链浏览器", "url": "https://tronscan.org", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=tronscan.org", "weight": 7, "date": "2024-06-12" },
+    { "id": 2109, "categoryId": 2, "name": "Solscan", "desc": "Solana 网络区块浏览器", "url": "https://solscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=solscan.io", "weight": 8, "date": "2024-06-12" },
+    { "id": 2110, "categoryId": 2, "name": "Solana Explorer", "desc": "Solana 官方区块浏览器", "url": "https://explorer.solana.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=solana.com", "weight": 9, "date": "2024-06-12" },
+
+    { "id": 2111, "categoryId": 2, "name": "Aptos Explorer", "desc": "Aptos 官方区块浏览器", "url": "https://explorer.aptoslabs.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=aptoslabs.com", "weight": 10, "date": "2024-06-12" },
+    { "id": 2112, "categoryId": 2, "name": "Sui Explorer", "desc": "Sui 网络官方区块浏览器", "url": "https://explorer.sui.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=sui.io", "weight": 11, "date": "2024-06-12" },
+    { "id": 2113, "categoryId": 2, "name": "Near Explorer", "desc": "NEAR Protocol 区块浏览器", "url": "https://explorer.near.org", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=near.org", "weight": 12, "date": "2024-06-12" },
+    { "id": 2114, "categoryId": 2, "name": "Subscan", "desc": "Polkadot 与 Substrate 生态浏览器", "url": "https://subscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=subscan.io", "weight": 13, "date": "2024-06-12" },
+    { "id": 2115, "categoryId": 2, "name": "Cosmos Explorer", "desc": "Cosmos Hub 区块浏览器", "url": "https://www.mintscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=mintscan.io", "weight": 14, "date": "2024-06-12" },
+    { "id": 2116, "categoryId": 2, "name": "StarkScan", "desc": "StarkNet 网络区块浏览器", "url": "https://starkscan.co", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=starkscan.co", "weight": 15, "date": "2024-06-12" },
+    { "id": 2117, "categoryId": 2, "name": "zkScan", "desc": "zkSync Era 区块浏览器", "url": "https://zkscan.io", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=zkscan.io", "weight": 16, "date": "2024-06-12" },
+    { "id": 2118, "categoryId": 2, "name": "LineaScan", "desc": "Linea 网络区块浏览器", "url": "https://lineascan.build", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=lineascan.build", "weight": 17, "date": "2024-06-12" },
+    { "id": 2119, "categoryId": 2, "name": "BaseScan", "desc": "Base 网络区块浏览器", "url": "https://basescan.org", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=basescan.org", "weight": 18, "date": "2024-06-12" },
+    { "id": 2120, "categoryId": 2, "name": "ScrollScan", "desc": "Scroll 网络区块浏览器", "url": "https://scrollscan.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=scrollscan.com", "weight": 19, "date": "2024-06-12" },
+
+    { "id": 2121, "categoryId": 2, "name": "OKLink", "desc": "多链区块浏览器与链上数据平台", "url": "https://www.oklink.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=oklink.com", "weight": 20, "date": "2024-06-12" },
+    { "id": 2122, "categoryId": 2, "name": "Blockchair", "desc": "支持多链的区块与交易查询", "url": "https://blockchair.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=blockchair.com", "weight": 21, "date": "2024-06-12" },
+    { "id": 2123, "categoryId": 2, "name": "BTC.com Explorer", "desc": "比特币区块链浏览器", "url": "https://btc.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=btc.com", "weight": 22, "date": "2024-06-12" },
+    { "id": 2124, "categoryId": 2, "name": "Blockchain.com Explorer", "desc": "比特币与以太坊区块浏览器", "url": "https://www.blockchain.com/explorer", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=blockchain.com", "weight": 23, "date": "2024-06-12" },
+    { "id": 2125, "categoryId": 2, "name": "Mempool.space", "desc": "比特币内存池与手续费分析浏览器", "url": "https://mempool.space", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=mempool.space", "weight": 24, "date": "2024-06-12" },
+    { "id": 2126, "categoryId": 2, "name": "Blockstream Explorer", "desc": "Blockstream 提供的比特币浏览器", "url": "https://blockstream.info", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=blockstream.info", "weight": 25, "date": "2024-06-12" },
+    { "id": 2127, "categoryId": 2, "name": "Theta Explorer", "desc": "Theta Network 区块浏览器", "url": "https://explorer.thetatoken.org", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=thetatoken.org", "weight": 26, "date": "2024-06-12" },
+    { "id": 2128, "categoryId": 2, "name": "Klaytnscope", "desc": "Klaytn 网络区块浏览器", "url": "https://scope.klaytn.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=klaytn.com", "weight": 27, "date": "2024-06-12" },
+    { "id": 2129, "categoryId": 2, "name": "Harmony Explorer", "desc": "Harmony ONE 网络区块浏览器", "url": "https://explorer.harmony.one", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=harmony.one", "weight": 28, "date": "2024-06-12" },
+    { "id": 2130, "categoryId": 2, "name": "Elrond Explorer", "desc": "MultiversX（原 Elrond）区块浏览器", "url": "https://explorer.multiversx.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=multiversx.com", "weight": 29, "date": "2024-06-12" },
+
+
 
     {
-      "id": 3,
-      "categoryId": 2,
-      "name": "Etherscan",
-      "desc": "Ethereum 区块链浏览器",
-      "url": "https://etherscan.io/",
-      "logoUrl": "https://etherscan.io/favicon.ico",
-      "weight": 1,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "id": 4,
-      "categoryId": 2,
-      "name": "BscScan",
-      "desc": "BNB Chain 区块链浏览器",
-      "url": "https://bscscan.com/",
-      "logoUrl": "https://bscscan.com/favicon.ico",
-      "weight": 2,
-      "date": "2024-06-12 23:59:05"
-    },
-    {
-      "id": 5,
-      "categoryId": 2,
-      "name": "Solscan",
-      "desc": "Solana 区块链浏览器",
-      "url": "https://solscan.io/",
-      "logoUrl": "https://solscan.io/favicon.ico",
-      "weight": 3,
-      "date": "2024-06-12 23:59:05"
-    },
-
-    {
-      "id": 6,
+      "id": 41,
       "categoryId": 3,
       "name": "Dune",
-      "desc": "链上数据分析与可视化",
-      "url": "https://dune.com/",
-      "logoUrl": "https://dune.com/favicon.ico",
-      "weight": 1,
-      "date": "2024-06-12 23:59:05"
+      "desc": "通过 SQL 查询构建链上数据看板",
+      "url": "https://dune.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=dune.com",
+      "weight": 0,
+      "date": "2024-06-12"
     },
     {
-      "id": 7,
+      "id": 42,
       "categoryId": 3,
-      "name": "Glassnode",
-      "desc": "链上数据与市场情绪分析",
-      "url": "https://glassnode.com/",
-      "logoUrl": "https://glassnode.com/favicon.ico",
-      "weight": 2,
-      "date": "2024-06-12 23:59:05"
-    },
-
-    {
-      "id": 8,
-      "categoryId": 4,
-      "name": "DeFiLlama",
-      "desc": "DeFi TVL 与协议数据",
-      "url": "https://defillama.com/",
-      "logoUrl": "https://defillama.com/favicon.ico",
+      "name": "Nansen",
+      "desc": "专业链上地址标签与资金流向分析",
+      "url": "https://www.nansen.ai",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=nansen.ai",
       "weight": 1,
-      "date": "2024-06-12 23:59:05"
+      "date": "2024-06-12"
     },
     {
-      "id": 9,
-      "categoryId": 4,
-      "name": "Zapper",
-      "desc": "DeFi 投资组合管理工具",
-      "url": "https://zapper.fi/",
-      "logoUrl": "https://zapper.fi/favicon.ico",
+      "id": 43,
+      "categoryId": 3,
+      "name": "Arkham",
+      "desc": "去匿名化链上地址与资金分析平台",
+      "url": "https://arkhamintelligence.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=arkhamintelligence.com",
       "weight": 2,
-      "date": "2024-06-12 23:59:05"
+      "date": "2024-06-12"
     },
 
     {
-      "id": 10,
+      "id": 61,
+      "categoryId": 4,
+      "name": "Uniswap",
+      "desc": "主流去中心化交易协议",
+      "url": "https://uniswap.org",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=uniswap.org",
+      "weight": 0,
+      "date": "2024-06-12"
+    },
+    {
+      "id": 62,
+      "categoryId": 4,
+      "name": "Aave",
+      "desc": "去中心化借贷协议",
+      "url": "https://aave.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=aave.com",
+      "weight": 1,
+      "date": "2024-06-12"
+    },
+    {
+      "id": 63,
+      "categoryId": 4,
+      "name": "Curve",
+      "desc": "稳定币与低滑点交易协议",
+      "url": "https://curve.fi",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=curve.fi",
+      "weight": 2,
+      "date": "2024-06-12"
+    },
+
+    {
+      "id": 81,
       "categoryId": 5,
-      "name": "Airdrops.io",
-      "desc": "空投项目追踪",
-      "url": "https://airdrops.io/",
-      "logoUrl": "https://airdrops.io/favicon.ico",
-      "weight": 1,
-      "date": "2024-06-12 23:59:05"
+      "name": "Galxe",
+      "desc": "Web3 任务与空投活动平台",
+      "url": "https://galxe.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=galxe.com",
+      "weight": 0,
+      "date": "2024-06-12"
     },
     {
-      "id": 11,
+      "id": 82,
       "categoryId": 5,
       "name": "Layer3",
-      "desc": "Web3 任务与空投平台",
-      "url": "https://layer3.xyz/",
-      "logoUrl": "https://layer3.xyz/favicon.ico",
-      "weight": 2,
-      "date": "2024-06-12 23:59:05"
+      "desc": "Web3 学习与交互任务平台",
+      "url": "https://layer3.xyz",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=layer3.xyz",
+      "weight": 1,
+      "date": "2024-06-12"
     },
 
     {
-      "id": 12,
+      "id": 101,
       "categoryId": 6,
-      "name": "Ethereum Docs",
-      "desc": "Ethereum 官方开发文档",
-      "url": "https://ethereum.org/developers/",
-      "logoUrl": "https://ethereum.org/favicon.ico",
-      "weight": 1,
-      "date": "2024-06-12 23:59:05"
+      "name": "Arbitrum",
+      "desc": "以太坊主流 Layer2 Rollup 网络",
+      "url": "https://arbitrum.io",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=arbitrum.io",
+      "weight": 0,
+      "date": "2024-06-12"
     },
     {
-      "id": 13,
+      "id": 102,
       "categoryId": 6,
-      "name": "Solana Docs",
-      "desc": "Solana 官方开发者文档",
-      "url": "https://docs.solana.com/",
-      "logoUrl": "https://docs.solana.com/favicon.ico",
-      "weight": 2,
-      "date": "2024-06-12 23:59:05"
+      "name": "Optimism",
+      "desc": "Optimistic Rollup 扩容方案",
+      "url": "https://optimism.io",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=optimism.io",
+      "weight": 1,
+      "date": "2024-06-12"
+    },
+
+    {
+      "id": 121,
+      "categoryId": 7,
+      "name": "OpenSea",
+      "desc": "全球最大的 NFT 交易市场",
+      "url": "https://opensea.io",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=opensea.io",
+      "weight": 0,
+      "date": "2024-06-12"
+    },
+    {
+      "id": 122,
+      "categoryId": 7,
+      "name": "Blur",
+      "desc": "面向专业交易者的 NFT 市场",
+      "url": "https://blur.io",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=blur.io",
+      "weight": 1,
+      "date": "2024-06-12"
+    },
+
+    {
+      "id": 141,
+      "categoryId": 8,
+      "name": "Alchemy",
+      "desc": "区块链节点与开发者平台",
+      "url": "https://www.alchemy.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=alchemy.com",
+      "weight": 0,
+      "date": "2024-06-12"
+    },
+    {
+      "id": 142,
+      "categoryId": 8,
+      "name": "Infura",
+      "desc": "以太坊与多链 RPC 基础设施",
+      "url": "https://infura.io",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=infura.io",
+      "weight": 1,
+      "date": "2024-06-12"
+    },
+
+    {
+      "id": 161,
+      "categoryId": 9,
+      "name": "Chainlink",
+      "desc": "去中心化预言机与基础设施网络",
+      "url": "https://chain.link",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=chain.link",
+      "weight": 0,
+      "date": "2024-06-12"
+    },
+
+    {
+      "id": 181,
+      "categoryId": 10,
+      "name": "CertiK",
+      "desc": "区块链安全审计与风险监控平台",
+      "url": "https://www.certik.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=certik.com",
+      "weight": 0,
+      "date": "2024-06-12"
     }
   ]
 }
