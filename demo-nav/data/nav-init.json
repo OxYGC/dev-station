@@ -56,7 +56,7 @@
       "weight": 5,
       "date": "2024-06-12"
     },
-    { "id": 10001, "categoryId": 10001, "name": "ShadowSocks", "desc": "稳定好用的商业科学上网节点", "url": "https://secure.shadowsocks.au/aff.php?aff=47119", "logoUrl": "https://portal.shadowsocks.au/favicon.ico", "weight": 0, "date": "2024-06-12" },
+    { "id": 10001, "categoryId": 10000, "name": "ShadowSocks", "desc": "稳定好用的商业科学上网节点", "url": "https://secure.shadowsocks.au/aff.php?aff=47119", "logoUrl": "https://portal.shadowsocks.au/favicon.ico", "weight": 0, "date": "2024-06-12" },
 
 
     {"id":1001,"categoryId":11,"name":"EthResearch","desc":"以太坊核心技术研究论坛","url":"https://ethresear.ch/","logoUrl":"https://ethresear.ch/favicon.ico","weight":0,"date":"2025-01-01 00:00:00"},
