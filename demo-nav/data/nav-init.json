@@ -1,7 +1,7 @@
 {
   "categoryList": [
     {"id": 1767546542043, "name": "热门推荐", "weight": 0},
-    {"id": 10000, "name": "其他", "weight": 0},
+    {"id": 10000, "name": "其他", "weight": 10},
     {"id": 20000, "name": "x个人频道", "weight": 0},
     { "id": 1, "name": "行情与数据", "desc": "市场行情与聚合数据", "weight": 0 },
     { "id": 2, "name": "区块链浏览器", "desc": "主流链浏览器", "weight": 1 },
@@ -13,6 +13,7 @@
     { "id": 8, "name": "开发者资源", "desc": "Web3 开发工具与文档", "weight": 7 },
     { "id": 9, "name": "基础设施", "desc": "RPC / 节点 / Infra", "weight": 8 },
     { "id": 11, "name": "知名社区", "desc": "开发者与用户活跃的区块链社区平台", "weight": 9 },
+    { "id": 12, "name": "华语社区", "desc": "开发者与用户活跃的区块链社区平台", "weight": 9 },
     { "id": 10, "name": "安全与审计", "desc": "安全工具与审计机构", "weight": 9 }
   ],
   "data": [
@@ -57,6 +58,25 @@
       "date": "2024-06-12"
     },
     { "id": 10001, "categoryId": 10000, "name": "ShadowSocks", "desc": "稳定好用的商业科学上网节点", "url": "https://secure.shadowsocks.au/aff.php?aff=47119", "logoUrl": "https://portal.shadowsocks.au/favicon.ico", "weight": 0, "date": "2024-06-12" },
+    { "id": 10002, "categoryId": 10000, "name": "WgetCloud", "desc": "WgetCloud全球网络加速服务", "url": "https://invite.wgetcloud.ltd/auth/register?code=Fyr3A6", "logoUrl": "https://wgetcloud.ltd/favicon.ico", "weight": 0, "date": "2024-06-12" },
+    { "id": 10003, "categoryId": 10000, "name": "狗狗加速器", "desc": "Doge网络加速服务", "url": "https://go.dginv.click/#/register?code=HdG1bIeo", "logoUrl": "https://wgetcloud.ltd/favicon.ico", "weight": 0, "date": "2024-06-12" },
+    { "id": 10004, "categoryId": 10000, "name": "TAG节点", "desc": "TAG全球网络加速服务", "url": "https://tagss.pro/#/auth/SZcoBKK5", "logoUrl": "https://tagss.pro/theme/newtheme/assets/tag-white-64db6e6e.png", "weight": 0, "date": "2024-06-12" },
+
+    {"id":12004,"categoryId":12,"name":"TheWeb3社区","desc":"赋能Web3未来,集教育培训/安全攻防/投资量化于一体的Web3平台","url":"https://theweb3dao.com","logoUrl":"https://theweb3dao.com/favicon.ico","weight":3,"date":"2025-01-01 00:00:00"},
+    {"id":12012,"categoryId":12,"name":"登链社区","desc":"Web3 开发者学习与问答平台，提供 Solidity 教程与 EVM 原理","url":"https://learnblockchain.cn/","logoUrl":"https://learnblockchain.cn/images/favicon.ico","weight":3,"date":"2025-01-01 00:00:00"},
+    {"id":12010,"categoryId":12,"name":"电鸭社区","desc":"国内知名远程工作平台，含大量 Web3 开发、运营与设计岗位","url":"https://eleduck.com/","logoUrl":"https://eleduck.com/favicon.ico","weight":9,"date":"2025-01-01 00:00:00"},
+    {"id":12002,"categoryId":12,"name":"TinTinLand","desc":"新锐中文 Web3 媒体，覆盖项目动态、融资与政策解读","url":"https://tintinland.com/","logoUrl":"https://tintinland.com/favicon.ico","weight":1,"date":"2025-01-01 00:00:00"},
+    {"id":12001,"categoryId":12,"name":"OpenBuild","desc":"中国最早的区块链媒体与社区，提供新闻、深度分析与行业洞察","url":"https://openbuild.xyz/","logoUrl":"https://www.8btc.com/favicon.ico","weight":0,"date":"2025-01-01 00:00:00"},
+      {"id":12003,"categoryId":12,"name":"Odaily 星球日报","desc":"聚焦区块链与 Web3 的科技媒体，发布原创研报与商业分析","url":"https://www.odaily.news/","logoUrl":"https://www.odaily.news/favicon.ico","weight":2,"date":"2025-01-01 00:00:00"},
+      {"id":12003,"categoryId":12,"name":"MetaEra","desc":"聚焦区块链与 Web3 的科技媒体，发布原创研报与商业分析","url":"https://www.me.news/","logoUrl":"https://www.me.news/favicon.ico","weight":2,"date":"2025-01-01 00:00:00"},
+      {"id":12005,"categoryId":12,"name":"Web3CN","desc":"开发者自发组织的技术社区，定期举办 Hackathon 与技术分享会","url":"https://web3cn.org/","logoUrl":"https://web3cn.org/favicon.ico","weight":4,"date":"2025-01-01 00:00:00"},
+      {"id":12006,"categoryId":12,"name":"SevenUp DAO","desc":"专注 Web3 投研与开发的学习型 DAO，输出高质量技术与经济模型分析","url":"https://sevenupdao.xyz/","logoUrl":"https://sevenupdao.xyz/favicon.ico","weight":5,"date":"2025-01-01 00:00:00"},
+      {"id":12007,"categoryId":12,"name":"SeeDAO","desc":"全球化中文 DAO，涵盖写作、设计、开发，采用 Token 激励协作","url":"https://seedao.vip/","logoUrl":"https://seedao.vip/favicon.ico","weight":6,"date":"2025-01-01 00:00:00"},
+      {"id":12008,"categoryId":12,"name":"Foresight News 中文社区","desc":"聚焦 AI+Crypto、ZK、L2 等前沿赛道的深度讨论社区","url":"https://foresightnews.pro/","logoUrl":"https://foresightnews.pro/favicon.ico","weight":7,"date":"2025-01-01 00:00:00"},
+      {"id":12009,"categoryId":12,"name":"ABetterWeb3","desc":"专注华语 Web3 求职与人才对接的社群，提供远程岗位与内推","url":"https://abetterweb3.org/","logoUrl":"https://abetterweb3.org/favicon.ico","weight":8,"date":"2025-01-01 00:00:00"},
+      {"id":12011,"categoryId":12,"name":"MantaDAO","desc":"围绕 Manta Network 生态的中文 DAO，组织翻译、布道与空投任务","url":"https://mantadao.com/","logoUrl":"https://mantadao.com/favicon.ico","weight":10,"date":"2025-01-01 00:00:00"},
+
+
 
 
     {"id":1001,"categoryId":11,"name":"EthResearch","desc":"以太坊核心技术研究论坛","url":"https://ethresear.ch/","logoUrl":"https://ethresear.ch/favicon.ico","weight":0,"date":"2025-01-01 00:00:00"},
