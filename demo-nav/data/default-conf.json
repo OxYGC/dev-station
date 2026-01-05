@@ -2,8 +2,8 @@
   "config": {
     "icoUrl": "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://ethereum.org&size=64",
     "title": "NavHub",
-    "subTitle": "The Gateway to Web3",
-    "subTitleCN": "Web导航第一站",
+    "subTitle": "Web3导航第一站",
+    "subTitleEN": "The Gateway to Web3",
     "footerText": "Copyright &copy; 2015-{CURRENT_YEAR} <a href=\"http://iooiee.com\">iooiee.com</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href=\"mailto:keygenee@gmail.com\">keygenee@gmail.com</a>"
   },
   "api":{
