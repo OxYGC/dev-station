@@ -195,7 +195,6 @@
       {"id":318,"categoryId":3,"name":"Bankless Research","desc":"去中心化金融与DAO研究","url":"https://www.bankless.com/","logoUrl":"https://bankless.com/favicon.ico","weight":17,"date":"2025-01-01 00:00:00"},
       {"id":319,"categoryId":3,"name":"Paradigm Research","desc":"加密协议与机制设计研究","url":"https://www.paradigm.xyz/","logoUrl":"https://paradigm.xyz/favicon.ico","weight":18,"date":"2025-01-01 00:00:00"},
       {"id":320,"categoryId":3,"name":"a16z Crypto","desc":"Web3 技术与治理研究","url":"https://a16zcrypto.com/","logoUrl":"https://a16zcrypto.com/favicon.ico","weight":19,"date":"2025-01-01 00:00:00"},
-,
 
     {"id": 401, "categoryId": 4, "name": "DeFiLlama", "desc": "DeFi 总锁仓量（TVL）与生态数据", "url": "https://defillama.com", "logoUrl": "https://defillama.com/favicon.ico", "weight": 0, "date": "2024-06-12 23:59:05"},
     {"id": 402, "categoryId": 4, "name": "Zapper", "desc": "DeFi 投资组合管理与收益追踪", "url": "https://zapper.xyz", "logoUrl": "https://zapper.xyz/favicon.ico", "weight": 1, "date": "2024-06-12 23:59:05"},
