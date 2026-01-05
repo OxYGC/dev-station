@@ -1,6 +1,8 @@
 {
   "categoryList": [
     {"id": 1767546542043, "name": "热门推荐", "weight": 0},
+    {"id": 10000, "name": "其他", "weight": 0},
+    {"id": 20000, "name": "x个人频道", "weight": 0},
     { "id": 1, "name": "行情与数据", "desc": "市场行情与聚合数据", "weight": 0 },
     { "id": 2, "name": "区块链浏览器", "desc": "主流链浏览器", "weight": 1 },
     { "id": 3, "name": "研究与分析", "desc": "投研、链上分析", "weight": 2 },
@@ -10,6 +12,7 @@
     { "id": 7, "name": "NFT 平台", "desc": "NFT 市场与工具", "weight": 6 },
     { "id": 8, "name": "开发者资源", "desc": "Web3 开发工具与文档", "weight": 7 },
     { "id": 9, "name": "基础设施", "desc": "RPC / 节点 / Infra", "weight": 8 },
+    { "id": 11, "name": "知名社区", "desc": "开发者与用户活跃的区块链社区平台", "weight": 9 },
     { "id": 10, "name": "安全与审计", "desc": "安全工具与审计机构", "weight": 9 }
   ],
   "data": [
@@ -43,6 +46,63 @@
       "weight": 4,
       "date": "2024-06-12"
     },
+    {
+      "id": 2006,
+      "categoryId": 1767546542043,
+      "name": "RootData",
+      "desc": "Web3 世界的“彭博终端”",
+      "url": "https://www.rootdata.com/",
+      "logoUrl": "https://www.rootdata.com/favicon.ico",
+      "weight": 5,
+      "date": "2024-06-12"
+    },
+    { "id": 10001, "categoryId": 10001, "name": "ShadowSocks", "desc": "稳定好用的商业科学上网节点", "url": "https://secure.shadowsocks.au/aff.php?aff=47119", "logoUrl": "https://portal.shadowsocks.au/favicon.ico", "weight": 0, "date": "2024-06-12" },
+
+
+    {"id":1001,"categoryId":11,"name":"EthResearch","desc":"以太坊核心技术研究论坛","url":"https://ethresear.ch/","logoUrl":"https://ethresear.ch/favicon.ico","weight":0,"date":"2025-01-01 00:00:00"},
+    {"id":1002,"categoryId":11,"name":"Stack Exchange - Ethereum","desc":"以太坊开发问答社区","url":"https://ethereum.stackexchange.com/","logoUrl":"https://ethereum.stackexchange.com/favicon.ico","weight":1,"date":"2025-01-01 00:00:00"},
+    {"id":1003,"categoryId":11,"name":"Reddit - r/ethdev","desc":"以太坊开发者 Reddit 社区","url":"https://www.reddit.com/r/ethdev/","logoUrl":"https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png","weight":2,"date":"2025-01-01 00:00:00"},
+    {"id":1004,"categoryId":11,"name":"Discord - Ethereum","desc":"以太坊官方 Discord 社区","url":"https://discord.gg/CetY6Y4","logoUrl":"https://discord.com/assets/9baf17ea1e1c9d1a3f0b6d5e3a1c8b7a.png","weight":3,"date":"2025-01-01 00:00:00"},
+    {"id":1005,"categoryId":11,"name":"Gitcoin","desc":"Web3 开源协作与资助平台","url":"https://gitcoin.co/","logoUrl":"https://gitcoin.co/favicon.ico","weight":4,"date":"2025-01-01 00:00:00"},
+    {"id":1006,"categoryId":11,"name":"Lens Protocol","desc":"去中心化社交图谱社区","url":"https://lens.xyz/","logoUrl":"https://lens.xyz/favicon.ico","weight":5,"date":"2025-01-01 00:00:00"},
+    {"id":1007,"categoryId":11,"name":"Farcaster","desc":"去中心化社交协议与客户端生态","url":"https://farcaster.xyz/","logoUrl":"https://farcaster.xyz/favicon.ico","weight":6,"date":"2025-01-01 00:00:00"},
+    {"id":1008,"categoryId":11,"name":"Solana Forum","desc":"Solana 生态官方讨论区","url":"https://forums.solana.com/","logoUrl":"https://forums.solana.com/uploads/default/original/1X/7a5e9c4f8b3d2e1a0c6b5d4e3f2a1c0b.png","weight":7,"date":"2025-01-01 00:00:00"},
+    {"id":1009,"categoryId":11,"name":"X (Twitter) - #web3","desc":"Web3 实时资讯与开发者互动主阵地","url":"https://twitter.com/hashtag/web3","logoUrl":"https://x.com/favicons.ico","weight":8,"date":"2025-01-01 00:00:00"},
+    {"id":1010,"categoryId":11,"name":"Mirror","desc":"Web3 写作与协作社区","url":"https://mirror.xyz/","logoUrl":"https://mirror.xyz/favicon.ico","weight":9,"date":"2025-01-01 00:00:00"},
+
+
+    {"id":20001,"categoryId":20000,"name":"Vitalik Buterin","desc":"以太坊联合创始人，密码学与去中心化系统思想领袖","url":"https://twitter.com/VitalikButerin","logoUrl":"https://x.com/favicons.ico","weight":0,"date":"2025-01-01 00:00:00"},
+    {"id":20002,"categoryId":20000,"name":"Gavin Wood","desc":"Polkadot & Kusama 创始人，前以太坊 CTO，Web3 奠基人之一","url":"https://twitter.com/gavofyork","logoUrl":"https://x.com/favicons.ico","weight":1,"date":"2025-01-01 00:00:00"},
+    {"id":20003,"categoryId":20000,"name":"Hasu","desc":"知名加密研究员，聚焦协议设计、MEV 与治理","url":"https://twitter.com/hasufl","logoUrl":"https://x.com/favicons.ico","weight":2,"date":"2025-01-01 00:00:00"},
+    {"id":20004,"categoryId":20000,"name":"Chris Blec","desc":"DeFi 教育者，Bankless 合伙人，深入浅出讲解以太坊生态","url":"https://twitter.com/ChrisBlec","logoUrl":"https://x.com/favicons.ico","weight":3,"date":"2025-01-01 00:00:00"},
+    {"id":20005,"categoryId":20000,"name":"Santiago Santos","desc":"Framework Ventures 联合创始人，L2 与模块化区块链布道者","url":"https://twitter.com/santostanko","logoUrl":"https://x.com/favicons.ico","weight":4,"date":"2025-01-01 00:00:00"},
+    {"id":20006,"categoryId":20000,"name":"Justin Drake","desc":"以太坊研究员，专注共识、密码学与 ETH 供应经济学","url":"https://twitter.com/drakefjustin","logoUrl":"https://x.com/favicons.ico","weight":5,"date":"2025-01-01 00:00:00"},
+    {"id":20007,"categoryId":20000,"name":"Linda Xie","desc":"Scalar Capital 联合创始人，前 Coinbase 产品经理，DeFi 与 NFT 专家","url":"https://twitter.com/ljxie","logoUrl":"https://x.com/favicons.ico","weight":6,"date":"2025-01-01 00:00:00"},
+    {"id":20008,"categoryId":20000,"name":"Ryan Sean Adams","desc":"Bankless 创始人，以太坊与 DeFi 普及先锋","url":"https://twitter.com/RyanSAdams","logoUrl":"https://x.com/favicons.ico","weight":7,"date":"2025-01-01 00:00:00"},
+    {"id":20009,"categoryId":20000,"name":"Trent McConaghy","desc":"Ocean Protocol 创始人，AI + Web3 融合倡导者","url":"https://twitter.com/trentmc0","logoUrl":"https://x.com/favicons.ico","weight":8,"date":"2025-01-01 00:00:00"},
+    {"id":20010,"categoryId":20000,"name":"Molly Mackinlay","desc":"ENS 核心贡献者，去中心化身份与命名系统专家","url":"https://twitter.com/mollymgm","logoUrl":"https://x.com/favicons.ico","weight":9,"date":"2025-01-01 00:00:00"},
+    {"id":20011,"categoryId":20000,"name":"Georgios Konstantopoulos","desc":"Paradigm 研究合伙人，L2 与扩容技术权威","url":"https://twitter.com/gakonst","logoUrl":"https://x.com/favicons.ico","weight":10,"date":"2025-01-01 00:00:00"},
+    {"id":20012,"categoryId":20000,"name":"Arianna Simpson","desc":"a16z Crypto 合伙人，早期投资 Uniswap、Zora 等明星项目","url":"https://twitter.com/ariannasimpson","logoUrl":"https://x.com/favicons.ico","weight":11,"date":"2025-01-01 00:00:00"},
+    {"id":20013,"categoryId":20000,"name":"Patrick McCorry","desc":"Offchain Labs 研究科学家，专注 Rollup 与智能合约安全","url":"https://twitter.com/patrickmccorry","logoUrl":"https://x.com/favicons.ico","weight":12,"date":"2025-01-01 00:00:00"},
+    {"id":20014,"categoryId":20000,"name":"Kain Warwick","desc":"Synthetix 创始人，DeFi 衍生品先驱","url":"https://twitter.com/kaiynne","logoUrl":"https://x.com/favicons.ico","weight":13,"date":"2025-01-01 00:00:00"},
+    {"id":20015,"categoryId":20000,"name":"Cobie","desc":"著名加密评论员，UpOnly 播客主理人，犀利点评市场与项目","url":"https://twitter.com/cobie","logoUrl":"https://x.com/favicons.ico","weight":14,"date":"2025-01-01 00:00:00"},
+    {"id":20016,"categoryId":20000,"name":"Notation Capital","desc":"Sarah Meiklejohn，伦敦大学学院教授，链上隐私与合规研究者","url":"https://twitter.com/smeiklej","logoUrl":"https://x.com/favicons.ico","weight":15,"date":"2025-01-01 00:00:00"},
+    {"id":20017,"categoryId":20000,"name":"Emin Gün Sirer","desc":"Avalanche 创始人，康奈尔大学教授，分布式系统专家","url":"https://twitter.com/el33th4xor","logoUrl":"https://x.com/favicons.ico","weight":16,"date":"2025-01-01 00:00:00"},
+    {"id":20018,"categoryId":20000,"name":"Jutta Steiner","desc":"Polymath / Parity Technologies 联合创始人，企业级区块链先驱","url":"https://twitter.com/juttasteiner","logoUrl":"https://x.com/favicons.ico","weight":17,"date":"2025-01-01 00:00:00"},
+    {"id":20019,"categoryId":20000,"name":"Robert Miller","desc":"EigenLayer 创始人，再质押（Restaking）概念提出者","url":"https://twitter.com/robertdavidmiller","logoUrl":"https://x.com/favicons.ico","weight":18,"date":"2025-01-01 00:00:00"},
+    {"id":20020,"categoryId":20000,"name":"Lex Sokolin","desc":"Node Capital 创始人，Web3 金融与商业模式思想家","url":"https://twitter.com/lexsokolin","logoUrl":"https://x.com/favicons.ico","weight":19,"date":"2025-01-01 00:00:00"},
+    {"id":20021,"categoryId":20000,"name":"Haseeb Qureshi","desc":"Dragonfly Capital 管理合伙人，前软件工程师，深度技术投资人","url":"https://twitter.com/hosseeb","logoUrl":"https://x.com/favicons.ico","weight":20,"date":"2025-01-01 00:00:00"},
+    {"id":20022,"categoryId":20000,"name":"Dmitriy Berenzon","desc":"Nethermind 研究主管，EIP 作者，以太坊协议层贡献者","url":"https://twitter.com/dberenzon","logoUrl":"https://x.com/favicons.ico","weight":21,"date":"2025-01-01 00:00:00"},
+    {"id":20023,"categoryId":20000,"name":"Katie Haun","desc":"Haun Ventures 创始人，前 a16z 合伙人，监管与合规专家","url":"https://twitter.com/katiehaun","logoUrl":"https://x.com/favicons.ico","weight":22,"date":"2025-01-01 00:00:00"},
+    {"id":20024,"categoryId":20000,"name":"Tarun Chitra","desc":"Gauntlet Network CEO，DeFi 协议经济模型与风险管理专家","url":"https://twitter.com/tarunchitra","logoUrl":"https://x.com/favicons.ico","weight":23,"date":"2025-01-01 00:00:00"},
+    {"id":20025,"categoryId":20000,"name":"Miguel Piedrafita","desc":"Base 生态开发者布道者，全栈 Web3 工程师，教程创作者","url":"https://twitter.com/m1guelpf","logoUrl":"https://x.com/favicons.ico","weight":24,"date":"2025-01-01 00:00:00"},
+    {"id":20026,"categoryId":20000,"name":"Julian Koh","desc":"Velodrome Finance 创始人，OVM 与 L2 经济机制设计者","url":"https://twitter.com/_juliankoh","logoUrl":"https://x.com/favicons.ico","weight":25,"date":"2025-01-01 00:00:00"},
+    {"id":20027,"categoryId":20000,"name":"Sina Habibian","desc":"Paradigm 研究员，zk 与密码学应用探索者","url":"https://twitter.com/sina_habibian","logoUrl":"https://x.com/favicons.ico","weight":26,"date":"2025-01-01 00:00:00"},
+    {"id":20028,"categoryId":20000,"name":"Nader Dabit","desc":"Edge & Node 开发者布道者，Web3 教程与工具链推广者","url":"https://twitter.com/dabit3","logoUrl":"https://x.com/favicons.ico","weight":27,"date":"2025-01-01 00:00:00"},
+    {"id":20029,"categoryId":20000,"name":"Kelvin Fichter","desc":"Optimism 研究员，OP Stack 与以太坊扩容核心贡献者","url":"https://twitter.com/kelvinfichter","logoUrl":"https://x.com/favicons.ico","weight":28,"date":"2025-01-01 00:00:00"},
+    {"id":20030,"categoryId":20000,"name":"Tim Beiko","desc":"以太坊核心开发者，AllCoreDevs 主持人，协议升级协调者","url":"https://twitter.com/TimBeiko","logoUrl":"https://x.com/favicons.ico","weight":29,"date":"2025-01-01 00:00:00"},
+
+
 
     { "id": 2001, "categoryId": 1, "name": "CoinMarketCap", "desc": "全球主流加密资产市值与行情数据平台", "url": "https://coinmarketcap.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinmarketcap.com", "weight": 0, "date": "2024-06-12" },
     { "id": 2002, "categoryId": 1, "name": "CoinGecko", "desc": "加密货币价格、交易量与市场数据聚合", "url": "https://www.coingecko.com", "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coingecko.com", "weight": 1, "date": "2024-06-12" },
@@ -135,7 +195,7 @@
       {"id":318,"categoryId":3,"name":"Bankless Research","desc":"去中心化金融与DAO研究","url":"https://www.bankless.com/","logoUrl":"https://bankless.com/favicon.ico","weight":17,"date":"2025-01-01 00:00:00"},
       {"id":319,"categoryId":3,"name":"Paradigm Research","desc":"加密协议与机制设计研究","url":"https://www.paradigm.xyz/","logoUrl":"https://paradigm.xyz/favicon.ico","weight":18,"date":"2025-01-01 00:00:00"},
       {"id":320,"categoryId":3,"name":"a16z Crypto","desc":"Web3 技术与治理研究","url":"https://a16zcrypto.com/","logoUrl":"https://a16zcrypto.com/favicon.ico","weight":19,"date":"2025-01-01 00:00:00"},
-
+,
 
     {"id": 401, "categoryId": 4, "name": "DeFiLlama", "desc": "DeFi 总锁仓量（TVL）与生态数据", "url": "https://defillama.com", "logoUrl": "https://defillama.com/favicon.ico", "weight": 0, "date": "2024-06-12 23:59:05"},
     {"id": 402, "categoryId": 4, "name": "Zapper", "desc": "DeFi 投资组合管理与收益追踪", "url": "https://zapper.xyz", "logoUrl": "https://zapper.xyz/favicon.ico", "weight": 1, "date": "2024-06-12 23:59:05"},
