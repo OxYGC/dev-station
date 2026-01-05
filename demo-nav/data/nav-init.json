@@ -1,11 +1,12 @@
 {
   "categoryList": [
-    {"id": 1767546542043, "name": "热门推荐", "weight": 0},
+    {"id": 1767546542043, "name": "热门推荐", "weight": -1},
     { "id": 1, "name": "行情与数据", "desc": "市场行情与聚合数据", "weight": 0 },
-    { "id": 12, "name": "华语社区", "desc": "开发者与用户活跃的区块链社区平台", "weight": 1 },
-    {"id": 20000, "name": "x个人频道", "weight": 2},
     { "id": 2, "name": "区块链浏览器", "desc": "主流链浏览器", "weight": 1 },
-    { "id": 3, "name": "研究与分析", "desc": "投研、链上分析", "weight": 2 },
+    { "id": 3, "name": "华语社区", "desc": "开发者与用户活跃的区块链社区平台", "weight": 2 },
+
+    {"id": 20000, "name": "x个人频道", "weight": 3},
+    { "id": 3, "name": "研究与分析", "desc": "投研、链上分析", "weight": 3 },
     { "id": 4, "name": "DeFi 协议", "desc": "DeFi 协议与工具", "weight": 3 },
     { "id": 5, "name": "空投与任务", "desc": "空投与任务平台", "weight": 4 },
     { "id": 6, "name": "Layer2 / Rollup", "desc": "L2 与扩容方案", "weight": 5 },
