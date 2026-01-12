@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nav-site | 个人导航管理</title>
+    <title>NavHub</title>
+    <link id="favicon" rel="icon" href="">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-color: #764ba2;
-            --text-main: #2d3436;
-            --text-sub: #636e72;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent-color: #6366f1;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: 'PingFang SC', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
+            /* 恢复流动渐变背景 */
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: var(--text-main);
-            padding: 40px 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes gradientBG {
@@ -32,541 +35,568 @@
             100% { background-position: 0% 50%; }
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
-        /* Header & Search */
+        /* 顶部导航毛玻璃 */
+        /* --- 核心修复：确保 Header 及其内部下拉菜单永远在最顶层 --- */
         header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .search-bar {
-            margin: 20px auto;
-            max-width: 500px;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            outline: none;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .toolbar {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
-            transition: 0.3s;
-        }
-
-        .btn:hover { background: white; transform: translateY(-2px); }
-        .btn-danger { color: #d63031; }
-
-        /* Category System */
-        .category-section {
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .category-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-            cursor: move;
+            margin-bottom: 25px;
+            padding: 12px 20px;
+            background: var(--glass-bg);
+            /* 这里的毛玻璃效果会创建堆叠上下文，所以必须配合 position 和高 z-index */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+
+            position: relative;
+            z-index: 1000; /* 确保 header 高于 main 内容区 */
         }
 
-        .category-title { font-size: 1.2rem; font-weight: bold; color: white; }
-        .category-count { font-size: 0.8rem; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; }
+        .header-left h1 { font-size: 1.3rem; font-weight: 800; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-left p { font-size: 0.75rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
 
-        /* Card Grid */
+        .header-right { display: flex; align-items: center; gap: 15px; }
+
+        /* 搜索框适配 */
+        .search-wrapper { position: relative; display: flex; align-items: center; }
+        .search-bar {
+            width: 140px;
+            padding: 8px 12px 8px 32px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+            outline: none;
+            font-size: 13px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .search-bar:focus { width: 280px; background: white; border-color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .search-icon { position: absolute; left: 10px; font-size: 14px; opacity: 0.6; }
+        .search-hint { position: absolute; right: 10px; font-size: 10px; background: rgba(0,0,0,0.1); padding: 0 5px; border-radius: 4px; color: #fff; }
+
+        /* 齿轮容器 */
+        .settings-container {
+            position: relative;
+            z-index: 1001; /* 比 header 更高一点 */
+        }
+        .gear-btn {
+            background: rgba(255,255,255,0.2); border: 1px solid var(--glass-border);
+            font-size: 20px; cursor: pointer; border-radius: 10px; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .gear-btn:hover { background: white; transform: rotate(90deg); }
+
+        /* 下拉菜单 */
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            min-width: 180px;
+
+            /* 关键：设置一个极高的值，确保盖过任何开启了毛玻璃或 transform 的卡片 */
+            z-index: 9999;
+            overflow: hidden;
+            border: 1px solid #f1f5f9;
+        }
+
+        .dropdown-menu.show { display: flex; }
+        .dropdown-item { padding: 12px 16px; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .dropdown-item:hover { background: #f1f5f9; color: var(--accent-color); }
+        .dropdown-item.danger { color: #ef4444; border-top: 1px solid #f1f5f9; }
+
+        /* 分组卡片适当降低层级，防止干扰 */
+        .category-section {
+            margin-bottom: 25px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+
+            position: relative;
+            z-index: 1; /* 保持在低层级 */
+        }
+        .category-section.drag-over { border: 2px dashed var(--accent-color); transform: scale(1.01); }
+
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: move; }
+        .category-info { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1rem; color: var(--text-main); }
+        .category-count { font-size: 0.75rem; background: rgba(99, 102, 241, 0.1); color: var(--accent-color); padding: 2px 8px; border-radius: 10px; }
+        .expand-btn { background: white; border: 1px solid #e2e8f0; font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: none; }
+
+        /* 站点卡片 Grid */
         .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;
+            max-height: 145px; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .category-section.expanded .card-grid { max-height: 2000px; }
 
         .site-card {
-            background: var(--glass-bg);
-            border-radius: 15px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: inherit;
-            transition: 0.3s;
-            border: 1px solid transparent;
-            cursor: pointer;
-            position: relative;
+            background: rgba(255,255,255,0.8); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: inherit; border: 1px solid transparent; height: 62px; transition: 0.3s ease;
         }
+        .site-card:hover { transform: translateY(-3px); background: white; box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: var(--accent-color); }
+        .site-card.dragging { opacity: 0.3; }
 
-        .site-card:hover {
-            transform: translateY(-5px);
-            background: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+        .site-logo { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .site-info { flex: 1; min-width: 0; }
+        .site-name { font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .site-desc { font-size: 0.7rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .site-card.dragging { opacity: 0.5; }
+        footer { text-align: center; padding: 30px; font-size: 12px; color: rgba(255,255,255,0.8); text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        footer a { color: #fff; font-weight: bold; text-decoration: underline; }
 
-        .site-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: #f1f2f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .site-logo img { width: 100%; height: 100%; object-fit: cover; }
-
-        .site-info { flex: 1; overflow: hidden; }
-        .site-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .site-desc { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* Context Menu */
-        #context-menu {
-            position: fixed;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 1000;
-            padding: 5px 0;
-            min-width: 120px;
-        }
-
-        .menu-item {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .menu-item:hover { background: #f1f2f6; color: var(--accent-color); }
-        .menu-item.danger { color: #d63031; }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top:0; left:0; right:0; bottom:0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .modal h3 { margin-bottom: 20px; }
+        /* 弹窗样式 */
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(5px); }
+        .modal { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
+        .form-group input:focus { border-color: var(--accent-color); }
 
-        [draggable="true"] { cursor: grab; }
-        .drag-over { border: 2px dashed var(--accent-color) !important; }
+        #context-menu { position: fixed; background: white; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; z-index: 2000; padding: 6px 0; min-width: 140px; border: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
 
+<div id="loading" style="position:fixed; inset:0; background:#fff; z-index:9999; display:flex; align-items:center; justify-content:center;">页面加载中...</div>
+
 <div class="container">
     <header>
-        <h1 id="site-title">Nav-site</h1>
-        <p id="site-subtitle">我的极简导航</p>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="搜索站点...">
+        <div class="header-left">
+            <h1 id="site-title">NavHub</h1>
+            <p id="site-subtitle"></p>
         </div>
-        <div class="toolbar">
-            <button class="btn" onclick="ui.showModal('category')">➕ 新增分组</button>
-            <button class="btn btn-danger" onclick="app.resetData()">🧹 清空配置</button>
+        <div class="header-right">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" class="search-bar" placeholder="搜索站点...">
+                <span class="search-hint">/</span>
+            </div>
+            <div class="settings-container">
+                <button class="gear-btn" onclick="ui.toggleSettings(event)">⚙️</button>
+                <div id="dropdown-menu" class="dropdown-menu">
+                    <div class="dropdown-item" onclick="ui.showModal('category')">📁 新增分组</div>
+                    <div class="dropdown-item" onclick="io.exportData()">📤 导出配置 (JSON)</div>
+                    <div class="dropdown-item" onclick="document.getElementById('import-file').click()">📥 导入配置 (JSON)</div>
+                    <div class="dropdown-item danger" onclick="app.resetData()">🧹 恢复初始设置</div>
+                </div>
+                <input type="file" id="import-file" hidden accept=".json" onchange="io.importData(event)">
+            </div>
         </div>
     </header>
 
-    <main id="nav-content"></main>
+    <main id="nav-content">
+        <!-- 分组 1: Web3 & 加密货币 -->
+        <section class="category-section" data-id="1">
+            <div class="category-header">
+                <h2 class="category-info">
+                    <span> Web3导航 & 加密货币导航  </span>
+                    <span class="category-count">6</span>
+                </h2>
+            </div>
+            <div class="card-grid">
+                <a class="site-card" href="https://coinmarketcap.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=coinmarketcap.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">CoinMarketCap</div>
+                        <div class="site-desc">全球加密资产行情与市值排名</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://www.coingecko.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=coingecko.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">CoinGecko</div>
+                        <div class="site-desc">去中心化加密数据平台</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://defillama.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=defillama.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">DeFiLlama</div>
+                        <div class="site-desc">DeFi 总锁仓价值（TVL）追踪</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://dune.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=dune.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Dune Analytics</div>
+                        <div class="site-desc">链上数据仪表盘平台</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://nansen.ai" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=nansen.ai&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Nansen</div>
+                        <div class="site-desc">智能钱与巨鲸行为追踪</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://messari.io" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=messari.io&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Messari</div>
+                        <div class="site-desc">加密项目基本面研究</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 分组 2: 开发者工具 -->
+        <section class="category-section" data-id="2">
+            <div class="category-header">
+                <h2 class="category-info">
+                    <span>开发者工具导航</span>
+                    <span class="category-count">5</span>
+                </h2>
+            </div>
+            <div class="card-grid">
+                <a class="site-card" href="https://github.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=github.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">GitHub</div>
+                        <div class="site-desc">代码托管与协作平台</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://stackoverflow.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Stack Overflow</div>
+                        <div class="site-desc">程序员问答社区</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://regex101.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=regex101.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Regex101</div>
+                        <div class="site-desc">正则表达式在线调试器</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://caniuse.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=caniuse.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Can I Use</div>
+                        <div class="site-desc">前端 API 浏览器兼容性查询</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://excalidraw.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=excalidraw.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Excalidraw</div>
+                        <div class="site-desc">手绘风格白板协作工具</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 分组 3: 新闻与资讯 -->
+        <section class="category-section" data-id="3">
+            <div class="category-header">
+                <h2 class="category-info">
+                    <span>web3新闻与资讯</span>
+                    <span class="category-count">3</span>
+                </h2>
+            </div>
+            <div class="card-grid">
+                <a class="site-card" href="https://coindesk.com" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=coindesk.com&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">CoinDesk</div>
+                        <div class="site-desc">全球加密新闻权威媒体</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://theblock.co" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=theblock.co&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">The Block</div>
+                        <div class="site-desc">深度加密市场研究报告</div>
+                    </div>
+                </a>
+                <a class="site-card" href="https://decrypt.co" target="_blank" rel="noopener">
+                    <img class="site-logo" src="https://www.google.com/s2/favicons?domain=decrypt.co&sz=64" loading="lazy">
+                    <div class="site-info">
+                        <div class="site-name">Decrypt</div>
+                        <div class="site-desc">Web3 与 NFT 新闻解读</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
 </div>
+
+<footer id="site-footer"></footer>
 
 <div id="context-menu"></div>
 
 <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
-        <h3 id="modal-title">编辑信息</h3>
+        <h3 id="modal-title" style="margin-bottom:20px; color: var(--text-main);">管理项目</h3>
         <div id="modal-form"></div>
-        <div class="modal-btns">
-            <button class="btn" onclick="ui.closeModal()">取消</button>
-            <button class="btn" style="background: var(--accent-color); color: white;" id="modal-save">保存</button>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px">
+            <button style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; cursor:pointer;" onclick="ui.closeModal()">取消</button>
+            <button style="padding: 8px 16px; border-radius: 8px; border: none; background: var(--accent-color); color:white; cursor:pointer; font-weight:600;" id="modal-save">保存</button>
         </div>
     </div>
 </div>
 
 <script>
-    /**
-     * 核心逻辑模块
-     */
     const STORAGE_KEY = 'nav_site_data_v2';
     const DEFAULT_CONF_URL = 'https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/default-conf.json';
 
     const app = {
-        state: {
-            config: { title: 'Nav-site', subTitle: '本地优先导航站' },
-            categoryList: [],
-            data: []
-        },
+        state: { config: {}, categoryList: [], data: [] },
 
         async init() {
-            const localData = localStorage.getItem(STORAGE_KEY);
-            if (localData) {
+            const local = localStorage.getItem(STORAGE_KEY);
+            if (local) {
                 try {
-                    this.state = JSON.parse(localData);
-                    this.render();
-                } catch (e) {
-                    console.error("Local storage error", e);
-                    this.loadRemoteData();
-                }
+                    this.state = JSON.parse(local);
+                    this.finish();
+                } catch(e) { this.loadRemote(); }
             } else {
-                this.loadRemoteData();
+                await this.loadRemote();
             }
-            this.bindGlobalEvents();
         },
 
-        async loadRemoteData() {
+        async loadRemote() {
             try {
                 const resp = await fetch(DEFAULT_CONF_URL);
-                const conf = await resp.json();
-                if (conf.api && conf.api.homeUrl) {
-                    const dataResp = await fetch(conf.api.homeUrl);
-                    const realData = await dataResp.json();
-                    this.state.categoryList = realData.categoryList || [];
-                    this.state.data = realData.data || [];
-                    this.state.config = conf.config || this.state.config;
+                const confData = await resp.json();
+                this.state.config = confData.config;
+
+                if (confData.api && confData.api.homeUrl) {
+                    const dataResp = await fetch(confData.api.homeUrl);
+                    const initData = await dataResp.json();
+                    this.state.categoryList = initData.categoryList || [];
+                    this.state.data = initData.data || [];
                     this.save();
-                    this.render();
                 }
-            } catch (e) {
-                console.warn("远程加载失败，使用空白配置", e);
-                this.render();
-            }
+            } catch (e) { console.error("Sync failed", e); }
+            this.finish();
         },
 
-        save() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+        finish() {
+            document.getElementById('loading').style.display = 'none';
+            this.applyConfig();
+            this.render();
+            this.bindEvents();
         },
 
-        render() {
-            ui.renderAll(this.state);
+        applyConfig() {
+            const c = this.state.config;
+            document.title = c.title || "NavHub";
+            document.getElementById('site-title').innerText = c.title || "NavHub";
+            document.getElementById('site-subtitle').innerText = c.subTitle || "";
+            document.getElementById('favicon').href = c.icoUrl || "";
+
+            let footerHtml = c.footerText || "";
+            footerHtml = footerHtml.replace("{CURRENT_YEAR}", new Date().getFullYear());
+            document.getElementById('site-footer').innerHTML = footerHtml;
         },
 
-        resetData() {
-            if(confirm('确定要清空所有数据吗？此操作不可撤销。')) {
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload();
-            }
-        }
+        save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state)); },
+        render() { ui.renderAll(this.state); },
+        resetData() { if(confirm('确定重置吗？这会清除所有本地保存的修改并重新从服务器拉取。')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
     };
 
-    /**
-     * UI 渲染引擎
-     */
     const ui = {
         renderAll(state) {
-            document.getElementById('site-title').innerText = state.config.title;
-            document.getElementById('site-subtitle').innerText = state.config.subTitle || '';
-
             const container = document.getElementById('nav-content');
             container.innerHTML = '';
-
-            // 按权重排序分组
-            const sortedCats = [...state.categoryList].sort((a,b) => (a.weight || 0) - (b.weight || 0));
-
-            sortedCats.forEach(cat => {
+            [...state.categoryList].sort((a,b) => (a.weight||0) - (b.weight||0)).forEach(cat => {
                 const section = document.createElement('section');
                 section.className = 'category-section';
                 section.dataset.id = cat.id;
-                section.draggable = true;
+                section.draggable = true; // 开启分组拖拽
 
-                const catSites = state.data.filter(s => s.categoryId === cat.id);
+                const sites = state.data.filter(s => s.categoryId === cat.id).sort((a,b) => (a.weight||0) - (b.weight||0));
 
                 section.innerHTML = `
                 <div class="category-header">
-                    <div class="category-title">
-                        ${cat.name} <span class="category-count">${catSites.length}</span>
+                    <div class="category-info">
+                        <span>${cat.name}</span>
+                        <span class="category-count">${sites.length}</span>
                     </div>
+                    <button class="expand-btn" id="exp-${cat.id}" onclick="ui.toggleExpand(${cat.id})">展开全部</button>
                 </div>
-                <div class="card-grid" data-cat-id="${cat.id}"></div>
+                <div class="card-grid" id="grid-${cat.id}"></div>
             `;
-
                 const grid = section.querySelector('.card-grid');
-                catSites.sort((a,b) => (a.weight || 0) - (b.weight || 0)).forEach(site => {
-                    grid.appendChild(this.createCard(site));
-                });
-
-                // 绑定右键和拖拽
-                section.oncontextmenu = (e) => this.showContextMenu(e, 'category', cat.id);
-                this.bindDragEvents(section, 'category');
-
+                sites.forEach(s => grid.appendChild(this.createCard(s)));
                 container.appendChild(section);
+                this.checkOverflow(cat.id);
+                this.bindDrag(section, 'category'); // 绑定分组拖拽
+                section.oncontextmenu = (e) => this.showMenu(e, 'category', cat.id);
             });
         },
 
         createCard(site) {
             const card = document.createElement('a');
-            card.className = 'site-card';
-            card.href = site.url;
-            card.target = '_blank';
+            card.className = 'site-card'; card.href = site.url; card.target = '_blank'; card.dataset.id = site.id;
             card.draggable = true;
-            card.dataset.id = site.id;
-
-            const domain = new URL(site.url).hostname;
-            const icon = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-
+            const icon = `https://www.google.com/s2/favicons?domain=${new URL(site.url).hostname}&sz=64`;
             card.innerHTML = `
-            <div class="site-logo"><img src="${icon}" alt="logo"></div>
+            <img class="site-logo" src="${icon}" onerror="this.src='https://via.placeholder.com/32'">
             <div class="site-info">
                 <div class="site-name">${site.name}</div>
                 <div class="site-desc">${site.desc || site.url}</div>
             </div>
         `;
-
-            card.oncontextmenu = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.showContextMenu(e, 'site', site.id);
-            };
-
-            this.bindDragEvents(card, 'site');
+            card.oncontextmenu = (e) => { e.preventDefault(); e.stopPropagation(); this.showMenu(e, 'site', site.id); };
+            this.bindDrag(card, 'site'); // 绑定卡片拖拽
             return card;
         },
 
-        // 交互逻辑
-        showContextMenu(e, type, id) {
+        checkOverflow(catId) {
+            setTimeout(() => {
+                const grid = document.getElementById(`grid-${catId}`);
+                if (grid && grid.scrollHeight > 150) document.getElementById(`exp-${catId}`).style.display = 'block';
+            }, 100);
+        },
+
+        toggleExpand(id) {
+            const sec = document.querySelector(`.category-section[data-id="${id}"]`);
+            const btn = document.getElementById(`exp-${id}`);
+            const isExp = sec.classList.toggle('expanded');
+            btn.innerText = isExp ? '收起' : '展开全部';
+        },
+
+        toggleSettings(e) {
+            e.stopPropagation();
+            document.getElementById('dropdown-menu').classList.toggle('show');
+        },
+
+        showMenu(e, type, id) {
             e.preventDefault();
             const menu = document.getElementById('context-menu');
-            menu.style.display = 'block';
-            menu.style.left = e.clientX + 'px';
-            menu.style.top = e.clientY + 'px';
-
-            let items = [];
-            if (type === 'category') {
-                items = [
-                    { label: '➕ 新增站点', action: () => ui.showModal('site', { categoryId: id }) },
-                    { label: '🗑 删除分组', danger: true, action: () => actions.deleteCategory(id) }
-                ];
-            } else {
-                items = [
-                    { label: '✏️ 编辑站点', action: () => ui.showModal('site', { id: id }) },
-                    { label: '🗑 删除站点', danger: true, action: () => actions.deleteSite(id) }
-                ];
-            }
-
-            menu.innerHTML = items.map(item => `
-            <div class="menu-item ${item.danger ? 'danger' : ''}" onclick="this.dataset.clicked=true">${item.label}</div>
-        `).join('');
-
-            menu.querySelectorAll('.menu-item').forEach((el, idx) => {
-                el.onclick = (ev) => {
-                    ev.stopPropagation();
-                    items[idx].action();
-                    menu.style.display = 'none';
-                };
+            menu.style.display = 'block'; menu.style.left = e.clientX + 'px'; menu.style.top = e.clientY + 'px';
+            let items = type === 'category' ? [
+                { label: '➕ 新增站点', act: () => ui.showModal('site', { categoryId: id }) },
+                { label: '🗑 删除分组', act: () => actions.delCat(id) }
+            ] : [
+                { label: '✏️ 编辑站点', act: () => ui.showModal('site', { id }) },
+                { label: '🗑 删除站点', act: () => actions.delSite(id) }
+            ];
+            menu.innerHTML = items.map(i => `<div class="dropdown-item">${i.label}</div>`).join('');
+            menu.querySelectorAll('.dropdown-item').forEach((el, i) => {
+                el.onclick = (ev) => { ev.stopPropagation(); items[i].act(); menu.style.display = 'none'; };
             });
         },
 
-        showModal(type, params = {}) {
+        showModal(type, p = {}) {
             const overlay = document.getElementById('modal-overlay');
             const form = document.getElementById('modal-form');
-            const saveBtn = document.getElementById('modal-save');
             overlay.style.display = 'flex';
-
             if (type === 'category') {
-                document.getElementById('modal-title').innerText = '新增分组';
-                form.innerHTML = `<div class="form-group"><label>名称</label><input id="f-name" type="text"></div>`;
-                saveBtn.onclick = () => {
-                    actions.addCategory(document.getElementById('f-name').value);
-                    this.closeModal();
-                };
+                form.innerHTML = `<div class="form-group"><label>分组名称</label><input id="f-name" placeholder="请输入分组名"></div>`;
+                document.getElementById('modal-save').onclick = () => { actions.addCat(document.getElementById('f-name').value); ui.closeModal(); };
             } else {
-                const isEdit = !!params.id;
-                const site = isEdit ? app.state.data.find(s => s.id === params.id) : null;
-                document.getElementById('modal-title').innerText = isEdit ? '编辑站点' : '新增站点';
-                form.innerHTML = `
-                <div class="form-group"><label>名称</label><input id="f-name" value="${site ? site.name : ''}"></div>
-                <div class="form-group"><label>描述</label><input id="f-desc" value="${site ? site.desc : ''}"></div>
-                <div class="form-group"><label>URL</label><input id="f-url" value="${site ? site.url : 'https://'}"></div>
-            `;
-                saveBtn.onclick = () => {
-                    const data = {
-                        name: document.getElementById('f-name').value,
-                        desc: document.getElementById('f-desc').value,
-                        url: document.getElementById('f-url').value,
-                        categoryId: params.categoryId || site.categoryId
-                    };
-                    isEdit ? actions.updateSite(params.id, data) : actions.addSite(data);
-                    this.closeModal();
+                const s = p.id ? app.state.data.find(x => x.id == p.id) : null;
+                form.innerHTML = `<div class="form-group"><label>站点名称</label><input id="f-name" value="${s?s.name:''}"></div>
+                              <div class="form-group"><label>站点 URL</label><input id="f-url" value="${s?s.url:'https://'}"></div>
+                              <div class="form-group"><label>站点描述</label><input id="f-desc" value="${s?s.desc:''}"></div>`;
+                document.getElementById('modal-save').onclick = () => {
+                    const d = { name: document.getElementById('f-name').value, url: document.getElementById('f-url').value, desc: document.getElementById('f-desc').value, categoryId: p.categoryId || s.categoryId };
+                    p.id ? actions.updSite(p.id, d) : actions.addSite(d);
+                    ui.closeModal();
                 };
             }
         },
-
         closeModal() { document.getElementById('modal-overlay').style.display = 'none'; },
 
-        /**
-         * 拖拽核心实现
-         */
-        draggingType: null,
-        draggingId: null,
-
-        bindDragEvents(el, type) {
-            el.addEventListener('dragstart', (e) => {
+        // 拖拽修复核心：必须阻止 DragOver 的默认行为
+        bindDrag(el, type) {
+            el.ondragstart = (e) => {
                 e.stopPropagation();
-                this.draggingType = type;
-                this.draggingId = el.dataset.id;
+                this.dt = type;
+                this.di = el.dataset.id;
                 el.classList.add('dragging');
-            });
-
-            el.addEventListener('dragend', () => {
+            };
+            el.ondragend = () => {
                 el.classList.remove('dragging');
-                document.querySelectorAll('.drag-over').forEach(n => n.classList.remove('drag-over'));
-            });
-
-            el.addEventListener('dragover', (e) => {
-                e.preventDefault();
+                document.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over'));
+            };
+            el.ondragover = (e) => {
+                e.preventDefault(); // 关键：允许放置
                 e.stopPropagation();
-                el.classList.add('drag-over');
-            });
-
-            el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
-
-            el.addEventListener('drop', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const targetId = el.dataset.id;
-
-                if (this.draggingType === 'site' && type === 'site') {
-                    actions.reorderSite(this.draggingId, targetId);
-                } else if (this.draggingType === 'category' && type === 'category') {
-                    actions.reorderCategory(this.draggingId, targetId);
-                } else if (this.draggingType === 'site' && type === 'category') {
-                    actions.moveSiteToCategory(this.draggingId, targetId);
-                }
-            });
+                if(type === 'category') el.classList.add('drag-over');
+            };
+            el.ondragleave = () => el.classList.remove('drag-over');
+            el.ondrop = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                if (this.dt === 'site' && type === 'category') actions.moveSite(this.di, el.dataset.id);
+                if (this.dt === type) actions.reorder(type, this.di, el.dataset.id);
+            };
         }
     };
 
-    /**
-     * 数据操作模块
-     */
     const actions = {
-        addCategory(name) {
-            if (!name) return;
-            app.state.categoryList.push({ id: Date.now(), name, weight: app.state.categoryList.length });
-            this.finish();
+        addCat(name) { if(!name) return; app.state.categoryList.push({id: Date.now(), name, weight: 99}); this.fin(); },
+        delCat(id) { if(confirm('确定删除分组及其下所有站点吗？')) { app.state.categoryList = app.state.categoryList.filter(c => c.id != id); app.state.data = app.state.data.filter(s => s.categoryId != id); this.fin(); } },
+        addSite(d) { app.state.data.push({...d, id: Date.now(), weight: 99}); this.fin(); },
+        updSite(id, d) { const i = app.state.data.findIndex(x => x.id == id); if(i>-1) app.state.data[i] = {...app.state.data[i], ...d}; this.fin(); },
+        delSite(id) { app.state.data = app.state.data.filter(x => x.id != id); this.fin(); },
+        moveSite(sid, cid) { const s = app.state.data.find(x => x.id == sid); if(s) { s.categoryId = parseInt(cid); this.fin(); } },
+        reorder(type, sid, tid) {
+            if(sid == tid) return;
+            const list = type === 'category' ? app.state.categoryList : app.state.data;
+            const sIdx = list.findIndex(x => x.id == sid), tIdx = list.findIndex(x => x.id == tid);
+            if(sIdx === -1 || tIdx === -1) return;
+            const [m] = list.splice(sIdx, 1); list.splice(tIdx, 0, m);
+            list.forEach((x, i) => x.weight = i); this.fin();
         },
-        deleteCategory(id) {
-            if (!confirm('确定删除分组及其下所有站点吗？')) return;
-            app.state.categoryList = app.state.categoryList.filter(c => c.id != id);
-            app.state.data = app.state.data.filter(s => s.categoryId != id);
-            this.finish();
+        fin() { app.save(); app.render(); }
+    };
+
+    const io = {
+        exportData() {
+            const blob = new Blob([JSON.stringify(app.state, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nav-config-backup.json'; a.click();
         },
-        addSite(data) {
-            app.state.data.push({ ...data, id: Date.now(), weight: 999 });
-            this.finish();
-        },
-        updateSite(id, data) {
-            const idx = app.state.data.findIndex(s => s.id == id);
-            app.state.data[idx] = { ...app.state.data[idx], ...data };
-            this.finish();
-        },
-        deleteSite(id) {
-            app.state.data = app.state.data.filter(s => s.id != id);
-            this.finish();
-        },
-        moveSiteToCategory(siteId, catId) {
-            const site = app.state.data.find(s => s.id == siteId);
-            if (site) {
-                site.categoryId = parseInt(catId);
-                this.finish();
-            }
-        },
-        reorderCategory(srcId, targetId) {
-            const list = app.state.categoryList;
-            const srcIdx = list.findIndex(c => c.id == srcId);
-            const targetIdx = list.findIndex(c => c.id == targetId);
-            const [moved] = list.splice(srcIdx, 1);
-            list.splice(targetIdx, 0, moved);
-            list.forEach((c, i) => c.weight = i);
-            this.finish();
-        },
-        reorderSite(srcId, targetId) {
-            const list = app.state.data;
-            const srcIdx = list.findIndex(s => s.id == srcId);
-            const targetIdx = list.findIndex(s => s.id == targetId);
-            const targetCatId = list[targetIdx].categoryId;
-            const [moved] = list.splice(srcIdx, 1);
-            moved.categoryId = targetCatId; // 允许在拖拽排序时改变分组
-            list.splice(targetIdx, 0, moved);
-            list.forEach((s, i) => s.weight = i);
-            this.finish();
-        },
-        finish() {
-            app.save();
-            app.render();
+        importData(e) {
+            const reader = new FileReader();
+            reader.onload = (f) => { try { app.state = JSON.parse(f.target.result); app.save(); location.reload(); } catch(e){alert('无效的文件格式');} };
+            reader.readAsText(e.target.files[0]);
         }
     };
 
-    // 全局事件：点击关闭菜单 & 搜索
-    app.bindGlobalEvents = () => {
+    app.bindEvents = () => {
         window.onclick = () => {
+            document.getElementById('dropdown-menu').classList.remove('show');
             document.getElementById('context-menu').style.display = 'none';
         };
 
-        document.getElementById('search-input').oninput = (e) => {
-            const val = e.target.value.toLowerCase();
-            document.querySelectorAll('.site-card').forEach(card => {
-                const name = card.querySelector('.site-name').innerText.toLowerCase();
-                const desc = card.querySelector('.site-desc').innerText.toLowerCase();
-                card.style.display = (name.includes(val) || desc.includes(val)) ? 'flex' : 'none';
+        const searchInput = document.getElementById('search-input');
+        searchInput.oninput = (e) => {
+            const v = e.target.value.toLowerCase();
+            document.querySelectorAll('.site-card').forEach(c => {
+                const match = c.innerText.toLowerCase().includes(v);
+                c.style.display = match ? 'flex' : 'none';
             });
+            // 搜索时自动展开有匹配项的分组
+            if(v) document.querySelectorAll('.category-section').forEach(s => s.classList.add('expanded'));
         };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
     };
 
-    // 启动
     app.init();
 </script>
-
 </body>
 </html>
