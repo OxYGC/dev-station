@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>💰 资产收益计算器 | 支持亮色/深色主题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* =============== 主题变量 =============== */
+        :root {
+            --bg-primary: #ffffff;
+            --card-bg: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --button-bg: #e9ecef;
+            --button-hover: #dee2e6;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0e0f18;
+            --card-bg: #161a25;
+            --text-primary: #f0f2f5;
+            --text-secondary: #8b94a1;
+            --border-color: #2d3142;
+            --success: #0ecb81;
+            --warning: #f8ba51;
+            --danger: #ff6a7d;
+            --info: #52b6ff;
+            --button-bg: #1e2230;
+            --button-hover: #2a2f45;
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family:'Segoe UI',PingFang SC,sans-serif;
+            background:var(--bg-primary);
+            color:var(--text-primary);
+            padding:20px;
+            max-width:1000px;
+            margin:0 auto;
+            transition:0.3s;
+        }
+
+        header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:24px;
+        }
+        h1{
+            font-size:24px;
+            font-weight:700;
+            background:linear-gradient(90deg,var(--success),var(--info));
+            -webkit-background-clip:text;
+            color:transparent;
+        }
+        .currency-selector,.theme-toggle{
+            background:var(--card-bg);
+            border:1px solid var(--border-color);
+            border-radius:8px;
+            padding:6px 12px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+
+        .card{
+            background:var(--card-bg);
+            border:1px solid var(--border-color);
+            border-radius:12px;
+            padding:20px;
+            margin-bottom:24px;
+            transition:0.3s;
+        }
+        .input-group{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px;}
+        .input-item{flex:1;min-width:200px;}
+        label{font-size:13px;color:var(--text-secondary);margin-bottom:6px;display:block;}
+        .input-with-unit{display:flex;}
+        .input-with-unit input{
+            flex:1;background:var(--button-bg);
+            border:1px solid var(--border-color);
+            border-radius:8px 0 0 8px;
+            padding:10px;font-size:16px;
+        }
+        .unit-label{
+            background:var(--button-bg);
+            border:1px solid var(--border-color);
+            border-left:none;
+            border-radius:0 8px 8px 0;
+            padding:10px;
+            min-width:50px;
+            text-align:center;
+        }
+
+        .btn-calculate{
+            background:var(--button-bg);
+            border:1px solid var(--border-color);
+            border-radius:8px;
+            padding:8px 16px;
+            cursor:pointer;
+            font-weight:600;
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+
+        .section-title{font-weight:600;margin:18px 0 12px;display:flex;gap:8px;}
+        .results-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:16px;
+        }
+
+        .result-card{
+            background:var(--button-bg);
+            padding:16px;
+            border-radius:10px;
+            text-align:center;
+        }
+        .deposit{border-top:3px solid var(--info);}
+        .stock{border-top:3px solid var(--warning);}
+        .crypto{border-top:3px solid var(--success);}
+
+        .result-title{font-size:13px;color:var(--text-secondary);}
+        .result-value{font-size:18px;font-weight:700;margin-top:6px;}
+        .deposit .result-value{color:var(--info);}
+        .stock .result-value{color:var(--warning);}
+        .crypto .result-value{color:var(--success);}
+
+        .sources{font-size:12px;color:var(--text-secondary);margin-top:20px;border-top:1px solid var(--border-color);padding-top:10px;}
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><i class="fas fa-chart-line"></i> 资产收益计算器</h1>
+    <div style="display:flex;gap:12px;">
+        <div class="currency-selector" id="globalCurrencyToggle">
+            <i class="fas fa-coins"></i><span id="currencyLabel">CNY</span>
+        </div>
+        <div class="theme-toggle" id="themeToggle">
+            <i class="fas fa-sun"></i><span>亮色</span>
+        </div>
+    </div>
+</header>
+
+<div class="card">
+    <div class="input-group">
+        <div class="input-item">
+            <label>当前资金总额</label>
+            <div class="input-with-unit"><input id="totalFund"><div class="unit-label" id="unit-totalFund">元</div></div>
+        </div>
+        <div class="input-item">
+            <label>已投资金额</label>
+            <div class="input-with-unit"><input id="investedAmount"><div class="unit-label" id="unit-investedAmount">元</div></div>
+        </div>
+    </div>
+    <button class="btn-calculate" id="btnCalculate"><i class="fas fa-calculator"></i>计算收益</button>
+</div>
+
+<div class="card">
+    <div class="section-title"><i class="fas fa-piggy-bank"></i> 银行存款</div>
+    <div class="results-grid" id="deposit-results"></div>
+    <div class="section-title"><i class="fas fa-chart-line"></i> 股票证券</div>
+    <div class="results-grid" id="stock-results"></div>
+    <div class="section-title"><i class="fab fa-bitcoin"></i> 加密货币</div>
+    <div class="results-grid" id="crypto-results"></div>
+</div>
+<div class="card sources">
+    <strong>数据来源与说明：</strong>
+    <ul style="margin-top: 8px; padding-left: 20px; font-size: 12px;">
+        <li>中国存款利率 (1.5%)：基于 <a href="http://www.pbc.gov.cn" target="_blank">中国人民银行2025年基准利率</a></li>
+        <li>美国存款利率 (4.3%)：<a href="https://www.federalreserve.gov" target="_blank">美联储2025年政策利率区间</a></li>
+        <li>港币存款利率 (0.5%)：参考 <a href="https://www.hkab.org.hk" target="_blank">香港银行公会2025年平均储蓄利率</a></li>
+        <li>茅台、苹果、英伟达、港股平均收益率：基于2023–2025三年复合年化回报估算，数据来源 <a href="https://finance.yahoo.com" target="_blank">Yahoo Finance</a></li>
+        <li>BTC 年化收益 (70%)：基于2020–2025长期复合回报，数据来源 <a href="https://www.coingecko.com" target="_blank">CoinGecko</a></li>
+        <li>汇率换算：1 USD = 7.25 CNY（2025年中间价参考）</li>
+    </ul>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+
+        /* ============ 配置 ============ */
+        let totalFundRaw = 1000000;
+        let investedAmountRaw = 24000;
+        let globalCurrency = 'CNY';
+        const FX = 7.25;
+
+        const RATES={
+            chinaDeposit:0.015,
+            hkDeposit:0.005,
+            usDeposit:0.043,
+            maotai:0.20,
+            hkStock:0.10,
+            apple:0.30,
+            nvidia:0.40,
+            btc:0.70
+        };
+
+        /* 输入回显 */
+        function updateDisplay(id,val){
+            if(val>=1e8){document.getElementById(id).value=(val/1e8);document.getElementById('unit-'+id).textContent='亿';}
+            else if(val>=1e4){document.getElementById(id).value=(val/1e4);document.getElementById('unit-'+id).textContent='万';}
+            else {document.getElementById(id).value=val;document.getElementById('unit-'+id).textContent='元';}
+        }
+        updateDisplay('totalFund',totalFundRaw);
+        updateDisplay('investedAmount',investedAmountRaw);
+
+        function setupInput(id,get,set){
+            const input=document.getElementById(id);
+            const unit=document.getElementById('unit-'+id);
+            input.addEventListener('focus',()=>{input.value=get();unit.textContent='元';});
+            input.addEventListener('blur',()=>{
+                let v=parseFloat(input.value)||0;
+                set(v);
+                updateDisplay(id,v);
+                calculate();
+            });
+        }
+        setupInput('totalFund',()=>totalFundRaw,(v)=>totalFundRaw=v);
+        setupInput('investedAmount',()=>investedAmountRaw,(v)=>investedAmountRaw=v);
+
+        /* 货币切换 */
+        document.getElementById('globalCurrencyToggle').onclick=()=>{
+            globalCurrency=globalCurrency==='CNY'?'USD':'CNY';
+            document.getElementById('currencyLabel').textContent=globalCurrency;
+            calculate();
+        };
+
+        /* 主题切换 */
+        const htmlEl=document.documentElement;
+        const themeBtn=document.getElementById('themeToggle');
+        let theme=localStorage.getItem('theme')||'light';
+        htmlEl.setAttribute('data-theme',theme);
+        themeBtn.onclick=()=>{
+            theme=theme==='light'?'dark':'light';
+            htmlEl.setAttribute('data-theme',theme);
+            localStorage.setItem('theme',theme);
+        };
+
+        /* 执行计算 */
+        document.getElementById('btnCalculate').onclick=calculate;
+        function calculate(){
+            const deposit=totalFundRaw-investedAmountRaw;
+            render('deposit-results',[
+                {title:'🇨🇳 中国存款',rate:RATES.chinaDeposit,amount:deposit,currency:'CNY'},
+                {title:'🇭🇰 港币存款',rate:RATES.hkDeposit,amount:deposit,currency:'CNY'},
+                {title:'🇺🇸 美国存款',rate:RATES.usDeposit,amount:deposit,currency:'USD'},
+            ],'deposit');
+
+            render('stock-results',[
+                {title:'🍶 茅台 (A股)',rate:RATES.maotai,amount:investedAmountRaw,currency:'CNY'},
+                {title:'🇭🇰 港股平均',rate:RATES.hkStock,amount:investedAmountRaw,currency:'CNY'},
+                {title:'🍎 苹果',rate:RATES.apple,amount:investedAmountRaw,currency:'USD'},
+                {title:'🎮 英伟达',rate:RATES.nvidia,amount:investedAmountRaw,currency:'USD'},
+            ],'stock');
+
+            render('crypto-results',[
+                {title:'₿ BTC',rate:RATES.btc,amount:investedAmountRaw,currency:'USD'},
+            ],'crypto');
+        }
+
+        function formatValue(val,c){
+            if(globalCurrency==='CNY'){
+                if(c==='USD') val*=FX;
+                return (val>=10000)?(val/10000).toFixed(2)+'万 元':val.toFixed(2)+' 元';
+            }else{
+                if(c==='CNY') val/=FX;
+                return '$'+val.toFixed(2);
+            }
+        }
+
+        function render(id,list,cls){
+            const box=document.getElementById(id);
+            box.innerHTML='';
+            list.forEach(item=>{
+                const gain=item.amount*item.rate;
+                box.innerHTML+=`
+            <div class="result-card ${cls}">
+                <div class="result-title">${item.title}</div>
+                <div class="result-value">${formatValue(gain,item.currency)}</div>
+                <div style="font-size:12px;color:var(--text-secondary)">${(item.rate*100).toFixed(1)}% 年化</div>
+            </div>`;
+            });
+        }
+
+        calculate();
+    });
+</script>
+
+</body>
+</html>

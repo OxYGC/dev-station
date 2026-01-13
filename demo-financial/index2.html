@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>个人资金管理计算器</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f9fafb;
+            color: #333;
+            padding: 20px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .input-item {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #4a5568;
+        }
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+        }
+        .input-with-unit input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .unit-label {
+            background: #edf2f7;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+            color: #4a5568;
+            min-width: 50px;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 16px 0 12px;
+            color: #2d3748;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .currency-toggle {
+            font-size: 14px;
+            color: #4299e1;
+            cursor: pointer;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .result-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+        }
+        .deposit { border-top: 4px solid #4299e1; }
+        .stock { border-top: 4px solid #38a169; }
+        .crypto { border-top: 4px solid #e53e3e; }
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #2d3748;
+        }
+        .result-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+        .deposit .result-value { color: #2b6cb0; }
+        .stock .result-value { color: #2f855a; }
+        .crypto .result-value { color: #c53030; }
+        .note {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 4px;
+        }
+        .sources {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed #e2e8f0;
+        }
+        .sources a {
+            color: #4299e1;
+            text-decoration: none;
+        }
+        .sources a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>💰 个人资金管理计算器</h1>
+
+<div class="card">
+    <div class="input-group">
+        <div class="input-item">
+            <label for="totalFund">当前资金总额</label>
+            <div class="input-with-unit">
+                <input type="text" id="totalFund" value="1000000" placeholder="请输入金额">
+                <div class="unit-label" id="unit-totalFund">元</div>
+            </div>
+        </div>
+        <div class="input-item">
+            <label for="investedAmount">已投资金额</label>
+            <div class="input-with-unit">
+                <input type="text" id="investedAmount" value="24000" placeholder="请输入金额">
+                <div class="unit-label" id="unit-investedAmount">元</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="section-title">
+        🏦 银行存款（年化收益）
+        <span class="currency-toggle" id="toggle-deposit">显示：CNY</span>
+    </div>
+    <div class="results-grid" id="deposit-results"></div>
+
+    <div class="section-title">
+        📈 股票证券（年化收益）
+        <span class="currency-toggle" id="toggle-stock">显示：CNY</span>
+    </div>
+    <div class="results-grid" id="stock-results"></div>
+
+    <div class="section-title">
+        ₿ 加密货币（年化收益）
+        <span class="currency-toggle" id="toggle-crypto">显示：USD</span>
+    </div>
+    <div class="results-grid" id="crypto-results"></div>
+</div>
+
+<div class="card sources">
+    <strong>数据来源与说明：</strong>
+    <ul style="margin-top: 8px; padding-left: 20px; font-size: 12px;">
+        <li>中国存款利率 (1.5%)：基于 <a href="http://www.pbc.gov.cn" target="_blank">中国人民银行2025年基准利率</a></li>
+        <li>美国存款利率 (4.3%)：<a href="https://www.federalreserve.gov" target="_blank">美联储2025年政策利率区间</a></li>
+        <li>港币存款利率 (0.5%)：参考 <a href="https://www.hkab.org.hk" target="_blank">香港银行公会2025年平均储蓄利率</a></li>
+        <li>茅台、苹果、英伟达、港股平均收益率：基于2023–2025三年复合年化回报估算，数据来源 <a href="https://finance.yahoo.com" target="_blank">Yahoo Finance</a></li>
+        <li>BTC 年化收益 (70%)：基于2020–2025长期复合回报，数据来源 <a href="https://www.coingecko.com" target="_blank">CoinGecko</a></li>
+        <li>汇率换算：1 USD = 7.25 CNY（2025年中间价参考）</li>
+    </ul>
+</div>
+
+<script>
+    // 初始原始值（单位：元）
+    let totalFundRaw = 1000000;   // 100万
+    let investedAmountRaw = 24000; // 年投资 2.4万（原每月2000）
+
+    const RATES = {
+        chinaDeposit: 0.015,   // CNY
+        hkDeposit: 0.005,      // HKD → 按CNY计
+        usDeposit: 0.043,      // USD
+        maotai: 0.20,          // CNY
+        hkStock: 0.10,         // HKD → 按CNY计
+        apple: 0.30,           // USD
+        nvidia: 0.40,          // USD
+        btc: 0.70              // USD
+    };
+
+    const EXCHANGE_RATE = 7.25; // 1 USD = 7.25 CNY (2025)
+    let displayCurrency = { deposit: 'CNY', stock: 'CNY', crypto: 'USD' };
+
+    // 智能格式化
+    function smartFormat(value) {
+        if (value >= 1e8 && value % 1e8 === 0) return { num: value / 1e8, unit: '亿' };
+        if (value >= 1e4 && value % 1e4 === 0) return { num: value / 1e4, unit: '万' };
+        return { num: value, unit: '元' };
+    }
+
+    function formatDisplay(val) {
+        if (val >= 10000) return (val / 10000).toFixed(2) + '万';
+        return val.toLocaleString(undefined, { maximumFractionDigits: 2 }) + '元';
+    }
+
+    function formatUSD(val) {
+        return '$' + val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateDisplay(id, rawValue) {
+        const { num, unit } = smartFormat(rawValue);
+        document.getElementById(id).value = num;
+        document.getElementById('unit-' + id).textContent = unit;
+    }
+
+    // 初始化
+    updateDisplay('totalFund', totalFundRaw);
+    updateDisplay('investedAmount', investedAmountRaw);
+
+    // 绑定输入
+    ['totalFund', 'investedAmount'].forEach(id => {
+        const input = document.getElementById(id);
+        const unitLabel = document.getElementById('unit-' + id);
+        let rawRef = id === 'totalFund' ? 'totalFundRaw' : 'investedAmountRaw';
+
+        input.addEventListener('focus', () => {
+            input.value = window[rawRef];
+            unitLabel.textContent = '元';
+        });
+
+        input.addEventListener('blur', () => {
+            const num = parseFloat(input.value) || 0;
+            const currentUnit = unitLabel.textContent;
+            let rawValue = currentUnit === '亿' ? num * 1e8 : (currentUnit === '万' ? num * 1e4 : num);
+            window[rawRef] = rawValue;
+            updateDisplay(id, rawValue);
+            calculate();
+        });
+    });
+
+    // 切换货币显示
+    document.getElementById('toggle-deposit').addEventListener('click', () => {
+        displayCurrency.deposit = displayCurrency.deposit === 'CNY' ? 'USD' : 'CNY';
+        document.getElementById('toggle-deposit').textContent = `显示：${displayCurrency.deposit}`;
+        calculate();
+    });
+    document.getElementById('toggle-stock').addEventListener('click', () => {
+        displayCurrency.stock = displayCurrency.stock === 'CNY' ? 'USD' : 'CNY';
+        document.getElementById('toggle-stock').textContent = `显示：${displayCurrency.stock}`;
+        calculate();
+    });
+    document.getElementById('toggle-crypto').addEventListener('click', () => {
+        displayCurrency.crypto = displayCurrency.crypto === 'USD' ? 'CNY' : 'USD';
+        document.getElementById('toggle-crypto').textContent = `显示：${displayCurrency.crypto}`;
+        calculate();
+    });
+
+    function calculate() {
+        const depositAmount = Math.max(0, totalFundRaw - investedAmountRaw);
+        const investAmount = investedAmountRaw;
+
+        // 存款（CNY为主）
+        const depositItems = [
+            { title: '🇨🇳 中国存款', rate: RATES.chinaDeposit, amount: depositAmount, currency: 'CNY', note: '(2025年基准利率)' },
+            { title: '🇭🇰 港币存款', rate: RATES.hkDeposit, amount: depositAmount, currency: 'CNY', note: '(2025年平均)' },
+            { title: '🇺🇸 美国存款', rate: RATES.usDeposit, amount: depositAmount, currency: 'USD', note: '(2025年政策利率)' }
+        ];
+
+        // 股票（A股/HK为CNY，美股为USD）
+        const stockItems = [
+            { title: '🍶 茅台 (A股)', rate: RATES.maotai, amount: investAmount, currency: 'CNY', note: '(2023–2025年化)' },
+            { title: '🇭🇰 港股平均', rate: RATES.hkStock, amount: investAmount, currency: 'CNY', note: '(2023–2025年化)' },
+            { title: '🍎 苹果 (美股)', rate: RATES.apple, amount: investAmount, currency: 'USD', note: '(2023–2025年化)' },
+            { title: '🎮 英伟达 (美股)', rate: RATES.nvidia, amount: investAmount, currency: 'USD', note: '(2023–2025年化)' }
+        ];
+
+        // 加密货币（USD）
+        const cryptoItems = [
+            { title: '₿ BTC', rate: RATES.btc, amount: investAmount, currency: 'USD', note: '(2020–2025长期年化)' }
+        ];
+
+        function render(items, containerId, className, toggleKey) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = items.map(item => {
+                let收益 = item.amount * item.rate;
+                let displayText;
+
+                if (item.currency === 'CNY') {
+                    if (displayCurrency[toggleKey] === 'CNY') {
+                        displayText = '+' + formatDisplay(收益);
+                    } else {
+                        displayText = '+' + formatUSD(收益 / EXCHANGE_RATE);
+                    }
+                } else { // USD
+                    if (displayCurrency[toggleKey] === 'USD') {
+                        displayText = '+' + formatUSD(收益);
+                    } else {
+                        displayText = '+' + formatDisplay(收益 * EXCHANGE_RATE);
+                    }
+                }
+
+                return `
+          <div class="result-card ${className}">
+            <div class="result-title">${item.title}</div>
+            <div class="result-value">${displayText}</div>
+            <div class="note">${item.note}</div>
+          </div>
+        `;
+            }).join('');
+        }
+
+        render(depositItems, 'deposit-results', 'deposit', 'deposit');
+        render(stockItems, 'stock-results', 'stock', 'stock');
+        render(cryptoItems, 'crypto-results', 'crypto', 'crypto');
+    }
+
+    calculate();
+</script>
+
+</body>
+</html>

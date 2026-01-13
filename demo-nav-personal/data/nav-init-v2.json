@@ -1,0 +1,178 @@
+{
+  "categoryList": [
+    {
+      "id": 1,
+      "name": "行情与数据",
+      "desc": "加密市场行情与数据平台",
+      "weight": 1
+    },
+    {
+      "id": 2,
+      "name": "区块链浏览器",
+      "desc": "主流区块链浏览器",
+      "weight": 2
+    },
+    {
+      "id": 3,
+      "name": "研究与分析",
+      "desc": "投研、链上分析与报告",
+      "weight": 3
+    },
+    {
+      "id": 4,
+      "name": "DeFi 工具",
+      "desc": "DeFi 数据、协议与工具",
+      "weight": 4
+    },
+    {
+      "id": 5,
+      "name": "空投与任务",
+      "desc": "空投追踪与 Web3 任务平台",
+      "weight": 5
+    },
+    {
+      "id": 6,
+      "name": "开发者资源",
+      "desc": "Web3 开发与技术文档",
+      "weight": 6
+    }
+  ],
+
+  "data": [
+    {
+      "id": 1,
+      "categoryId": 1,
+      "name": "CoinMarketCap",
+      "desc": "加密货币行情与市值数据",
+      "url": "https://coinmarketcap.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 2,
+      "categoryId": 1,
+      "name": "CoinGecko",
+      "desc": "全球加密资产数据平台",
+      "url": "https://www.coingecko.com/",
+      "logoUrl": "https://www.coingecko.com/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    },
+
+    {
+      "id": 3,
+      "categoryId": 2,
+      "name": "Etherscan",
+      "desc": "Ethereum 区块链浏览器",
+      "url": "https://etherscan.io/",
+      "logoUrl": "https://etherscan.io/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 4,
+      "categoryId": 2,
+      "name": "BscScan",
+      "desc": "BNB Chain 区块链浏览器",
+      "url": "https://bscscan.com/",
+      "logoUrl": "https://bscscan.com/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 5,
+      "categoryId": 2,
+      "name": "Solscan",
+      "desc": "Solana 区块链浏览器",
+      "url": "https://solscan.io/",
+      "logoUrl": "https://solscan.io/favicon.ico",
+      "weight": 3,
+      "date": "2024-06-12 23:59:05"
+    },
+
+    {
+      "id": 6,
+      "categoryId": 3,
+      "name": "Dune",
+      "desc": "链上数据分析与可视化",
+      "url": "https://dune.com/",
+      "logoUrl": "https://dune.com/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 7,
+      "categoryId": 3,
+      "name": "Glassnode",
+      "desc": "链上数据与市场情绪分析",
+      "url": "https://glassnode.com/",
+      "logoUrl": "https://glassnode.com/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    },
+
+    {
+      "id": 8,
+      "categoryId": 4,
+      "name": "DeFiLlama",
+      "desc": "DeFi TVL 与协议数据",
+      "url": "https://defillama.com/",
+      "logoUrl": "https://defillama.com/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 9,
+      "categoryId": 4,
+      "name": "Zapper",
+      "desc": "DeFi 投资组合管理工具",
+      "url": "https://zapper.fi/",
+      "logoUrl": "https://zapper.fi/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    },
+
+    {
+      "id": 10,
+      "categoryId": 5,
+      "name": "Airdrops.io",
+      "desc": "空投项目追踪",
+      "url": "https://airdrops.io/",
+      "logoUrl": "https://airdrops.io/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 11,
+      "categoryId": 5,
+      "name": "Layer3",
+      "desc": "Web3 任务与空投平台",
+      "url": "https://layer3.xyz/",
+      "logoUrl": "https://layer3.xyz/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    },
+
+    {
+      "id": 12,
+      "categoryId": 6,
+      "name": "Ethereum Docs",
+      "desc": "Ethereum 官方开发文档",
+      "url": "https://ethereum.org/developers/",
+      "logoUrl": "https://ethereum.org/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id": 13,
+      "categoryId": 6,
+      "name": "Solana Docs",
+      "desc": "Solana 官方开发者文档",
+      "url": "https://docs.solana.com/",
+      "logoUrl": "https://docs.solana.com/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    }
+  ]
+}

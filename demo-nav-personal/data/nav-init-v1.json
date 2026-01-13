@@ -1,0 +1,89 @@
+{
+  "categoryList": [
+    {
+      "id":1,
+      "name": "资讯站点",
+      "desc": "资讯站点",
+      "weight": 1
+    },
+    {
+      "id":2,
+      "name": "数据分析平台",
+      "desc": "资讯站点",
+      "weight": 1
+    },
+    {
+      "id":3,
+      "name": "知名社区",
+      "desc": "知名社区",
+      "weight": 1
+    },
+    {
+      "id":4,
+      "name": "职场就业",
+      "desc": "职场就业",
+      "weight": 1
+    },
+    {
+      "id":5,
+      "name": "区块链浏览器",
+      "desc": "区块链浏览器",
+      "weight": 1
+    },
+    {
+      "id":5,
+      "name": "空投追踪",
+      "desc": "区块链浏览器",
+      "weight": 1
+    }
+
+  ],
+
+  "data": [
+    {
+      "id":1,
+      "categoryId":1,
+      "name": "CoinMarketCap",
+      "desc": "CoinMarketCap",
+      "url": "https://coinmarketcap.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id":2,
+      "categoryId":1,
+      "name": "RootData",
+      "desc": "查看项目情况",
+      "url": "https://www.rootdata.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
+      "weight": 2,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id":1,
+      "categoryId":1,
+
+      "name": "CoinGecko",
+      "desc": "CoinGecko",
+      "url": "https://www.coingecko.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    },
+    {
+      "id":1,
+      "categoryId":1,
+
+      "name": "非小号",
+      "desc": "feixiaohao",
+      "url": "https://www.feixiaohao.com/",
+      "logoUrl": "https://coinmarketcap.com/favicon.ico",
+      "weight": 1,
+      "date": "2024-06-12 23:59:05"
+    }
+  ]
+}
+
+
+
