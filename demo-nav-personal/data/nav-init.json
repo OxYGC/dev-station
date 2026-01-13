@@ -42,21 +42,11 @@
     {
       "id": 2005,
       "categoryId": 1767546542043,
-      "name": "CoinGlass",
+      "name": "资产收益计算器",
       "desc": "加密衍生品爆仓、持仓与资金费率数据",
-      "url": "https://www.coinglass.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinglass.com",
+      "url": "https://fin.yanggc.fun/",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=fin.yanggc.fun",
       "weight": 4,
-      "date": "2024-06-12"
-    },
-    {
-      "id": 2006,
-      "categoryId": 1767546542043,
-      "name": "RootData",
-      "desc": "Web3 世界的“彭博终端”",
-      "url": "https://www.rootdata.com/",
-      "logoUrl": "https://www.rootdata.com/favicon.ico",
-      "weight": 5,
       "date": "2024-06-12"
     },
 
