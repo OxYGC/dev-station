@@ -7,6 +7,6 @@
     "footerText": "Copyright &copy; 2015-{CURRENT_YEAR} <a href=\"http://yanggc.fun\">yanggc.fun</a>. All rights reserved. 建议/合作 / 联系邮箱： <a href=\"mailto:keygenee@gmail.com\">keygenee@gmail.com</a>"
   },
   "api":{
-    "homeUrl": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav/data/nav-init.json"
+    "homeUrl": "https://raw.githubusercontent.com/OxYGC/dev-station/refs/heads/main/demo-nav-personal/data/nav-init.json"
   }
 }
