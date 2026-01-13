@@ -22,20 +22,20 @@
     {
       "id": 2001,
       "categoryId": 1767546542043,
-      "name": "CoinMarketCap",
-      "desc": "全球主流加密资产市值与行情数据平台",
-      "url": "https://coinmarketcap.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=coinmarketcap.com",
+      "name": "问答互动板",
+      "desc": "情侣之间问答互动板",
+      "url": "https://qa.yanggc.fun",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=https://qa.yanggc.fun",
       "weight": 0,
       "date": "2024-06-12"
     },
     {
       "id": 2004,
       "categoryId": 1767546542043,
-      "name": "DefiLlama",
-      "desc": "DeFi 协议与多链 TVL 数据聚合",
-      "url": "https://defillama.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=defillama.com",
+      "name": "Oxygen",
+      "desc": "Oxygen个人博客",
+      "url": "https://blog.yanggc.fun/",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=64&domain=blog.yanggc.fun",
       "weight": 3,
       "date": "2024-06-12"
     },
@@ -59,6 +59,7 @@
       "weight": 5,
       "date": "2024-06-12"
     },
+
     { "id": 10001, "categoryId": 10000, "name": "ShadowSocks", "desc": "稳定好用的商业科学上网节点", "url": "https://secure.shadowsocks.au/aff.php?aff=47119", "logoUrl": "https://portal.shadowsocks.au/favicon.ico", "weight": 0, "date": "2024-06-12" },
     { "id": 10002, "categoryId": 10000, "name": "WgetCloud", "desc": "WgetCloud全球网络加速服务", "url": "https://invite.wgetcloud.ltd/auth/register?code=Fyr3A6", "logoUrl": "https://wgetcloud.ltd/favicon.ico", "weight": 0, "date": "2024-06-12" },
     { "id": 10003, "categoryId": 10000, "name": "狗狗加速器", "desc": "Doge网络加速服务", "url": "https://go.dginv.click/#/register?code=HdG1bIeo", "logoUrl": "https://wgetcloud.ltd/favicon.ico", "weight": 0, "date": "2024-06-12" },
