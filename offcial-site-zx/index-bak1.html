@@ -1,226 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Garment OEM Manufacturer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garment OEM Manufacturer</title>
 
-  <style>
-    body{margin:0;font-family:Arial;}
-    header{background:#111;color:#fff;text-align:center;padding:80px 20px;}
-    section{max-width:1200px;margin:auto;padding:60px 20px;}
-    h2{text-align:center;margin-bottom:40px;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
-    .card{border:1px solid #eee;padding:15px;border-radius:6px;}
-    .card img{width:100%;border-radius:6px;}
-    .card h3{margin:10px 0 5px;}
-    .lang-switch{position:absolute;top:20px;right:20px;}
-    button{padding:6px 12px;margin-left:8px;}
-    footer{background:#111;color:#aaa;text-align:center;padding:30px;}
-    .small{font-size:13px;color:#666;}
-  </style>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        section {
+            max-width: 1200px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        .card h3 {
+            margin: 10px 0 5px;
+        }
+
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        button {
+            padding: 6px 12px;
+            margin-left: 8px;
+        }
+
+        footer {
+            background: #111;
+            color: #aaa;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .small {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="lang-switch">
-  <button onclick="setLang('en')">EN</button>
-  <button onclick="setLang('cn')">中文</button>
+    <button onclick="setLang('en')">EN</button>
+    <button onclick="setLang('cn')">中文</button>
 </div>
 
 <header>
-  <h1 data-en="Garment OEM Manufacturer"
-      data-cn="周口织行户外服装OEM工厂">
-    Garment OEM Manufacturer
-  </h1>
-  <p data-en="Professional Outdoor Apparel Manufacturing"
-     data-cn="专业户外服装生产 · 支持定制">
-    Professional Outdoor Apparel Manufacturing
-  </p>
+    <h1 data-en="Garment OEM Manufacturer"
+        data-cn="周口织行户外服装OEM工厂">
+        Garment OEM Manufacturer
+    </h1>
+    <p data-en="Professional Outdoor Apparel Manufacturing"
+       data-cn="专业户外服装生产 · 支持定制">
+        Professional Outdoor Apparel Manufacturing
+    </p>
 </header>
 
 <section>
-  <h2 data-en="Spring / Summer Collection"
-      data-cn="春夏系列">
-    Spring / Summer Collection
-  </h2>
-  <div class="grid" id="springContainer"></div>
+    <h2 data-en="Spring / Summer Collection"
+        data-cn="春夏系列">
+        Spring / Summer Collection
+    </h2>
+    <div class="grid" id="springContainer"></div>
 </section>
 
 <section>
-  <h2 data-en="Autumn / Winter Collection"
-      data-cn="秋冬系列">
-    Autumn / Winter Collection
-  </h2>
-  <div class="grid" id="autumnContainer"></div>
+    <h2 data-en="Autumn / Winter Collection"
+        data-cn="秋冬系列">
+        Autumn / Winter Collection
+    </h2>
+    <div class="grid" id="autumnContainer"></div>
 </section>
 
 <section class="contact-section">
-  <h2 data-en="Start Your OEM Project"
-      data-cn="开启您的OEM合作">
-    Start Your OEM Project
-  </h2>
+    <h2 data-en="Start Your OEM Project"
+        data-cn="开启您的OEM合作">
+        Start Your OEM Project
+    </h2>
 
-  <p class="contact-desc"
-     data-en="Send us your tech pack or product idea. We will reply within 24 hours."
-     data-cn="欢迎发送款式图或需求，我们将在24小时内回复。">
-    Send us your tech pack or product idea. We will reply within 24 hours.
-  </p>
+    <p class="contact-desc"
+       data-en="Send us your tech pack or product idea. We will reply within 24 hours."
+       data-cn="欢迎发送款式图或需求，我们将在24小时内回复。">
+        Send us your tech pack or product idea. We will reply within 24 hours.
+    </p>
 
-  <div class="contact-buttons">
+    <div class="contact-buttons">
 
-    <!-- 手机拨号 -->
-    <a href="tel:+8615703881973" class="btn phone">
-      📞 <span data-en="Call Us" data-cn="手机直拨">Call Us</span>
-    </a>
+        <!-- 手机拨号 -->
+        <a href="tel:+8615703881973" class="btn phone">
+            📞 <span data-en="Call Us" data-cn="手机直拨">Call Us</span>
+        </a>
 
 
-    <!-- WhatsApp -->
-    <a href="https://wa.me/8615703881973?text=Hello,%20I'm%20interested%20in%20your%20OEM%20service."
-       class="btn whatsapp" target="_blank">
-      💬 WhatsApp
-    </a>
+        <!-- WhatsApp -->
+        <a href="https://wa.me/8615703881973?text=Hello,%20I'm%20interested%20in%20your%20OEM%20service."
+           class="btn whatsapp" target="_blank">
+            💬 WhatsApp
+        </a>
 
-    <!-- Email -->
-    <a href="mailto:zonglongfei@gmail.com?subject=OEM%20Inquiry&body=Hello,%20I%20am%20interested%20in%20your%20products."
-       class="btn email">
-      ✉ Email
-    </a>
-  </div>
+        <!-- Email -->
+        <a href="mailto:zonglongfei@gmail.com?subject=OEM%20Inquiry&body=Hello,%20I%20am%20interested%20in%20your%20products."
+           class="btn email">
+            ✉ Email
+        </a>
+    </div>
 
-  <!-- 微信信息展示 -->
-  <div class="wechat">
-    <p data-en="WeChat:" data-cn="微信：">WeChat:</p>
-    <strong>+8615703881973</strong>
-  </div>
+    <!-- 微信信息展示 -->
+    <div class="wechat">
+        <p data-en="WeChat:" data-cn="微信：">WeChat:</p>
+        <strong>+8615703881973</strong>
+    </div>
 
 </section>
 
 <style>
-  .contact-section{
-    text-align:center;
-    padding:80px 20px;
-    background:#f8f8f8;
-  }
-
-  .contact-desc{
-    max-width:600px;
-    margin:15px auto 40px;
-    color:#555;
-  }
-
-  .contact-buttons{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:15px;
-  }
-
-  .btn{
-    display:inline-block;
-    padding:16px 28px;
-    border-radius:6px;
-    text-decoration:none;
-    font-size:16px;
-    color:#fff;
-    min-width:180px;
-    transition:0.3s;
-  }
-
-  .phone{ background:#333; }
-  .whatsapp{ background:#25D366; }
-  .email{ background:#111; }
-
-  .btn:hover{
-    opacity:0.85;
-  }
-
-  .wechat{
-    margin-top:40px;
-    font-size:14px;
-    color:#666;
-  }
-
-  @media (max-width:600px){
-    .btn{
-      width:100%;
-      max-width:320px;
+    .contact-section {
+        text-align: center;
+        padding: 80px 20px;
+        background: #f8f8f8;
     }
-  }
+
+    .contact-desc {
+        max-width: 600px;
+        margin: 15px auto 40px;
+        color: #555;
+    }
+
+    .contact-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 16px 28px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 16px;
+        color: #fff;
+        min-width: 180px;
+        transition: 0.3s;
+    }
+
+    .phone {
+        background: #333;
+    }
+
+    .whatsapp {
+        background: #25D366;
+    }
+
+    .email {
+        background: #111;
+    }
+
+    .btn:hover {
+        opacity: 0.85;
+    }
+
+    .wechat {
+        margin-top: 40px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    @media (max-width: 600px) {
+        .btn {
+            width: 100%;
+            max-width: 320px;
+        }
+    }
 </style>
 
 <footer>
-  © 2026 周口织行服装有限公司 · All Rights Reserved
+    © 2026 周口织行服装有限公司 · All Rights Reserved
 </footer>
-
-
-
 
 
 <script>
 
-  // ===== 春夏数据（来自Excel） =====
-  const springData = [
-    { name:"X7格子长裤", fabric:"高品质涤棉三粒格面料，耐磨防刮（四季款）", color:"黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩" },
-    { name:"X9格子长裤", fabric:"高品质涤棉三粒格面料，耐磨防刮（四季款）", color:"黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩" },
-    { name:"X7复合长裤", fabric:"复合软面材质（四季款）", color:"黑/灰/卡/绿" },
-    { name:"X9复合长裤", fabric:"复合软面材质（四季款）定制款，无现货", color:"黑/灰/卡/绿" },
-    { name:"X7速干", fabric:"尼龙氨纶弹力速干面料，轻薄弹力舒适(适合夏春秋季)", color:"黑/灰/卡/绿" },
+    // ===== 春夏数据（来自Excel） =====
+    const springData = [
+        {
+            name: "X7格子长裤",
+            fabric: "高品质涤棉三粒格面料，耐磨防刮（四季款）",
+            color: "黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩"
+        },
+        {
+            name: "X9格子长裤",
+            fabric: "高品质涤棉三粒格面料，耐磨防刮（四季款）",
+            color: "黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩"
+        },
+        {name: "X7复合长裤", fabric: "复合软面材质（四季款）", color: "黑/灰/卡/绿"},
+        {name: "X9复合长裤", fabric: "复合软面材质（四季款）定制款，无现货", color: "黑/灰/卡/绿"},
+        {name: "X7速干", fabric: "尼龙氨纶弹力速干面料，轻薄弹力舒适(适合夏春秋季)", color: "黑/灰/卡/绿"},
 
 
-    { name:"X9速干", fabric:"尼龙氨纶弹力速干面料，轻薄弹力舒适(适合夏春秋季)定制款，无现货", color:"黑/灰/卡/绿" },
-    { name:"简单速干", fabric:"尼龙氨纶弹力速干面料，轻薄弹力舒适(适合夏春秋季)", color:"黑/灰/卡/绿" },
-    { name:"x7格子短裤", fabric:"高品质涤棉三粒格面料，耐磨防刮", color:"黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩" },
-    { name:"二代战术短裤", fabric:"高品质涤棉三粒格面料，耐磨防刮", color:"黑/灰/卡/绿" },
-    { name:"三代切割者短裤", fabric:"复合软面材质", color:"黑/灰/卡/绿" },
+        {name: "X9速干", fabric: "尼龙氨纶弹力速干面料，轻薄弹力舒适(适合夏春秋季)定制款，无现货", color: "黑/灰/卡/绿"},
+        {name: "简单速干", fabric: "尼龙氨纶弹力速干面料，轻薄弹力舒适(适合夏春秋季)", color: "黑/灰/卡/绿"},
+        {name: "x7格子短裤", fabric: "高品质涤棉三粒格面料，耐磨防刮", color: "黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩"},
+        {name: "二代战术短裤", fabric: "高品质涤棉三粒格面料，耐磨防刮", color: "黑/灰/卡/绿"},
+        {name: "三代切割者短裤", fabric: "复合软面材质", color: "黑/灰/卡/绿"},
 
 
-    { name:"圆领短袖", fabric:"全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color:"黑/灰/卡/绿" },
-    { name:"翻领短袖", fabric:"全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color:"黑/灰/卡/绿" },
-    { name:"圆领长袖", fabric:"全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color:"黑/灰/卡/绿" },
-    { name:"翻领长袖", fabric:"全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color:"黑/灰/卡/绿" },
-    { name:"新款3代短袖", fabric:"全涤弹力面料。款式特点：1、右臂口袋，2、左臂口袋，3、右下把口袋。无魔术贴", color:"黑/灰/卡/绿" },
+        {name: "圆领短袖", fabric: "全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color: "黑/灰/卡/绿"},
+        {name: "翻领短袖", fabric: "全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color: "黑/灰/卡/绿"},
+        {name: "圆领长袖", fabric: "全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color: "黑/灰/卡/绿"},
+        {name: "翻领长袖", fabric: "全涤弹力面料。款式特点：1、右臂口袋，2、左臂魔术贴，3、胸前挂扣", color: "黑/灰/卡/绿"},
+        {
+            name: "新款3代短袖",
+            fabric: "全涤弹力面料。款式特点：1、右臂口袋，2、左臂口袋，3、右下把口袋。无魔术贴",
+            color: "黑/灰/卡/绿"
+        },
 
-  ];
+    ];
 
-  // ===== 秋冬数据 =====
-  const autumnData = [
-    { name:"加绒藏帽夹克", fabric:"三合一防风防水鲨鱼皮面料、内里保暖摇粒绒（适合冬季）", color:"黑/灰/卡" },
-    { name:"圣甲虫", fabric:"二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color:"黑/灰/卡/绿/" },
-    { name:"甲壳虫", fabric:"二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color:"黑/灰/卡/绿/" },
-    { name:"X7加绒", fabric:"二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color:"黑/灰/卡/绿/" },
-    { name:"侧位加绒", fabric:"二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color:"黑/灰/卡/绿/" },
-    { name:"薄款连帽夹克", fabric:"薄款战术夹克（春秋款）", color:"黑/灰/卡/绿/" },
-    { name:"X7格子长裤", fabric:"高品质涤棉三粒格面料，耐磨防刮（四季款）", color:"黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩" },
-    { name:"x9格子长裤", fabric:"高品质涤棉三粒格面料，耐磨防刮（四季款）", color:"黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩" },
-    { name:"X7复合长裤", fabric:"复合软面材质（四季款）", color:"黑/灰/卡/绿/" },
-    { name:"X9复合长裤", fabric:"复合软面材质（四季款）定制款，无现货", color:"黑/灰/卡/绿/" },
-    { name:"三合一加绒冲锋衣（腋下拉链款）（秋冬季） ", fabric:"三合一防风防水鲨鱼皮面料、内里保暖摇粒绒（适合冬季）", color:"黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩" },
+    // ===== 秋冬数据 =====
+    const autumnData = [
+        {name: "加绒藏帽夹克", fabric: "三合一防风防水鲨鱼皮面料、内里保暖摇粒绒（适合冬季）", color: "黑/灰/卡"},
+        {name: "圣甲虫", fabric: "二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color: "黑/灰/卡/绿/"},
+        {name: "甲壳虫", fabric: "二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color: "黑/灰/卡/绿/"},
+        {name: "X7加绒", fabric: "二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）", color: "黑/灰/卡/绿/"},
+        {
+            name: "侧位加绒",
+            fabric: "二合一软壳面料、内里保暖摇粒绒，可升级三合一面料（适合秋末冬初）",
+            color: "黑/灰/卡/绿/"
+        },
+        {name: "薄款连帽夹克", fabric: "薄款战术夹克（春秋款）", color: "黑/灰/卡/绿/"},
+        {
+            name: "X7格子长裤",
+            fabric: "高品质涤棉三粒格面料，耐磨防刮（四季款）",
+            color: "黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩"
+        },
+        {
+            name: "x9格子长裤",
+            fabric: "高品质涤棉三粒格面料，耐磨防刮（四季款）",
+            color: "黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩"
+        },
+        {name: "X7复合长裤", fabric: "复合软面材质（四季款）", color: "黑/灰/卡/绿/"},
+        {name: "X9复合长裤", fabric: "复合软面材质（四季款）定制款，无现货", color: "黑/灰/卡/绿/"},
+        {
+            name: "三合一加绒冲锋衣（腋下拉链款）（秋冬季） ",
+            fabric: "三合一防风防水鲨鱼皮面料、内里保暖摇粒绒（适合冬季）",
+            color: "黑/灰/卡/绿/CP迷彩/暗夜迷彩/黑莽迷彩"
+        },
 // …… 这里对应你Excel里的11个
-  ];
+    ];
 
-  function renderProducts(data, containerId, folder){
-    const container = document.getElementById(containerId);
-    data.forEach((item,index)=>{
-      container.innerHTML += `
+    function renderProducts(data, containerId, folder) {
+        const container = document.getElementById(containerId);
+        data.forEach((item, index) => {
+            container.innerHTML += `
 <div class="card">
-<img src="images/${folder}/img_${index+1}.png">
+<img src="images/${folder}/img_${index + 1}.png">
 <h3>${item.name}</h3>
 <p class="small"><b>Fabric:</b> ${item.fabric}</p>
 <p class="small"><b>Color:</b> ${item.color}</p>
 </div>
 `;
-    });
-  }
+        });
+    }
 
-  renderProducts(springData,"springContainer","spring");
-  renderProducts(autumnData,"autumnContainer","autumn");
+    renderProducts(springData, "springContainer", "spring");
+    renderProducts(autumnData, "autumnContainer", "autumn");
 
-  function setLang(lang){
-    document.querySelectorAll('[data-en]').forEach(el=>{
-      el.innerText = el.getAttribute('data-'+lang);
-    });
-  }
+    function setLang(lang) {
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute('data-' + lang);
+        });
+    }
 
 </script>
 
